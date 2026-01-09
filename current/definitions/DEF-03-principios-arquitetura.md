@@ -101,6 +101,12 @@ Os principios de arquitetura sao diretrizes fundamentais que guiam todas as deci
 - Reutilizacao da infraestrutura e servicos da app mobile nativa
 - Alinhamento com standards de arquitetura do Novo Banco (se existirem)
 
+## Decisoes Relacionadas
+
+- [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Estrategia de containers
+- [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - Padrao BFF
+- [DEC-008-stack-observabilidade-elk.md](../decisions/DEC-008-stack-observabilidade-elk.md) - Stack de observabilidade
+
 ## Referencias
 
 - [CONTEXT.md](../CONTEXT.md) - Contexto geral do projeto

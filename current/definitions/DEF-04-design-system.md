@@ -102,6 +102,10 @@ Definir o design system a ser utilizado no HomeBanking Web, garantindo consisten
 - Consistencia com experiencia da app mobile
 - Requisitos de acessibilidade a definir
 
+## Decisoes Relacionadas
+
+- [DEC-009-stack-tecnologica-frontend.md](../decisions/DEC-009-stack-tecnologica-frontend.md) - Stack tecnologica frontend
+
 ## Referencias
 
 - Brand guidelines do Novo Banco (a fornecer)

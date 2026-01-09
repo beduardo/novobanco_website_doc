@@ -25,6 +25,7 @@ status: in-progress
 >
 > **Decisoes relacionadas:**
 > - [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - Status: accepted
+> - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Status: accepted
 
 ## Proposito
 
@@ -492,6 +493,7 @@ BFF --> FE : Account data
 ## Decisoes Referenciadas
 
 - [x] [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - Status: accepted
+- [x] [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Status: accepted
 
 ## Itens Pendentes
 

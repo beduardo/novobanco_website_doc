@@ -125,6 +125,11 @@ Definir a arquitetura do Backend for Frontend (BFF) do HomeBanking Web, que serv
 - Isolamento de sistemas legados
 - Stack ELK para observabilidade
 
+## Decisoes Relacionadas
+
+- [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - Padrao BFF
+- [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack tecnologica backend
+
 ## Referencias
 
 - [DEF-03-principios-arquitetura.md](DEF-03-principios-arquitetura.md) - Decisao de BFF

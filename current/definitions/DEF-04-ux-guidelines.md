@@ -127,6 +127,10 @@ Definir as diretrizes de experiencia do utilizador para o HomeBanking Web, garan
 - Design responsivo
 - Suporte multi-idioma (PT, EN, ES)
 
+## Decisoes Relacionadas
+
+- [DEC-009-stack-tecnologica-frontend.md](../decisions/DEC-009-stack-tecnologica-frontend.md) - Stack tecnologica frontend
+
 ## Referencias
 
 - Fluxos da app mobile (a fornecer)

@@ -138,6 +138,10 @@ Definir a stack tecnologica do frontend do HomeBanking Web, considerando os requ
 - Suporte a 3 idiomas (PT, EN, ES)
 - Deploy em containers OpenShift
 
+## Decisoes Relacionadas
+
+- [DEC-009-stack-tecnologica-frontend.md](../decisions/DEC-009-stack-tecnologica-frontend.md) - Stack tecnologica frontend
+
 ## Referencias
 
 - [DEF-02-requisitos-nao-funcionais.md](DEF-02-requisitos-nao-funcionais.md) - Requisitos de compatibilidade

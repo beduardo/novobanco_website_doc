@@ -139,6 +139,10 @@ Definir a arquitetura de dados do HomeBanking Web, incluindo modelo de dados, ar
 - Dados bancarios classificados como sensiveis
 - Requisitos de auditoria do Banco de Portugal
 
+## Decisoes Relacionadas
+
+- [DEC-005-armazenamento-dados-canal-web.md](../decisions/DEC-005-armazenamento-dados-canal-web.md) - Armazenamento de dados no canal web
+
 ## Referencias
 
 - [DEF-02-requisitos-nao-funcionais.md](DEF-02-requisitos-nao-funcionais.md) - RTO/RPO

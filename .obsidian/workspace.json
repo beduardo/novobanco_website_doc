@@ -1,0 +1,197 @@
+{
+  "main": {
+    "id": "2b5901af410de90f",
+    "type": "split",
+    "children": [
+      {
+        "id": "bfffe166c6166427",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "1f7f331510066918",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "old/definitions/DEF-07-autenticacao-oauth.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "DEF-07-autenticacao-oauth"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "d077e8294a7085ea",
+    "type": "split",
+    "children": [
+      {
+        "id": "cecbd4fd6b9d2d77",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4bca07cc648722d3",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "77dc1728a86686d4",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "14b50a7394caa394",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "60c4af786c138b51",
+    "type": "split",
+    "children": [
+      {
+        "id": "9c1fa28ca1eca048",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "687d407c6c63efbd",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "old/definitions/DEF-07-autenticacao-oauth.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for DEF-07-autenticacao-oauth"
+            }
+          },
+          {
+            "id": "2e2948f343043f97",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "old/definitions/DEF-07-autenticacao-oauth.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from DEF-07-autenticacao-oauth"
+            }
+          },
+          {
+            "id": "f92ff1376ad6cb82",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "100707bc695ac673",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "473a01cb2c5648a3",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "old/definitions/DEF-07-autenticacao-oauth.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of DEF-07-autenticacao-oauth"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "1f7f331510066918",
+  "lastOpenFiles": [
+    "current/sections/SEC-10-arquitetura-operacional.md",
+    "current/definitions/DEF-10-arquitetura-operacional.md",
+    "current/decisions/DEC-010-stack-tecnologica-backend.md",
+    "old/definitions/DEF-10-deployment-infrastructure.md",
+    "old/sections/SEC-02-contexto-negocio-requisitos.md",
+    "old/sections/SEC-01-sumario-executivo.md",
+    "old/sections/SEC-14-plano-migracao-implementacao.md",
+    "old/sections/SEC-15-governacao-roadmap.md"
+  ]
+}

@@ -533,6 +533,11 @@ As seguintes funcionalidades s√£o geridas inteiramente pelo Siebel (backend), n√
 
 ---
 
+## Decisoes Relacionadas
+
+- [DEC-001-estrategia-autenticacao-web.md](../decisions/DEC-001-estrategia-autenticacao-web.md) - Estrategia de autenticacao
+- [DEC-002-gestao-sessoes-tokens.md](../decisions/DEC-002-gestao-sessoes-tokens.md) - Gestao de sessoes e tokens
+
 ## Referencias
 
 - [SEC-07-autenticacao-autorizacao.md](../sections/SEC-07-autenticacao-autorizacao.md)

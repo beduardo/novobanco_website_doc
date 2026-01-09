@@ -158,6 +158,12 @@ Definir a estrategia de autenticacao e autorizacao do HomeBanking Web. Nota: O f
 - Cookies HttpOnly para sessao (definido em DEF-05)
 - OAuth 2.0 como base (definido em DEF-05)
 
+## Decisoes Relacionadas
+
+- [DEC-001-estrategia-autenticacao-web.md](../decisions/DEC-001-estrategia-autenticacao-web.md) - Estrategia de autenticacao
+- [DEC-002-gestao-sessoes-tokens.md](../decisions/DEC-002-gestao-sessoes-tokens.md) - Gestao de sessoes e tokens
+- [DEC-003-modelo-autorizacao-abac.md](../decisions/DEC-003-modelo-autorizacao-abac.md) - Modelo de autorizacao ABAC
+
 ## Referencias
 
 - [DEF-05-arquitetura-bff.md](DEF-05-arquitetura-bff.md) - Fluxo OAuth basico

@@ -207,6 +207,10 @@ Definir os requisitos de seguranca e conformidade regulatoria do HomeBanking Web
 - Auditoria externa regular
 - SLA de disponibilidade 99.9%
 
+## Decisoes Relacionadas
+
+- [DEC-004-controlos-seguranca-frontend.md](../decisions/DEC-004-controlos-seguranca-frontend.md) - Controlos de seguranca frontend
+
 ## Referencias
 
 - [DEF-02-requisitos-nao-funcionais.md](DEF-02-requisitos-nao-funcionais.md) - NFRs
