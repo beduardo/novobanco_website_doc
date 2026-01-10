@@ -15,7 +15,34 @@ reviewed: true
 Especificações arquiteturais de desenvolvimento de Página HomeBanking para banco digital com parte das features equivalentes da aplicação mobile nativa.
 
 ## General Information
-A aplicação se utilizará de infraestrutura e serviços criados para a aplicação mobile nativa já existente.
+O documento deve ser um HLD com informações para o desenvolvimento do projeto, definindo todas as tecnologias e estruturas necessárias para isso. Ele deve ser completo para que uma equipa consiga preparar um plano de desenvolvimnento envolvendo desde o Assessment inicial para a definição completa das histórias de usuário até a entrega do software, passando por diagramas que apresentam como tudo será interligado, qual a arquitetura da aplicação, como deve ser entrege no ambiente (deployed) e como deve ser monitorada.
+
+### Estes são outros pontos relevantes ao documento:
+
+    - Definição da metodologia a utilizar na criação dos canais Best, no âmbito da atualização tecnológica
+    - Identificação de perfis e características técnicas, nomeadamente:
+        - Programação React
+        - Programação nativa (iOS e Android)
+        - Integração React no nativo
+        - Integração do Gateway
+        - Ligação com APIs Banco Best
+        - Criação de business layer CMS (.NET, etc.)
+        - Modelos de segurança
+        - Tratamento de erros, diagnóstico, logs e monitorização
+        - Requisitos de resiliência, isolamento e escalabilidade
+        - Performance e utilização de cache
+        - Outros aspetos técnicos relevantes
+    - Definição do modelo de arquitetura global dos canais e aplicações conexas (CMS, backoffice, etc.)
+    - Identificação de componentes de infraestrutura em falta no desenho atual (ex.: cache, GitHub, DevOps, Azure)
+    - Modelo de trabalho entre equipas, incluindo ambientes de desenvolvimento novobanco e ligação com equipas externas15k
+
+## Informações adicionais:
+- A aplicação se utilizará de infraestrutura e serviços criados para a aplicação mobile nativa já existente.
+- O cliente já possui um APP Mobile com features equivalente que devem ser replicadas.
+- Deve definir os requisitos funcionais e não funcionais, atendendo os padrões internacionais.
+- Um documento do Word deve ser gerado ao fim do trabalho. As seções precisam ser escritas de forma a facilitar que o conteúdo seja copiado para o edito Word.
+- Devemos ter também um documento auxiliar com uma lista de perguntas pendentes para resposta. Este documento será utilizado em reuniões com o cliente para agilizar a captura de enformações e deve ser atualizado com frequência. Estas questões devem ser baseadas nas questões existentes nos documentos de definição.
+
 
 ## List of sections
 
