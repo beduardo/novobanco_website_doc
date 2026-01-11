@@ -6,8 +6,6 @@ tags:
   - nextreality-novobanco-website-sections
   - sections
   - testing
-  - quality-assurance
-  - automation
 approved: true
 created: 2026-01-08
 hubs:
@@ -19,20 +17,15 @@ status: in-progress
 
 # 13. Estrategia de Testes
 
-> **Required definitions:** [DEF-13-estrategia-testes.md](../definitions/DEF-13-estrategia-testes.md)
-> **Related decisions:**
-> - [DEC-009-stack-tecnologica-frontend.md](../decisions/DEC-009-stack-tecnologica-frontend.md) - Status: accepted
-> - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Status: accepted
-
 ## Proposito
 
-Definir a estrategia de testes do HomeBanking Web, incluindo testes unitarios, integracao, contrato, E2E, performance, seguranca, acessibilidade, test data management e matriz de responsabilidades.
+Definir a estrategia de testes do HomeBanking Web a nivel arquitetural, estabelecendo os tipos de testes, quality gates e integracao com o pipeline CI/CD.
 
 ## Conteudo
 
-### 13.1 Piramide de Testes
+### 13.1 Abordagem de Testes
 
-A estrategia de testes segue o modelo da piramide de testes, priorizando testes unitarios e de integracao.
+A estrategia de testes segue o modelo da **piramide de testes**, priorizando testes automatizados nos niveis inferiores.
 
 ```plantuml
 @startuml
@@ -40,413 +33,101 @@ skinparam backgroundColor white
 
 title Piramide de Testes - HomeBanking Web
 
-rectangle "E2E Tests\n(Poucos, criticos)" as E2E #LightCoral
-rectangle "Integration Tests\n(Moderados)" as INT #LightGoldenRodYellow
-rectangle "Unit Tests\n(Muitos, rapidos)" as UNIT #LightGreen
+rectangle "E2E\n(Fluxos criticos)" as E2E #LightCoral
+rectangle "Integracao\n(APIs, componentes)" as INT #LightGoldenRodYellow
+rectangle "Unitarios\n(Funcoes, classes)" as UNIT #LightGreen
 
 E2E -[hidden]down- INT
 INT -[hidden]down- UNIT
 
-note right of E2E
-  - Cypress/Playwright
-  - Fluxos criticos
-  - Execucao mais lenta
-end note
-
-note right of INT
-  - Testes de API
-  - Testes de componentes
-  - Mocks de servicos externos
-end note
-
-note right of UNIT
-  - Jest (Frontend)
-  - xUnit (BFF)
-  - Cobertura minima requerida
-end note
-
 @enduml
 ```
 
-### 13.2 Testes Unitarios
+| Nivel | Escopo | Quantidade | Velocidade |
+|-------|--------|------------|------------|
+| **Unitarios** | Funcoes, componentes isolados | Muitos | Rapidos |
+| **Integracao** | APIs, servicos, base de dados | Moderados | Medios |
+| **E2E** | Fluxos completos de utilizador | Poucos | Lentos |
 
-_Os detalhes de testes unitarios necessitam aprofundamento._
+### 13.2 Tipos de Testes
 
-#### Frontend (Proposta)
+| Tipo | Objetivo | Responsabilidade |
+|------|----------|------------------|
+| **Unitarios** | Validar logica isolada | Equipa de Desenvolvimento |
+| **Integracao** | Validar comunicacao entre componentes | Equipa de Desenvolvimento |
+| **E2E** | Validar fluxos criticos de negocio | QA |
+| **Performance** | Validar NFRs de carga e tempo de resposta | QA / Arquitetura |
+| **Seguranca (SAST/DAST)** | Identificar vulnerabilidades | DevSecOps |
+| **Acessibilidade** | Validar conformidade WCAG | QA / UX |
 
-| Aspecto | Proposta | Status |
-|---------|----------|--------|
-| **Framework** | Jest + React Testing Library | Necessita aprofundamento |
-| **Cobertura Minima** | Necessita aprofundamento | Pendente |
-| **Bloqueia Pipeline** | Necessita aprofundamento | Pendente |
+### 13.3 Quality Gates no Pipeline
 
-#### BFF (Proposta)
-
-| Aspecto | Proposta | Status |
-|---------|----------|--------|
-| **Framework** | xUnit / NUnit | Necessita aprofundamento |
-| **Cobertura Minima** | Necessita aprofundamento | Pendente |
-| **Bloqueia Pipeline** | Necessita aprofundamento | Pendente |
-
-#### Boas Praticas
-
-- Testes isolados e independentes
-- Nomes descritivos (Given-When-Then)
-- Mocking de dependencias externas
-- Execucao rapida (< 100ms por teste)
-
-### 13.3 Testes de Integracao
-
-_Os detalhes de testes de integracao necessitam aprofundamento._
-
-```plantuml
-@startuml
-skinparam sequenceMessageAlign center
-
-title Testes de Integracao - BFF (Proposta)
-
-participant "Test Runner" as TR
-participant "BFF\n(In-Memory)" as BFF
-participant "WireMock\n(Mock Server)" as WM
-participant "TestContainers\n(Redis)" as TC
-
-TR -> BFF : Setup test
-activate BFF
-
-BFF -> TC : Start Redis container
-activate TC
-TC --> BFF : Ready
-
-BFF -> WM : Configure mock responses
-activate WM
-WM --> BFF : Ready
-
-TR -> BFF : Execute test
-BFF -> WM : Call (mocked) Backend API
-WM --> BFF : Mocked response
-BFF -> TC : Cache operation
-TC --> BFF : Result
-BFF --> TR : Assert result
-
-TR -> BFF : Teardown
-BFF -> TC : Stop container
-deactivate TC
-BFF -> WM : Reset mocks
-deactivate WM
-deactivate BFF
-
-@enduml
-```
-
-#### Ferramentas (Proposta)
-
-| Componente | Ferramenta | Uso |
-|------------|------------|-----|
-| **Mock Server** | WireMock | Mock de Backend API |
-| **Containers** | TestContainers | Redis, outros servicos |
-| **HTTP Client** | WebApplicationFactory | Testes in-memory |
-
-#### Ambiente
-
-| Aspecto | Status |
-|---------|--------|
-| Ambiente dedicado | Necessita aprofundamento |
-| Dados de teste | Necessita aprofundamento |
-| Isolamento | Necessita aprofundamento |
-
-### 13.4 Testes de Contrato
-
-_Os detalhes de contract testing necessitam aprofundamento._
-
-| Aspecto | Status |
-|---------|--------|
-| Implementacao (Pact, Spring Cloud Contract) | Necessita aprofundamento |
-| Responsabilidade pelos contratos | Necessita aprofundamento |
-| Validacao com Backend API | Necessita aprofundamento |
-
-#### Proposta de Fluxo
+Os quality gates sao pontos de verificacao automatica no pipeline CI/CD que bloqueiam a promocao de codigo que nao cumpra os criterios minimos.
 
 ```plantuml
 @startuml
 skinparam backgroundColor white
 
-title Contract Testing Flow (Proposta)
+title Quality Gates - Pipeline CI/CD
 
-actor "Frontend Dev" as FE
-actor "BFF Dev" as BFF
-actor "Backend Dev" as BE
-database "Pact Broker" as PB
+rectangle "Build" as B #LightBlue {
+  rectangle "Unit Tests"
+  rectangle "Code Coverage"
+  rectangle "SAST Scan"
+}
 
-FE -> PB : Publish consumer contract\n(Frontend -> BFF)
-BFF -> PB : Verify contract\n(as provider)
-BFF -> PB : Publish consumer contract\n(BFF -> Backend API)
-BE -> PB : Verify contract\n(as provider)
+rectangle "Test" as T #LightGreen {
+  rectangle "Integration Tests"
+  rectangle "E2E (Smoke)"
+}
 
-note bottom of PB
-  Pact Broker (ou similar)
-  centraliza contratos entre
-  consumer e provider
-end note
+rectangle "Pre-Prod" as P #LightYellow {
+  rectangle "DAST Scan"
+  rectangle "Performance Test"
+}
+
+B --> T : Pass
+T --> P : Pass
+P --> [Deploy Prod] : Approve
 
 @enduml
 ```
 
-### 13.5 Testes E2E
-
-_Os detalhes de testes E2E necessitam aprofundamento._
-
-#### Framework (Proposta)
-
-| Opcao | Pros | Contras |
-|-------|------|---------|
-| **Cypress** | API simples, bom debug | Apenas Chromium |
-| **Playwright** | Multi-browser, Microsoft | Mais complexo |
-| **Selenium** | Tradicional, amplo suporte | Mais lento, flaky |
-
-#### Cenarios Criticos (Proposta)
-
-| Cenario | Prioridade | Status |
-|---------|------------|--------|
-| Login/Logout | Alta | Necessita aprofundamento |
-| Consulta de saldo | Alta | Necessita aprofundamento |
-| Transferencia | Alta | Necessita aprofundamento |
-| Pagamentos | Alta | Necessita aprofundamento |
-| Gestao de perfil | Media | Necessita aprofundamento |
-
-#### Configuracao
-
-| Aspecto | Status |
-|---------|--------|
-| Ambiente de execucao | Necessita aprofundamento |
-| Bloqueia pipeline | Necessita aprofundamento |
-| Paralelizacao | Necessita aprofundamento |
-| Retry em caso de falha | Necessita aprofundamento |
-
-### 13.6 Testes de Performance
-
-Os testes de performance estao detalhados na [SEC-12 - Desempenho & Fiabilidade](SEC-12-desempenho-fiabilidade.md).
-
-| Aspecto | Referencia |
-|---------|------------|
-| Ferramenta | SEC-12 |
-| Cenarios | SEC-12 |
-| Criterios de aceitacao | SEC-12 |
-| Frequencia | SEC-12 |
-
-### 13.7 Testes de Seguranca
-
-_Os detalhes de testes de seguranca necessitam aprofundamento._
-
-#### SAST (Static Application Security Testing)
-
-| Aspecto | Status |
-|---------|--------|
-| Ferramenta | Necessita aprofundamento |
-| Integracao CI/CD | Sim (DEF-10) |
-| Bloqueia pipeline | Necessita aprofundamento |
-| Severidade minima para bloqueio | Necessita aprofundamento |
-
-#### DAST (Dynamic Application Security Testing)
-
-| Aspecto | Status |
-|---------|--------|
-| Ferramenta | Necessita aprofundamento |
-| Frequencia | Necessita aprofundamento |
-| Ambiente | Necessita aprofundamento |
-
-#### Penetration Testing
-
-| Aspecto | Status |
-|---------|--------|
-| Frequencia | Necessita aprofundamento |
-| Escopo | Necessita aprofundamento |
-| Responsavel | Necessita aprofundamento |
-
-#### Gestao de Findings
-
-| Aspecto | Status |
-|---------|--------|
-| SLA para correcao (Critical) | Necessita aprofundamento |
-| SLA para correcao (High) | Necessita aprofundamento |
-| SLA para correcao (Medium) | Necessita aprofundamento |
-| SLA para correcao (Low) | Necessita aprofundamento |
-
-### 13.8 Testes de Acessibilidade
-
-_Os detalhes de testes de acessibilidade necessitam aprofundamento._
-
-| Aspecto | Status |
-|---------|--------|
-| Guideline (WCAG 2.0/2.1) | Necessita aprofundamento |
-| Nivel (A, AA, AAA) | Necessita aprofundamento |
-| Ferramenta automatizada | Necessita aprofundamento |
-| Testes manuais | Necessita aprofundamento |
-
-#### Ferramentas (Proposta)
-
-| Ferramenta | Uso |
-|------------|-----|
-| axe-core | Testes automatizados |
-| WAVE | Validacao manual |
-| Lighthouse | Auditoria geral |
-| Screen Reader | Testes manuais |
-
-### 13.9 Test Data Management
-
-_Os detalhes de test data management necessitam aprofundamento._
-
-| Aspecto | Status |
-|---------|--------|
-| Estrategia de dados | Necessita aprofundamento |
-| Dados anonimizados de prod | Necessita aprofundamento |
-| Fixtures/Factories | Necessita aprofundamento |
-| Reset entre testes | Necessita aprofundamento |
-
-#### Proposta de Estrategia
-
-```plantuml
-@startuml
-skinparam backgroundColor white
-
-title Test Data Strategy (Proposta)
-
-package "Producao" {
-  database "Prod Data" as PROD
-}
-
-package "Processo" {
-  [Anonimizacao] as ANON
-  [Geracao Sintetica] as GEN
-}
-
-package "Ambientes de Teste" {
-  database "QA Data" as QA
-  database "Dev Data" as DEV
-}
-
-PROD --> ANON : Subset
-ANON --> QA : Dados anonimizados
-GEN --> DEV : Dados sinteticos
-
-note bottom of ANON
-  PII mascarada
-  Relacoes mantidas
-  Compliance RGPD
-end note
-
-@enduml
-```
-
-### 13.10 Testes de Regressao
-
-_Os detalhes de testes de regressao necessitam aprofundamento._
-
-| Aspecto | Status |
-|---------|--------|
-| Smoke tests | Necessita aprofundamento |
-| Suite de regressao completa | Necessita aprofundamento |
-| Frequencia | Necessita aprofundamento |
-| Automatizacao | Necessita aprofundamento |
-
-### 13.11 Testes de Aceitacao (UAT)
-
-_Os detalhes de testes de aceitacao necessitam aprofundamento._
-
-| Aspecto | Status |
-|---------|--------|
-| Responsavel | Necessita aprofundamento |
-| Ambiente UAT | Necessita aprofundamento |
-| Criterios de aceitacao | Necessita aprofundamento |
-| Processo de sign-off | Necessita aprofundamento |
-
-### 13.12 Matriz de Responsabilidades (RACI)
-
-_A matriz de responsabilidades necessita aprofundamento._
-
-| Tipo de Teste | Responsible | Accountable | Consulted | Informed |
-|---------------|-------------|-------------|-----------|----------|
-| **Unit (Frontend)** | Necessita aprofundamento | Necessita aprofundamento | Necessita aprofundamento | Necessita aprofundamento |
-| **Unit (BFF)** | Necessita aprofundamento | Necessita aprofundamento | Necessita aprofundamento | Necessita aprofundamento |
-| **Integracao** | Necessita aprofundamento | Necessita aprofundamento | Necessita aprofundamento | Necessita aprofundamento |
-| **Contrato** | Necessita aprofundamento | Necessita aprofundamento | Necessita aprofundamento | Necessita aprofundamento |
-| **E2E** | Necessita aprofundamento | Necessita aprofundamento | Necessita aprofundamento | Necessita aprofundamento |
-| **Performance** | Necessita aprofundamento | Necessita aprofundamento | Necessita aprofundamento | Necessita aprofundamento |
-| **Seguranca** | Necessita aprofundamento | Necessita aprofundamento | Necessita aprofundamento | Necessita aprofundamento |
-| **Acessibilidade** | Necessita aprofundamento | Necessita aprofundamento | Necessita aprofundamento | Necessita aprofundamento |
-| **UAT** | Necessita aprofundamento | Necessita aprofundamento | Necessita aprofundamento | Necessita aprofundamento |
-
-### 13.13 Quality Gates
-
-Os quality gates sao verificados no pipeline CI/CD (DEF-10).
-
-| Gate | Criterio | Pipeline Stage |
-|------|----------|----------------|
-| **Unit Tests** | Necessita aprofundamento | Build |
-| **Coverage** | Sim (DEF-10) | Build |
-| **SAST** | Sim (DEF-10) | Build |
-| **Integration Tests** | Necessita aprofundamento | Test |
-| **E2E Tests** | Necessita aprofundamento | Test |
-| **DAST** | Necessita aprofundamento | Pre-Prod |
-
-## Diagramas
-
-### Integracao com CI/CD
-
-```plantuml
-@startuml
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
-
-LAYOUT_WITH_LEGEND()
-
-title Test Integration with CI/CD Pipeline
-
-System_Boundary(cicd, "Azure DevOps Pipeline") {
-  Container(build, "Build Stage", "Pipeline", "Compile, Unit Tests, SAST")
-  Container(test, "Test Stage", "Pipeline", "Integration, E2E")
-  Container(qa, "QA Stage", "Pipeline", "Deploy QA, Smoke")
-  Container(prod, "Prod Stage", "Pipeline", "Deploy Prod")
-}
-
-System_Ext(sonar, "SonarQube", "Code Quality")
-System_Ext(sec, "Security Scanner", "SAST/DAST")
-
-Rel(build, sonar, "Report")
-Rel(build, sec, "SAST")
-Rel(build, test, "Pass")
-Rel(test, qa, "Pass")
-Rel(qa, prod, "Approve")
-
-@enduml
-```
-
-## Entregaveis
-
-- [ ] Configuracao de testes unitarios (Frontend + BFF)
-- [ ] Configuracao de testes de integracao
-- [ ] Suite de testes E2E (cenarios criticos)
-- [ ] Integracao SAST no pipeline
-- [ ] Testes de acessibilidade
-- [ ] Documentacao de test data management
-
-## Definicoes Utilizadas
-
-- [x] [DEF-13-estrategia-testes.md](../definitions/DEF-13-estrategia-testes.md) - Status: structure
-- [x] [DEF-10-arquitetura-operacional.md](../definitions/DEF-10-arquitetura-operacional.md) - Status: structure
-
-## Decisoes Referenciadas
-
-- [x] [DEC-009-stack-tecnologica-frontend.md](../decisions/DEC-009-stack-tecnologica-frontend.md) - Status: accepted
-- [x] [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Status: accepted
+| Gate | Stage | Criterio | Bloqueante |
+|------|-------|----------|------------|
+| Unit Tests | Build | 100% a passar | Sim |
+| Code Coverage | Build | Minimo a definir | Sim |
+| SAST | Build | Sem vulnerabilidades Critical/High | Sim |
+| Integration Tests | Test | 100% a passar | Sim |
+| E2E Smoke | Test | Fluxos criticos a passar | Sim |
+| DAST | Pre-Prod | Sem vulnerabilidades Critical | Sim |
+
+### 13.4 Testes de Seguranca
+
+| Tipo | Descricao | Frequencia |
+|------|-----------|------------|
+| **SAST** | Analise estatica de codigo | Cada build |
+| **DAST** | Analise dinamica em ambiente de teste | Pre-release |
+| **Penetration Testing** | Testes manuais de intrusao | Periodico (a definir) |
+
+### 13.5 Ambientes de Teste
+
+| Ambiente | Proposito | Dados |
+|----------|-----------|-------|
+| **Dev** | Testes unitarios e integracao | Sinteticos |
+| **QA** | Testes E2E e aceitacao | Anonimizados |
+| **Pre-Prod** | Testes de performance e seguranca | Anonimizados |
 
 ## Itens Pendentes
 
 | Item | Responsavel | Prioridade |
 |------|-------------|------------|
-| Definir frameworks de teste | Arquitetura | Alta |
-| Definir cobertura minima | QA | Alta |
-| Definir cenarios E2E criticos | QA | Alta |
-| Configurar SAST | DevSecOps | Alta |
-| Definir estrategia de test data | QA | Media |
-| Contract testing (se aplicavel) | Arquitetura | Media |
-| Testes de acessibilidade | QA | Media |
-| Matriz RACI | PM | Media |
+| Definir cobertura minima de codigo | Arquitetura / QA | Alta |
+| Definir ferramentas SAST/DAST | DevSecOps | Alta |
+| Definir cenarios E2E criticos | QA / Produto | Alta |
+| Definir frequencia de penetration testing | Seguranca | Media |
+
+## Decisoes Referenciadas
+
+- [DEC-009-stack-tecnologica-frontend.md](../decisions/DEC-009-stack-tecnologica-frontend.md) - Stack Frontend
+- [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack Backend

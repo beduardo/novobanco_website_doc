@@ -18,15 +18,6 @@ status: in-progress
 
 # 5. Arquitetura Backend & Servicos
 
-> **Definicoes requeridas:**
-> - [DEF-05-arquitetura-bff.md](../definitions/DEF-05-arquitetura-bff.md) - Status: completed
-> - [DEF-05-api-design.md](../definitions/DEF-05-api-design.md) - Status: completed
-> - [DEF-05-padroes-resiliencia.md](../definitions/DEF-05-padroes-resiliencia.md) - Status: completed
->
-> **Decisoes relacionadas:**
-> - [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - Status: accepted
-> - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Status: accepted
-
 ## Proposito
 
 Definir a decomposicao de servicos, arquitetura de API, comunicacao, modelo de dominio, rate limiting, resiliencia, versionamento e especificacao de APIs para o HomeBanking Web.
@@ -259,73 +250,14 @@ O modelo de dominio segue as entidades ja existentes nos backend services da app
 
 ### 5.7 Resiliencia
 
-#### 5.7.1 Padroes Implementados
-
-```plantuml
-@startuml
-skinparam backgroundColor #FEFEFE
-
-rectangle "Padroes de Resiliencia" {
-    rectangle "Retry" #LightGreen {
-        [Exponential Backoff]
-        [3 Tentativas]
-        [Timeout/Rate Limit]
-    }
-
-    rectangle "Timeout" #LightGreen {
-        [60 segundos]
-    }
-
-    rectangle "Fallback" #LightGreen {
-        [Autenticacao]
-        [Fluxo Resiliente]
-    }
-
-    rectangle "Health Checks" #LightGreen {
-        [Liveness]
-        [Readiness]
-    }
-
-    rectangle "Circuit Breaker" #Yellow {
-        [A Definir]
-    }
-
-    rectangle "Bulkhead" #LightCoral {
-        [Nao Implementado]
-    }
-}
-
-@enduml
-```
-
-#### 5.7.2 Retry Policy
-
-| Parametro | Valor |
-|-----------|-------|
-| **Estrategia** | Exponential backoff |
-| **Tentativas** | 3 |
-| **Erros elegiveis** | Timeout, Rate limit |
-
-#### 5.7.3 Timeout
-
-| Parametro | Valor |
-|-----------|-------|
-| **Timeout padrao** | 60 segundos |
-| **Diferenciacao** | Nao (uniforme) |
-
-#### 5.7.4 Fallback
-
-| Operacao | Comportamento |
-|----------|---------------|
-| **Autenticacao** | Fluxo mais resiliente |
-| **Outras** | Nao implementado |
-
-#### 5.7.5 Health Checks
-
-| Tipo | Implementado | Frequencia |
-|------|--------------|------------|
-| **Liveness** | Sim | _A definir_ |
-| **Readiness** | Sim | _A definir_ |
+| Padrao | Status | Observacao |
+|--------|--------|------------|
+| **Retry** | Implementado | Exponential backoff (configuravel) |
+| **Timeout** | Implementado | Configuravel por endpoint |
+| **Fallback** | Parcial | Apenas autenticacao |
+| **Health Checks** | Implementado | Liveness + Readiness probes |
+| **Circuit Breaker** | A definir | Proposta: Polly |
+| **Bulkhead** | Nao previsto | - |
 
 ### 5.8 Versionamento API
 
@@ -343,97 +275,20 @@ rectangle "Padroes de Resiliencia" {
 | **Geracao** | Automatizada via Pipeline |
 | **Publicacao** | Swagger UI / ReDoc |
 
-#### 5.9.1 Exemplo de Especificacao
+**Nota:** Especificacoes OpenAPI completas serao documentadas separadamente.
 
-```yaml
-openapi: 3.0.0
-info:
-  title: HomeBanking Web BFF API
-  version: 1.0.0
-paths:
-  /api/v1/accounts/{id}/balance:
-    get:
-      summary: Get account balance
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Balance'
-        '401':
-          description: Unauthorized
-        '404':
-          description: Account not found
-```
+### 5.10 Dependencias Criticas
 
-### 5.10 Dependencias
+| Dependencia | Tipo | Impacto se Indisponivel |
+|-------------|------|------------------------|
+| **API Gateway** | Externa | Servico inoperante |
+| **Backend Services** | Externa | Servico inoperante |
+| **Cache Store** | Externa | Sessoes invalidas |
+| **ELK Stack** | Externa | Degradacao graceful (sem logs) |
 
-```plantuml
-@startuml
-skinparam backgroundColor #FEFEFE
+### 5.11 Autenticacao e Sessao
 
-package "BFF Dependencies" {
-    [BFF Web] as BFF
-
-    package "Runtime" {
-        [.NET 8 Runtime]
-        [ASP.NET Core]
-    }
-
-    package "Libraries" {
-        [HttpClient]
-        [Polly\n(Resiliencia)]
-        [Serilog\n(Logging)]
-        [DistributedCache]
-    }
-
-    package "External" {
-        [API Gateway]
-        [ELK Stack]
-        [Cache Store]
-    }
-}
-
-BFF --> [.NET 8 Runtime]
-BFF --> [ASP.NET Core]
-BFF --> [HttpClient]
-BFF --> [Polly\n(Resiliencia)]
-BFF --> [Serilog\n(Logging)]
-BFF --> [DistributedCache]
-BFF --> [API Gateway]
-BFF --> [ELK Stack]
-BFF --> [Cache Store]
-
-@enduml
-```
-
-| Dependencia | Tipo | Critica |
-|-------------|------|---------|
-| API Gateway | Externa | Sim |
-| Backend Services | Externa | Sim |
-| Cache Store | Externa | Sim |
-| ELK Stack | Externa | Nao (degradacao graceful) |
-
-### 5.11 Padroes de Design
-
-| Padrao | Aplicacao |
-|--------|-----------|
-| **BFF Pattern** | Camada dedicada para frontend web |
-| **API Gateway** | Roteamento, rate limiting (existente) |
-| **Repository** | Abstracacao de acesso a dados (se aplicavel) |
-| **Circuit Breaker** | Protecao contra falhas em cascata (_a definir_) |
-| **Retry with Backoff** | Recuperacao de falhas transitorias |
-
-### 5.12 Autenticacao e Sessao
-
-#### 5.12.1 Fluxo de Autenticacao
+#### Fluxo de Autenticacao
 
 ```plantuml
 @startuml
@@ -463,7 +318,7 @@ BFF --> FE : Account data
 @enduml
 ```
 
-#### 5.12.2 Gestao de Sessao
+#### Gestao de Sessao
 
 | Aspecto | Decisao |
 |---------|---------|
@@ -472,38 +327,15 @@ BFF --> FE : Account data
 | **Validacao** | App ou OTP (SCA) |
 | **Propagacao** | Bearer token para backend services |
 
-## Entregaveis
+## Itens Pendentes
 
-- [x] Diagrama de decomposicao de servicos
-- [x] Arquitetura BFF documentada
-- [ ] Especificacao de APIs completa (OpenAPI) - Em progresso
-- [x] Padroes de comunicacao definidos
-- [x] Modelo de dominio documentado (alto nivel)
-- [x] Politicas de rate limiting (responsabilidade Gateway)
-- [x] Padroes de resiliencia implementados
-- [x] Estrategia de versionamento API
-- [x] Mapa de dependencias
-
-## Definicoes Utilizadas
-
-- [x] [DEF-05-arquitetura-bff.md](../definitions/DEF-05-arquitetura-bff.md) - Status: completed
-- [x] [DEF-05-api-design.md](../definitions/DEF-05-api-design.md) - Status: completed
-- [x] [DEF-05-padroes-resiliencia.md](../definitions/DEF-05-padroes-resiliencia.md) - Status: completed
+| Item | Responsavel | Prioridade |
+|------|-------------|------------|
+| Circuit Breaker (biblioteca) | Arquitetura | Media |
+| Comunicacao assincrona (se necessario) | Arquitetura | Media |
+| Politica deprecacao API | Arquitetura | Baixa |
 
 ## Decisoes Referenciadas
 
-- [x] [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - Status: accepted
-- [x] [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Status: accepted
-
-## Itens Pendentes
-
-| Item | Documento | Responsavel |
-|------|-----------|-------------|
-| Circuit Breaker (biblioteca, thresholds) | DEF-05-padroes-resiliencia | Arquitetura |
-| Rate limiting values | DEF-05-padroes-resiliencia | Arquitetura |
-| Health check frequency | DEF-05-padroes-resiliencia | Operacoes |
-| Comunicacao assincrona | DEF-05-arquitetura-bff | Arquitetura |
-| Escalabilidade BFF | DEF-05-arquitetura-bff | Arquitetura |
-| Politica deprecacao API | DEF-05-api-design | Arquitetura |
-| Tratamento de erros (estrutura) | DEF-05-api-design | Desenvolvimento |
-| Cache headers HTTP | DEF-05-api-design | Desenvolvimento |
+- [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - BFF Pattern
+- [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack Backend
