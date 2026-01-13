@@ -52,12 +52,18 @@ Definir o design system a ser utilizado no HomeBanking Web, garantindo consisten
 8. Como sera documentado o design system (Storybook, outro)?
     Figma + Storykbook
 
-### Acessibilidade
+### Acessibilidade (Consolidado)
+
+> **Nota:** Esta e a definicao principal para requisitos de acessibilidade do projeto.
+
 9. Quais niveis de WCAG devem ser atingidos?
-    Necessário aprofundamento
+    Necessita aprofundamento. Referencia de industria: WCAG 2.1 AA
 
 10. Ha requisitos especificos de contraste ou tamanho de fonte?
-    Ainda não definidos
+    Ainda nao definidos - seguir WCAG 2.1 AA como baseline
+
+11. Sera utilizada ferramenta automatizada de verificacao de acessibilidade?
+    Necessita aprofundamento (ex: axe-core, Lighthouse)
 
 ## Decisoes
 

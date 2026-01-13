@@ -35,40 +35,43 @@ Definir os padroes de design de API para o HomeBanking Web, incluindo estilo de 
 
 ### Versionamento
 3. Qual estrategia de versionamento (URL path, header, query param)?
-    Versionamento via url
+    Versionamento via URL path (ex: /api/v1/resource)
 
 4. Qual sera a politica de deprecacao de versoes?
-    Necessita aprofundamento
+    Necessita aprofundamento. Sugestao: 6 meses de suporte apos nova versao
+
+5. Qual a estrategia para breaking changes nos contratos API?
+    Necessita aprofundamento. Considerar: feature flags, versoes paralelas
 
 ### Documentacao
-5. Qual formato de especificacao (OpenAPI 3.0, AsyncAPI)?
-    OpenApi 3
-    
-6. Como sera gerada e mantida a documentacao?
-    Será utilizada ferramenta automatizada via Pipeline
+6. Qual formato de especificacao (OpenAPI 3.0, AsyncAPI)?
+    OpenAPI 3.0
+
+7. Como sera gerada e mantida a documentacao?
+    Ferramenta automatizada via Pipeline (Swagger/NSwag)
 
 ### Padroes de Request/Response
-7. Qual formato de dados (JSON, outro)?
+8. Qual formato de dados (JSON, outro)?
     JSON
 
-8. Ha padroes de paginacao a seguir?
-    Sim. Os componentes de lista dependem de um padrão
+9. Ha padroes de paginacao a seguir?
+    Sim. Os componentes de lista dependem de um padrao definido
 
-9. Qual padrao de tratamento de erros?
-    Necessita aprofundamento
+10. Qual padrao de tratamento de erros?
+    Necessita aprofundamento. Considerar: RFC 7807 (Problem Details)
 
 ### Seguranca
-10. Qual mecanismo de autenticacao (OAuth 2.0, JWT)?
-    Baseado em OAuth 2.0 com implementação mista com com serviço de autenticação existem do banco.
+11. Qual mecanismo de autenticacao (OAuth 2.0, JWT)?
+    OAuth 2.0 com servico de autenticacao existente do banco
 
-11. Ha requisitos de assinatura de requests?
-    Não.
+12. Ha requisitos de assinatura de requests?
+    Nao
 
 ### Performance
-12. Quais headers de cache serao utilizados?
-    Necessita aprofundamento
+13. Quais headers de cache serao utilizados?
+    Necessita aprofundamento. Considerar: Cache-Control, ETag
 
-13. Ha requisitos de compressao (gzip, brotli)?
+14. Ha requisitos de compressao (gzip, brotli)?
     gzip
 
 ## Decisoes

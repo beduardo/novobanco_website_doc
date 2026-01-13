@@ -26,98 +26,68 @@ Definir os padroes de resiliencia e tolerancia a falhas para o HomeBanking Web, 
 
 ## Perguntas a Responder
 
-### Circuit Breaker
-1. Sera implementado Circuit Breaker? Qual biblioteca?
-2. Quais serao os thresholds de abertura do circuito?
-3. Qual sera o tempo de recuperacao?
+> **Nota:** Esta e a definicao principal para padroes de resiliencia do projeto.
+> Rate limiting detalhado esta no API Gateway, nao no BFF.
 
-### Retry
-4. Qual sera a politica de retry (exponential backoff)?
+### Circuit Breaker (Consolidado)
+1. Sera implementado Circuit Breaker? Qual biblioteca?
+    Necessita aprofundamento. Proposta: Polly (.NET)
+
+2. Quais serao os thresholds de abertura do circuito?
+    Necessita aprofundamento. Sugestao: 50% de falhas em janela de 10s
+
+3. Qual sera o tempo de recuperacao (half-open)?
+    Necessita aprofundamento. Sugestao: 30 segundos
+
+### Retry (Consolidado)
+4. Qual sera a politica de retry?
     Exponential backoff
+
 5. Quantas tentativas antes de falhar?
-    3
-6. Quais erros sao elegiceis para retry?
-    Error de timeout ou rate limit.
+    3 tentativas
+
+6. Quais erros sao elegiveis para retry?
+    Timeout, Rate limit (429), erros transientes (5xx)
 
 ### Timeout
 7. Quais serao os timeouts padrao para chamadas?
-    60segs.
-
-8. Ha operacoes com timeouts diferenciados?
-    Não
-
-### Bulkhead
-9. Sera implementado isolamento de recursos (Bulkhead)?
-    Não
-10. Como serao isolados os diferentes servicos?
-    Não haverá bulkhead.
+    60 segundos
 
 ### Fallback
-11. Quais operacoes terao fallback?
-    Autenticação.
+8. Quais operacoes terao fallback?
+    Autenticacao (fluxo alternativo OTP se App falhar)
 
-12. Qual sera o comportamento em modo degradado?
-    Utilização do fluxo mais resiliente.
-
-### Rate Limiting
-13. Quais limites de rate serao aplicados?
-    Ainda não definido.
-
-14. Como sera comunicado ao utilizador quando atingir limites?
-    Mensagem de erro informando que é necessário aguardar.
+9. Qual sera o comportamento em modo degradado?
+    Utilizacao do fluxo mais resiliente disponivel
 
 ### Health Checks
-15. Quais health checks serao implementados (liveness, readiness)?
-    Ambos.
+10. Quais health checks serao implementados?
+    Liveness e Readiness probes (Kubernetes/OpenShift)
 
-16. Qual sera a frequencia de verificacao?
-    Ainda não definido.
+11. Qual sera a frequencia de verificacao?
+    Necessita aprofundamento. Sugestao: Liveness 10s, Readiness 5s
 
 ## Decisoes
 
 ### Circuit Breaker
-- **Decisao:** _A definir_ - Perguntas pendentes (biblioteca, thresholds, tempo de recuperacao)
-- **Justificacao:** Necessita definicao de parametros
-- **Alternativas consideradas:** Polly (.NET), Resilience4j
+- **Decisao:** Polly (.NET) como biblioteca (a confirmar)
+- **Justificacao:** Integracao nativa com .NET, suporte a politicas compostas
 
 ### Retry Policy
-- **Decisao:**
-  - Estrategia: Exponential backoff
-  - Tentativas: 3
-  - Erros elegiveis: Timeout, Rate limit
+- **Decisao:** Exponential backoff, 3 tentativas, erros transientes
 - **Justificacao:** Recuperacao automatica de falhas transitorias
-- **Alternativas consideradas:** Fixed delay, Linear backoff
 
 ### Timeout Strategy
-- **Decisao:** Timeout padrao de 60 segundos para todas as chamadas
+- **Decisao:** Timeout padrao de 60 segundos
 - **Justificacao:** Valor conservador para operacoes bancarias
-- **Alternativas consideradas:** Timeouts diferenciados (descartado por simplicidade)
-
-### Bulkhead
-- **Decisao:** Nao sera implementado
-- **Justificacao:** Complexidade vs beneficio para escala atual
-- **Alternativas consideradas:** Thread pool isolation, Semaphore isolation
 
 ### Fallback Strategy
-- **Decisao:**
-  - Operacoes com fallback: Autenticacao
-  - Comportamento degradado: Utilizacao do fluxo mais resiliente
-- **Justificacao:** Garantir disponibilidade minima para operacoes criticas
-- **Alternativas consideradas:** Fallback para todas operacoes (descartado por complexidade)
-
-### Rate Limiting
-- **Decisao:**
-  - Limites: _A definir_
-  - Comunicacao ao utilizador: Mensagem de erro informando necessidade de aguardar
-- **Justificacao:** Rate limiting gerido pelo Gateway, BFF apenas comunica
-- **Alternativas consideradas:** Rate limiting no BFF (descartado - responsabilidade do Gateway)
+- **Decisao:** Autenticacao com fallback para OTP
+- **Justificacao:** Garantir disponibilidade para operacao critica
 
 ### Health Checks
-- **Decisao:**
-  - Tipos: Liveness e Readiness
-  - Frequencia: _A definir_
-- **Justificacao:** Integracao nativa com OpenShift para orquestracao
-- **Alternativas consideradas:** Apenas liveness (descartado por funcionalidade limitada)
+- **Decisao:** Liveness e Readiness probes
+- **Justificacao:** Integracao nativa com OpenShift/Kubernetes
 
 ## Restricoes Conhecidas
 

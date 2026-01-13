@@ -29,126 +29,69 @@ Definir a estrategia de testes do HomeBanking Web, incluindo testes unitarios, i
 
 ### Testes Unitarios
 
-1. Qual o framework de testes unitarios para o Frontend?
-    Necessita aprofundamento
+> **Nota:** Frameworks definidos em [DEF-04-stack-frontend.md](DEF-04-stack-frontend.md): Vitest (frontend), .NET xUnit (BFF)
 
-2. Qual o framework de testes unitarios para o BFF?
-    Necessita aprofundamento
+1. Qual a cobertura de codigo minima requerida?
+    Necessita aprofundamento. Sugestao: 80% para codigo critico
 
-3. Qual a cobertura de codigo minima requerida?
-    Necessita aprofundamento
-
-4. Os testes unitarios bloqueiam o pipeline se falharem?
-    Necessita aprofundamento
+2. Os testes unitarios bloqueiam o pipeline se falharem?
+    Sim (quality gate em DEF-10)
 
 ### Testes de Integracao
 
-5. Qual o framework de testes de integracao?
-    Necessita aprofundamento
+3. Como sao mockados os servicos externos?
+    Necessita aprofundamento. Opcoes: WireMock, TestContainers
 
-6. Como sao mockados os servicos externos?
-    Necessita aprofundamento
-
-7. Ha ambiente dedicado para testes de integracao?
-    Necessita aprofundamento
+4. Ha ambiente dedicado para testes de integracao?
+    Ambiente QA (DEF-10)
 
 ### Testes de Contrato
 
-8. Sera utilizado contract testing (ex: Pact)?
-    Necessita aprofundamento
-
-9. Quem e responsavel por manter os contratos?
-    Necessita aprofundamento
-
-10. Como sao validados os contratos com Backend API?
-    Necessita aprofundamento
+5. Sera utilizado contract testing (ex: Pact)?
+    Necessita aprofundamento. Recomendado para BFF<->Backend
 
 ### Testes E2E
 
-11. Qual o framework de testes E2E (Cypress, Playwright)?
-    Necessita aprofundamento
+> **Nota:** Framework definido em [DEF-04-stack-frontend.md](DEF-04-stack-frontend.md): Playwright
 
-12. Quais cenarios criticos serao cobertos?
-    Necessita aprofundamento
+6. Quais cenarios criticos serao cobertos?
+    Necessita aprofundamento. Minimo: login, transferencias, consultas
 
-13. Os testes E2E executam em que ambiente?
-    Necessita aprofundamento
-
-14. Os testes E2E bloqueiam o pipeline?
+7. Os testes E2E bloqueiam o pipeline?
     Necessita aprofundamento
 
 ### Testes de Performance
 
-15. Qual a ferramenta de testes de performance?
-    Necessita aprofundamento
+> **Nota:** Ver [DEF-12-desempenho-fiabilidade.md](DEF-12-desempenho-fiabilidade.md) para load testing
 
-16. Quais cenarios de carga serao testados?
-    Necessita aprofundamento
-
-17. Quando sao executados os testes de performance?
-    Necessita aprofundamento
+8. Quando sao executados os testes de performance?
+    Necessita aprofundamento. Sugestao: antes de cada release major
 
 ### Testes de Seguranca
 
-18. Quais ferramentas SAST sao utilizadas?
-    Necessita aprofundamento
+> **Nota:** SAST definido em [DEF-10-arquitetura-operacional.md](DEF-10-arquitetura-operacional.md)
 
-19. Quais ferramentas DAST sao utilizadas?
-    Necessita aprofundamento
-
-20. Ha penetration testing periodico?
-    Necessita aprofundamento
-
-21. Como sao geridos os findings de seguranca?
-    Necessita aprofundamento
+9. Ha penetration testing periodico?
+    Necessita aprofundamento. Minimo: antes do go-live
 
 ### Testes de Acessibilidade
 
-22. Quais guidelines de acessibilidade (WCAG)?
+> **Nota:** WCAG definido em [DEF-04-design-system.md](DEF-04-design-system.md)
+
+10. Ha testes automatizados de acessibilidade?
+    Necessita aprofundamento. Opcoes: axe-core, Lighthouse
+
+### Test Data Management (Simplificado)
+
+11. Ha ambiente com dados anonimizados de producao?
     Necessita aprofundamento
 
-23. Quais ferramentas de teste de acessibilidade?
-    Necessita aprofundamento
+### Testes de Aceitacao (Simplificado)
 
-24. Ha testes automatizados de acessibilidade?
-    Necessita aprofundamento
+12. Ha ambiente UAT dedicado?
+    Ambiente QA (DEF-10)
 
-### Test Data Management
-
-25. Como sao geridos os dados de teste?
-    Necessita aprofundamento
-
-26. Ha ambiente com dados anonimizados de producao?
-    Necessita aprofundamento
-
-27. Como sao criados os fixtures de teste?
-    Necessita aprofundamento
-
-### Testes de Regressao
-
-28. Qual a estrategia de smoke tests?
-    Necessita aprofundamento
-
-29. Qual a frequencia de execucao da regressao?
-    Necessita aprofundamento
-
-### Testes de Aceitacao
-
-30. Quem executa os testes de aceitacao?
-    Necessita aprofundamento
-
-31. Ha ambiente UAT dedicado?
-    Necessita aprofundamento
-
-32. Quais os criterios de aceitacao?
-    Necessita aprofundamento
-
-### Matriz de Responsabilidades
-
-33. Quem e responsavel por cada tipo de teste?
-    Necessita aprofundamento
-
-34. Qual o processo de report de bugs?
+13. Quais os criterios de aceitacao?
     Necessita aprofundamento
 
 ## Decisions

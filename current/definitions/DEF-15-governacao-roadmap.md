@@ -29,104 +29,53 @@ Definir o modelo de governacao e roadmap do HomeBanking Web, incluindo modelo de
 
 ### Modelo de Governacao
 
+> **Nota:** Stakeholders definidos em [DEF-02-stakeholders.md](DEF-02-stakeholders.md)
+
 1. Qual o modelo de governacao do projeto (Agile, SAFe, tradicional)?
     Necessita aprofundamento
 
 2. Quais os papeis e responsabilidades na governacao?
     Necessita aprofundamento
 
-3. Qual a frequencia de reunioes de steering?
+### Gestao de Decisoes Arquiteturais
+
+3. Qual o processo de tomada de decisao arquitetural?
+    Necessita aprofundamento. ADRs recomendados.
+
+4. Quem aprova decisoes tecnicas?
     Necessita aprofundamento
 
-4. Quem sao os stakeholders principais?
+5. Quais decisoes requerem aprovacao formal?
+    Necessita aprofundamento. Sugestao: escolha de tecnologias, mudancas de arquitetura
+
+### Roadmap de Produto (Simplificado)
+
+6. Ha features planeadas para fases futuras (pos-MVP)?
     Necessita aprofundamento
 
-5. Como sao escalados os riscos e issues?
+7. Qual a frequencia de releases?
     Necessita aprofundamento
 
-### Gestao de Decisoes
+### Gestao de Divida Tecnica (Simplificado)
 
-6. Qual o processo de tomada de decisao arquitetural?
+8. Como e identificada e priorizada a divida tecnica?
     Necessita aprofundamento
 
-7. Quem aprova decisoes tecnicas?
+9. Qual a % de capacidade alocada a divida tecnica?
+    Necessita aprofundamento. Sugestao: 15-20%
+
+### Processo de Gestao de Mudanca (Simplificado)
+
+10. Quem aprova mudancas em producao?
     Necessita aprofundamento
 
-8. Como sao documentadas as decisoes (ADRs)?
+11. Ha CAB (Change Advisory Board)?
     Necessita aprofundamento
 
-9. Qual o processo de revisao de decisoes?
-    Necessita aprofundamento
+### KPIs de Sucesso (Simplificado)
 
-### Roadmap de Produto
-
-10. Qual o roadmap de funcionalidades pos-MVP?
-    Necessita aprofundamento
-
-11. Qual a frequencia de releases?
-    Necessita aprofundamento
-
-12. Como e priorizado o backlog?
-    Necessita aprofundamento
-
-13. Ha features planeadas para fases futuras?
-    Necessita aprofundamento
-
-### Gestao de Divida Tecnica
-
-14. Como e identificada a divida tecnica?
-    Necessita aprofundamento
-
-15. Como e priorizada a divida tecnica?
-    Necessita aprofundamento
-
-16. Qual a % de capacidade alocada a divida tecnica?
-    Necessita aprofundamento
-
-17. Quem e responsavel por gerir a divida tecnica?
-    Necessita aprofundamento
-
-### Processo de Gestao de Mudanca
-
-18. Qual o processo de change management?
-    Necessita aprofundamento
-
-19. Quem aprova mudancas em producao?
-    Necessita aprofundamento
-
-20. Qual o lead time minimo para mudancas?
-    Necessita aprofundamento
-
-21. Ha CAB (Change Advisory Board)?
-    Necessita aprofundamento
-
-### KPIs de Sucesso
-
-22. Quais os KPIs de negocio do projeto?
-    Necessita aprofundamento
-
-23. Quais os KPIs tecnicos do projeto?
-    Necessita aprofundamento
-
-24. Qual a frequencia de revisao de KPIs?
-    Necessita aprofundamento
-
-25. Quem e responsavel pelos KPIs?
-    Necessita aprofundamento
-
-### Continuous Improvement
-
-26. Qual o processo de retrospetivas?
-    Necessita aprofundamento
-
-27. Como sao implementadas as melhorias?
-    Necessita aprofundamento
-
-28. Ha processo de lessons learned?
-    Necessita aprofundamento
-
-29. Como e medida a maturidade do processo?
-    Necessita aprofundamento
+12. Quais os KPIs tecnicos do projeto?
+    Necessita aprofundamento. Sugestao: disponibilidade, latencia, taxa erro, MTTR
 
 ## Decisions
 

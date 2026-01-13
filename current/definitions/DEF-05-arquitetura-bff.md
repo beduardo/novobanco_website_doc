@@ -49,21 +49,27 @@ Definir a arquitetura do Backend for Frontend (BFF) do HomeBanking Web, que serv
     REST
 
 6. Ha requisitos de comunicacao assincrona (message queues)?
-    Necessita aprofundamento
+    Ver [DEF-09-integracao-interfaces.md](DEF-09-integracao-interfaces.md) para detalhes de Message Broker
 
 ### Escalabilidade
-7. Quais sao os requisitos de escalabilidade do BFF?
-    Ainda não definidos
+> **Nota:** Detalhes de auto-scaling em [DEF-12-desempenho-fiabilidade.md](DEF-12-desempenho-fiabilidade.md)
 
-8. Ha requisitos de auto-scaling?
-    Ainda não definidos
+7. Quais sao os requisitos de escalabilidade do BFF?
+    Suportar 400 utilizadores concorrentes (DEF-02-requisitos-nao-funcionais)
+
+### Sessao Distribuida (NOVO)
+
+8. Como a sessao sera compartilhada entre multiplas instancias do BFF?
+    Redis Cluster como cache de sessao distribuido
+
+9. Qual a estrategia de degradacao graciosa em caso de falha de dependencias?
+    Necessita aprofundamento. Considerar: fallback para operacoes criticas, circuit breaker
 
 ### Seguranca
-9. Como sera tratada a autenticacao entre frontend e BFF?
-    Deverá utilizar um fluxo pré definido, especificado em @DEF-05-autenticacao-oauth.md e @DEF-05-authentication-oauth-flow.md.
-    Em resumo, o frontend iniciará a autenticação com o BFF que utilizará algum sistema de validação (App ou OTP) para validar a sessão. Ainda há detalhes a serem definidos, mas o fluxo básico já está bem definido.
+10. Como sera tratada a autenticacao entre frontend e BFF?
+    Fluxo OAuth pre-definido (ver DEF-05-autenticacao-oauth.md). Frontend inicia autenticacao, BFF valida via App ou OTP.
 
-10. Como sera tratada a autenticacao entre BFF e backend services?
+11. Como sera tratada a autenticacao entre BFF e backend services?
     O BFF utilizará o token do utilizador para fazer suas requisições. Este token estará armazenado em um cache de sessão e a chave para este cache será o cookie de sessão (gerado no momento da auteticação) que o utilizador utilizará para acionar o BFF.
 
 ## Decisoes

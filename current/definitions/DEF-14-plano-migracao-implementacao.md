@@ -33,121 +33,68 @@ Definir o plano de migracao e implementacao do HomeBanking Web, incluindo roadma
     Necessita aprofundamento
 
 2. Quais as fases de implementacao?
-    Necessita aprofundamento
+    Necessita aprofundamento. Sugestao: Setup, MVP, Beta, Go-Live, Hypercare
 
 3. Ha MVP definido? Quais funcionalidades?
-    Necessita aprofundamento
+    Todas as 35 funcionalidades (paridade com mobile)
 
 4. Ha dependencias externas que afetam o roadmap?
-    Necessita aprofundamento
+    Necessita aprofundamento. Ver CONTEXT.md Dependencias Externas
 
 ### Estrategia de Cutover
 
-5. Qual a estrategia de cutover (big bang, phased, parallel)?
-    Necessita aprofundamento
+5. Qual a estrategia de cutover?
+    Necessita aprofundamento. Opcoes: big bang, phased, parallel
 
-6. Ha janela de cutover definida?
-    Necessita aprofundamento
-
-7. Qual o tempo estimado de cutover?
+6. Qual o tempo estimado de cutover?
     Necessita aprofundamento
 
 ### Coexistencia com Legado
 
+7. Qual o sistema existente que coexistira com o novo canal web?
+    App Mobile
+
 8. Ha sistema HomeBanking web legado a substituir?
     Necessita aprofundamento
 
-9. Se sim, qual a estrategia de coexistencia?
-    Necessita aprofundamento
-
-10. Qual o periodo de transicao?
-    Necessita aprofundamento
-
-11. Ha URLs a manter para retrocompatibilidade?
+9. Ha URLs a manter para retrocompatibilidade?
     Necessita aprofundamento
 
 ### Migracao de Dados
 
-12. Ha dados a migrar de sistemas legados?
-    Necessita aprofundamento
-
-13. Quais dados necessitam migracao?
-    Necessita aprofundamento
-
-14. Qual a estrategia de migracao de dados?
-    Necessita aprofundamento
-
-15. Ha validacao pos-migracao?
-    Necessita aprofundamento
+10. Ha dados a migrar de sistemas legados?
+    Necessita aprofundamento. Canal web nao tem dados proprios (backend existente).
 
 ### Criterios Go/No-Go
 
-16. Quais os criterios funcionais para go-live?
-    Necessita aprofundamento
+11. Quais os criterios para go-live?
+    Necessita aprofundamento. Minimo: testes OK, seguranca OK, performance OK
 
-17. Quais os criterios nao funcionais para go-live?
-    Necessita aprofundamento
-
-18. Quais os criterios de seguranca para go-live?
-    Necessita aprofundamento
-
-19. Quem aprova o go-live?
+12. Quem aprova o go-live?
     Necessita aprofundamento
 
 ### Procedimentos de Rollback
 
-20. Qual a estrategia de rollback?
-    Necessita aprofundamento
+13. Qual a estrategia de rollback?
+    Necessita aprofundamento. Rolling update permite rollback rapido.
 
-21. Qual o tempo maximo para decisao de rollback?
-    Necessita aprofundamento
-
-22. Ha runbook de rollback documentado?
-    Necessita aprofundamento
-
-### Plano de Comunicacao
-
-23. Como serao comunicadas as mudancas aos utilizadores?
-    Necessita aprofundamento
-
-24. Ha campanha de awareness pre-lancamento?
-    Necessita aprofundamento
-
-25. Quais os canais de comunicacao (email, in-app, SMS)?
-    Necessita aprofundamento
-
-### Formacao
-
-26. Ha formacao para equipas internas?
-    Necessita aprofundamento
-
-27. Ha formacao para utilizadores finais?
-    Necessita aprofundamento
-
-28. Ha documentacao de utilizador?
-    Necessita aprofundamento
+14. Ha runbook de rollback documentado?
+    Ver DEF-10-arquitetura-operacional
 
 ### Pilot/Beta Testing
 
-29. Sera realizado pilot/beta testing?
-    Necessita aprofundamento
-
-30. Qual o criterio de selecao de utilizadores beta?
-    Necessita aprofundamento
-
-31. Qual a duracao do periodo beta?
-    Necessita aprofundamento
+15. Sera realizado pilot/beta testing?
+    Necessita aprofundamento. Recomendado antes do go-live.
 
 ### Hypercare Period
 
-32. Qual a duracao do periodo de hypercare?
-    Necessita aprofundamento
+16. Qual a duracao do periodo de hypercare?
+    Necessita aprofundamento. Sugestao: 2-4 semanas apos go-live
 
-33. Qual a equipa de suporte durante hypercare?
-    Necessita aprofundamento
+### Comunicacao e Formacao (Simplificado - Fora de ambito HLD tecnico)
 
-34. Quais os SLAs durante hypercare?
-    Necessita aprofundamento
+17. Ha plano de comunicacao aos utilizadores?
+    Necessita aprofundamento (responsabilidade de Marketing/Produto)
 
 ## Decisions
 

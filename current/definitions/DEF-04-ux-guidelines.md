@@ -57,19 +57,27 @@ Definir as diretrizes de experiencia do utilizador para o HomeBanking Web, garan
 9. Qual e a estrategia de pre-fetching de dados?
     Pre-fetch com Vite + dados com TanStack
 
-### PWA e Offline
+### PWA e Offline (Consolidado)
+
+> **Nota:** Esta e a definicao principal para requisitos de PWA/Offline do projeto.
+
 10. Ha requisitos de funcionamento offline?
-    Necessita de aprofundamento
+    Necessita aprofundamento. Considerar: visualizacao de saldos em cache, filas de operacoes
 
 11. Sera implementado como PWA instalavel?
-    Necessita de aprofundamento
+    Necessita aprofundamento. Beneficios: install prompt, icone na home, experiencia app-like
+
+12. Quais funcionalidades devem estar disponiveis offline (se aplicavel)?
+    Necessita aprofundamento. Sugestao: consultas em cache, sem operacoes transacionais
 
 ### Seguranca UX
-12. Como sera comunicada a seguranca ao utilizador?
-    Necessita aprofundamento
 
-13. Ha requisitos de timeout de sessao com aviso previo?
-    Necessita aprofundamento
+13. Como sera comunicada a seguranca ao utilizador?
+    Necessita aprofundamento (indicadores visuais, certificado, etc.)
+
+14. Ha requisitos de timeout de sessao com aviso previo?
+    Sim. Popup na aplicacao com temporizador antes de expirar.
+    Timeout por inatividade: 10 minutos (ver DEF-07)
 
 ## Decisoes
 

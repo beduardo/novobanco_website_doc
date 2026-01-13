@@ -64,10 +64,14 @@ Definir a stack tecnologica do frontend do HomeBanking Web, considerando os requ
 
 ### Performance
 11. Ha requisitos especificos de bundle size?
-    Necessita consulta ao cliente
-    
+    Necessita consulta ao cliente. Sugestao: < 200KB inicial (gzipped)
+
 12. Sera implementado SSR (Server Side Rendering) ou SSG?
-    Sim, SSG no que for possível, SSR nas páginas com acesso dados que mudem constantemente e SSG + ISR no que for possível. Isso será usado inclusive para permitir um fluxo de login mais seguro protegendo o client_secret. Teremos um BFF disponível para o SSR se tecnicamente possível e necessário.
+    Hibrido: SSG para paginas estaticas, SSR para dados dinamicos, ISR onde aplicavel.
+    BFF disponivel para SSR protegendo client_secret no fluxo de login.
+
+13. Sera utilizado CDN para assets estaticos?
+    Necessita aprofundamento. Considerar: Azure CDN, Cloudflare
 
 ## Decisoes
 

@@ -58,66 +58,53 @@ Definir a estrategia de autenticacao e autorizacao do HomeBanking Web. Nota: O f
     30 minutos
 
 9. A sessao e exclusiva (logout de outras sessoes ao fazer login)?
-    Desejável, mas ainda necessita aprovação pelo cliente.
+    Desejavel, necessita aprovacao pelo cliente
 
 10. Como sera comunicado ao utilizador que a sessao vai expirar?
-    Popup na aplicação com temporizador.
+    Popup na aplicacao com temporizador
+
+### Sessao Multi-Canal (NOVO)
+
+11. Como a sessao web se relaciona com a sessao mobile (mesmo utilizador)?
+    Necessita aprofundamento. Considerar: sessoes independentes ou sincronizadas
+
+12. Ha limite de sessoes ativas por utilizador?
+    Necessita aprofundamento. Sugestao: 1 sessao web + 1 sessao mobile
 
 ### Estrategia de Tokens
-11. Qual o tempo de vida do access token?
-    15 min
+13. Qual o tempo de vida do access token?
+    15 minutos
 
-12. Qual o tempo de vida do refresh token?
+14. Qual o tempo de vida do refresh token?
     7 dias
 
-13. Onde serao armazenados os tokens (BFF cache, cookies)?
-    Tokens do Backend (Access/Refresh) utilizados entre o BFF e o Backend serão armazenados no BFF cache. Tokens de Sessão (Access/Refresh) utilizados entre o browser e o BFF em cookie.
+15. Onde serao armazenados os tokens?
+    Backend tokens (Access/Refresh): BFF cache
+    Session tokens: Cookie HttpOnly Secure
 
-14. Como sera tratada a renovacao de tokens (refresh silencioso)?
-    Refresh silencioso conforme atividade
+16. Como sera tratada a renovacao de tokens?
+    Refresh silencioso conforme atividade do utilizador
 
 ### Autorizacao
-15. Qual o modelo de autorizacao (RBAC, ABAC)?
-    Modelo de autorização baseado em ABAC híbrido com RBAC, onde role é utilizado apenas como mais um atributo do sujeito quando necessário, e as decisões de acesso são definidas por políticas construídas sobre o conjunto de atributos da operação (sujeito, recurso, ação e ambiente).
+17. Qual o modelo de autorizacao (RBAC, ABAC)?
+    ABAC hibrido com RBAC. Roles como atributo do sujeito.
 
-16. Quais roles/perfis serao definidos?
-    Será especificado no assessment inicial na execução do projeto. O documento atual não aprofundará estes detalhes.
-
-17. Ha permissoes especificas por tipo de operacao (consulta vs transacao)?
-    Sim
+18. Ha permissoes especificas por tipo de operacao?
+    Sim (consulta vs transacao)
 
 ### Politicas de Password
-18. Quais os requisitos minimos de password (comprimento, complexidade)?
-    Seguirá os requisitos preexistentes da App. Necessita aprofundamento
+19. Quais os requisitos minimos de password?
+    Seguira requisitos preexistentes da App. Necessita aprofundamento
 
-19. Ha politica de expiracao de password?
+20. Ha bloqueio apos tentativas falhadas?
     Necessita aprofundamento
 
-20. Como sera tratado o fluxo de recuperacao de password?
-    Necessita aprofundamento
+### Anti-automation e Revogacao (Simplificado)
+21. Sera implementado CAPTCHA ou rate limiting em login?
+    Necessita aprofundamento. Rate limiting no Gateway.
 
-21. Ha bloqueio apos tentativas falhadas? Quantas?
-    Necessita aprofundamento
-
-### Anti-automation
-22. Sera implementado CAPTCHA? Em quais fluxos?
-    Necessita aprofundamento
-
-23. Ha rate limiting especifico para tentativas de login?
-    Necessita aprofundamento
-
-24. Como serao detetados e bloqueados bots?
-    Necessita aprofundamento
-
-### Revogacao
-25. Como serao revogadas sessoes em caso de comprometimento?
-    Necessita aprofundamento
-
-26. Ha mecanismo de "logout de todos os dispositivos"?
-    Necessita aprofundamento
-
-27. Como sera tratada a revogacao de tokens ao mudar password?
-    Necessita aprofundamento
+22. Ha mecanismo de logout de todos os dispositivos?
+    Necessita aprofundamento. Essencial para seguranca.
 
 ## Decisoes
 

@@ -30,123 +30,77 @@ Definir os requisitos e estrategias de desempenho e fiabilidade do HomeBanking W
 
 ### Objetivos de Carga
 
-1. Qual o numero maximo de utilizadores concorrentes esperados?
-    400 (definido em DEF-02)
+> **Nota:** Valores base definidos em [DEF-02-requisitos-nao-funcionais.md](DEF-02-requisitos-nao-funcionais.md)
 
-2. Qual o throughput esperado (transacoes/segundo)?
-    10 TPS (definido em DEF-02)
+1. Qual o numero maximo de utilizadores concorrentes?
+    400 (DEF-02)
 
-3. Ha picos de utilizacao previstos? Quando?
-    Necessita aprofundamento
+2. Qual o throughput esperado?
+    10 TPS (DEF-02)
 
-4. Qual a projecao de crescimento de carga?
-    5% ao ano (definido em DEF-02)
+3. Ha picos de utilizacao previstos?
+    Necessita aprofundamento. Considerar: fim de mes, periodos fiscais
 
 ### Targets de Performance
 
-5. Qual o tempo de resposta maximo para operacoes criticas?
-    3 segundos (definido em DEF-02)
+4. Quais metricas Core Web Vitals devem ser atingidas?
+    Necessita aprofundamento. Sugestao: LCP < 2.5s, FID < 100ms, CLS < 0.1
 
-6. Qual o tempo de carregamento da pagina inicial (LCP)?
-    10 segundos (definido em DEF-02)
-
-7. Quais metricas Core Web Vitals devem ser atingidas?
-    Necessita aprofundamento
-
-8. Qual o time to first byte (TTFB) target?
-    Necessita aprofundamento
+5. Qual o time to first byte (TTFB) target?
+    Necessita aprofundamento. Sugestao: < 800ms
 
 ### Caching Strategy
 
-9. Quais dados podem ser cached no cliente (browser)?
-    Necessita aprofundamento
+> **Nota:** Detalhes de cache em [DEF-06-arquitetura-dados.md](DEF-06-arquitetura-dados.md)
 
-10. Qual a estrategia de cache no BFF?
-    Necessita aprofundamento
-
-11. Sera utilizado Redis para cache? Qual TTL?
-    Necessita aprofundamento
-
-12. Ha requisitos de invalidacao de cache?
-    Necessita aprofundamento
+6. Sera utilizado Redis para cache?
+    Sim. Ver DEF-06 para estrutura e TTLs.
 
 ### Otimizacao Frontend
 
-13. Sera utilizado lazy loading de componentes?
-    Necessita aprofundamento
+> **Nota:** Stack frontend (code splitting, lazy loading) definida em [DEF-04-stack-frontend.md](DEF-04-stack-frontend.md)
 
-14. Sera utilizado code splitting?
-    Necessita aprofundamento
-
-15. Ha requisitos de bundle size maximo?
-    Necessita aprofundamento
-
-16. Sera utilizado Service Worker para cache?
-    Necessita aprofundamento
+7. Sera utilizado Service Worker para cache?
+    Ver DEF-04-ux-guidelines (PWA/Offline)
 
 ### Otimizacao Backend
 
-17. Sera utilizado connection pooling? Qual o tamanho?
+8. Sera utilizado connection pooling?
     Necessita aprofundamento
 
-18. Ha limites de payload nas APIs?
+9. Sera utilizado compressao?
+    gzip (DEF-05-api-design)
+
+### Auto-scaling (Consolidado)
+
+10. Sera configurado Horizontal Pod Autoscaler (HPA)?
     Necessita aprofundamento
 
-19. Sera utilizado compressao (gzip/brotli)?
-    Necessita aprofundamento
+11. Quais metricas disparam o auto-scaling?
+    Necessita aprofundamento. Sugestao: CPU > 70%, Memory > 80%
 
-20. Ha requisitos de paginacao nas listagens?
-    Necessita aprofundamento
-
-### Auto-scaling
-
-21. Sera configurado Horizontal Pod Autoscaler (HPA)?
-    Necessita aprofundamento
-
-22. Quais metricas disparam o auto-scaling?
-    Necessita aprofundamento
-
-23. Quais os limites minimo e maximo de replicas?
-    Necessita aprofundamento
-
-24. Qual o cooldown period apos scale down?
-    Necessita aprofundamento
+12. Quais os limites de replicas?
+    Necessita aprofundamento. Sugestao: min 2, max 10
 
 ### Capacity Planning
 
-25. Qual o resource request para CPU/Memoria?
+13. Qual o resource request/limit para CPU/Memoria?
     Necessita aprofundamento
 
-26. Qual o resource limit para CPU/Memoria?
-    Necessita aprofundamento
+### Resiliencia
 
-27. Ha requirements de burst capacity?
-    Necessita aprofundamento
+> **Nota:** Padroes de resiliencia em [DEF-05-padroes-resiliencia.md](DEF-05-padroes-resiliencia.md)
 
-### Failover & Resiliencia
+14. Ha Pod Disruption Budget configurado?
+    Necessita aprofundamento. Sugestao: minAvailable 50%
 
-28. Qual a estrategia de failover entre pods?
-    Necessita aprofundamento
+### Load Testing (Simplificado)
 
-29. Ha Pod Disruption Budget configurado?
-    Necessita aprofundamento
+15. Qual a ferramenta de load testing?
+    Necessita aprofundamento. Opcoes: k6, JMeter, Gatling
 
-30. Qual a estrategia de retry para chamadas Backend API?
-    Exponential backoff (definido em DEF-09)
-
-### Load Testing
-
-31. Qual a ferramenta de load testing a utilizar?
-    Necessita aprofundamento
-
-32. Qual a frequencia de execucao dos load tests?
-    Necessita aprofundamento
-
-33. Quais cenarios serao testados?
-    Necessita aprofundamento
-
-34. Quais sao os criterios de aceitacao do load test?
-    Necessita aprofundamento
+16. Sera realizado load test antes do go-live?
+    Necessita aprofundamento. Essencial para validar capacidade.
 
 ## Decisions
 

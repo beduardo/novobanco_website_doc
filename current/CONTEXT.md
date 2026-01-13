@@ -10,41 +10,107 @@ hubs:
 para-code: R
 reviewed: true
 ---
+
 # CONTEXT
-## Main Objectives
+
+## 1. Main Objectives
+
 Especificações arquiteturais de desenvolvimento de Página HomeBanking para banco digital com parte das features equivalentes da aplicação mobile nativa.
 
-## General Information
-O documento deve ser um HLD com informações para o desenvolvimento do projeto, definindo todas as tecnologias e estruturas necessárias para isso. Ele deve ser completo para que uma equipa consiga preparar um plano de desenvolvimnento envolvendo desde o Assessment inicial para a definição completa das histórias de usuário até a entrega do software, passando por diagramas que apresentam como tudo será interligado, qual a arquitetura da aplicação, como deve ser entrege no ambiente (deployed) e como deve ser monitorada.
+## 2. Project Scope
 
-### Estes são outros pontos relevantes ao documento:
+### 2.1 In Scope
 
-    - Definição da metodologia a utilizar na criação dos canais Best, no âmbito da atualização tecnológica
-    - Identificação de perfis e características técnicas, nomeadamente:
-        - Programação React
-        - Programação nativa (iOS e Android)
-        - Integração React no nativo
-        - Integração do Gateway
-        - Ligação com APIs Banco Best
-        - Criação de business layer CMS (.NET, etc.)
-        - Modelos de segurança
-        - Tratamento de erros, diagnóstico, logs e monitorização
-        - Requisitos de resiliência, isolamento e escalabilidade
-        - Performance e utilização de cache
-        - Outros aspetos técnicos relevantes
-    - Definição do modelo de arquitetura global dos canais e aplicações conexas (CMS, backoffice, etc.)
-    - Identificação de componentes de infraestrutura em falta no desenho atual (ex.: cache, GitHub, DevOps, Azure)
-    - Modelo de trabalho entre equipas, incluindo ambientes de desenvolvimento novobanco e ligação com equipas externas15k
+- Desenvolvimento da aplicação web HomeBanking (React)
+- Integração com APIs existentes do Banco Best
+- Integração com infraestrutura mobile nativa existente
+- CMS para gestão de conteúdo (.NET)
+- Backoffice de administração
+- Conformidade regulatória (PSD2, RGPD, PCI-DSS, Banco de Portugal)
 
-## Informações adicionais:
-- A aplicação se utilizará de infraestrutura e serviços criados para a aplicação mobile nativa já existente.
+### 2.2 Out of Scope
+
+- Desenvolvimento de novas APIs no Core Banking
+- Modificações na aplicação mobile nativa existente
+- Infraestrutura física (apenas cloud/Azure)
+- [A DEFINIR COM CLIENTE]
+
+## 3. General Information
+
+O documento deve ser um HLD com informações para o desenvolvimento do projeto, definindo todas as tecnologias e estruturas necessárias para isso. Ele deve ser completo para que uma equipa consiga preparar um plano de desenvolvimento envolvendo desde o Assessment inicial para a definição completa das histórias de usuário até a entrega do software.
+
+### 3.1 Deliverables do HLD
+
+- Diagramas arquiteturais (C4 Model)
+- Especificações de integração
+- Modelo de deployment
+- Estratégia de monitorização
+- Plano de migração e implementação
+
+### 3.2 Pontos Técnicos Relevantes
+
+- Definição da metodologia a utilizar na criação dos canais Best, no âmbito da atualização tecnológica
+- Identificação de perfis e características técnicas, nomeadamente:
+    - Programação React
+    - Programação nativa (iOS e Android)
+    - Integração React no nativo
+    - Integração do Gateway
+    - Ligação com APIs Banco Best
+    - Criação de business layer CMS (.NET, etc.)
+    - Modelos de segurança
+    - Tratamento de erros, diagnóstico, logs e monitorização
+    - Requisitos de resiliência, isolamento e escalabilidade
+    - Performance e utilização de cache
+    - Outros aspetos técnicos relevantes
+- Definição do modelo de arquitetura global dos canais e aplicações conexas (CMS, backoffice, etc.)
+- Identificação de componentes de infraestrutura em falta no desenho atual (ex.: cache, GitHub, DevOps, Azure)
+- Modelo de trabalho entre equipas, incluindo ambientes de desenvolvimento novobanco e ligação com equipas externas
+
+## 4. Premissas e Restrições
+
+### 4.1 Premissas
+
+- A infraestrutura Azure já está disponível e configurada
+- APIs do Core Banking estão documentadas e estáveis
+- Equipa de desenvolvimento tem experiência em React e .NET
+- [A VALIDAR COM CLIENTE]
+
+### 4.2 Restrições
+
+- Conformidade obrigatória com regulamentação bancária portuguesa
+- Integração com sistemas legados existentes
+- Utilização de infraestrutura Azure do NovoBanco
+- [A VALIDAR COM CLIENTE]
+
+## 5. Dependências Externas
+
+| Sistema | Tipo | Proprietário | Criticidade |
+|---------|------|--------------|-------------|
+| Core Banking APIs | Integração | NovoBanco | Alta |
+| App Mobile Nativa | Referência | NovoBanco | Média |
+| Azure Infrastructure | Plataforma | NovoBanco | Alta |
+| Gateway de Pagamentos | Integração | [A DEFINIR] | Alta |
+| KYC/AML Provider | Integração | [A DEFINIR] | Alta |
+
+## 6. Informações Adicionais
+
+- A aplicação utilizará infraestrutura e serviços criados para a aplicação mobile nativa já existente.
 - O cliente já possui um APP Mobile com features equivalente que devem ser replicadas.
 - Deve definir os requisitos funcionais e não funcionais, atendendo os padrões internacionais.
-- Um documento do Word deve ser gerado ao fim do trabalho. As seções precisam ser escritas de forma a facilitar que o conteúdo seja copiado para o edito Word.
-- Devemos ter também um documento auxiliar com uma lista de perguntas pendentes para resposta. Este documento será utilizado em reuniões com o cliente para agilizar a captura de enformações e deve ser atualizado com frequência. Estas questões devem ser baseadas nas questões existentes nos documentos de definição.
+- Um documento do Word deve ser gerado ao fim do trabalho. As seções precisam ser escritas de forma a facilitar que o conteúdo seja copiado para o editor Word.
+- Devemos ter também um documento auxiliar com uma lista de perguntas pendentes para resposta. Este documento será utilizado em reuniões com o cliente para agilizar a captura de informações e deve ser atualizado com frequência. Estas questões devem ser baseadas nas questões existentes nos documentos de definição.
 
+## 7. Quality Attributes (NFRs Targets)
 
-## List of sections
+| Atributo | Métrica | Target | Prioridade |
+|----------|---------|--------|------------|
+| Performance | Tempo resposta P95 | < 2s | Alta |
+| Disponibilidade | Uptime anual | 99.9% | Alta |
+| Escalabilidade | Usuários concorrentes | [A DEFINIR] | Alta |
+| Segurança | Conformidade OWASP | Top 10 | Alta |
+| Acessibilidade | WCAG | 2.1 AA | Média |
+
+## 8. List of Sections
 
 | Section | Title | Description |
 |---------|-------|-------------|
@@ -64,4 +130,33 @@ O documento deve ser um HLD com informações para o desenvolvimento do projeto,
 | 14 | Plano de Migração & Implementação | Roadmap de Implementação, Estratégia de Cutover, Coexistência com Legado, Migração de Dados, Critérios Go/No-Go, Procedimentos de Rollback, Plano de Comunicação, Formação, Pilot/Beta Testing, Hypercare Period |
 | 15 | Governação & Roadmap | Modelo de Governação, Gestão de Decisões, Roadmap de Produto, Gestão de Dívida Técnica, Processo de Gestão de Mudança, KPIs de Sucesso, Continuous Improvement |
 
+## 9. Glossário
 
+| Termo | Definição |
+|-------|-----------|
+| HLD | High-Level Design - Documento de arquitetura de alto nível |
+| HomeBanking | Portal web de serviços bancários para clientes |
+| Core Banking | Sistema central de operações bancárias |
+| PSD2 | Payment Services Directive 2 - Diretiva europeia de serviços de pagamento |
+| RGPD | Regulamento Geral de Proteção de Dados |
+| PCI-DSS | Payment Card Industry Data Security Standard |
+| SLA | Service Level Agreement - Acordo de nível de serviço |
+| SLO | Service Level Objective - Objetivo de nível de serviço |
+| SLI | Service Level Indicator - Indicador de nível de serviço |
+| MFA | Multi-Factor Authentication - Autenticação multifator |
+| SSO | Single Sign-On - Autenticação única |
+| KYC | Know Your Customer - Processo de identificação de clientes |
+| AML | Anti-Money Laundering - Prevenção de lavagem de dinheiro |
+| API | Application Programming Interface |
+| CMS | Content Management System - Sistema de gestão de conteúdo |
+| CI/CD | Continuous Integration / Continuous Deployment |
+| PWA | Progressive Web App |
+| WCAG | Web Content Accessibility Guidelines |
+| OWASP | Open Web Application Security Project |
+
+## 10. Document Control
+
+| Versão | Data | Autor | Alterações |
+|--------|------|-------|------------|
+| 0.1 | 2026-01-01 | NextReality | Versão inicial |
+| 0.2 | 2026-01-13 | NextReality | Adição de escopo, premissas, restrições, dependências, quality attributes e glossário |

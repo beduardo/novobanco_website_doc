@@ -78,32 +78,31 @@ Definir a arquitetura de dados do HomeBanking Web, incluindo modelo de dados, ar
     Necessita aprofundamento
 
 
-### RGPD - Data Subject Rights
-16. Como serao tratados pedidos de acesso a dados (Subject Access Requests)?
-    Necessita aprofundamento
+### RGPD (Simplificado)
 
-17. Como sera implementado o direito ao esquecimento?
-    Necessita aprofundamento
+> **Nota:** Detalhes de conformidade RGPD em [DEF-08-seguranca-conformidade.md](DEF-08-seguranca-conformidade.md)
 
-18. Ha dados do canal web a incluir nas exportacoes de dados?
-    Necessita aprofundamento
+16. Ha dados especificos do canal web sujeitos a RGPD?
+    Logs de sessao, preferencias de utilizador. Dados transacionais sao do Core Banking.
 
-### Classificacao de Dados
-19. Qual o esquema de classificacao de dados (publico, interno, confidencial, restrito)?
-    Necessita aprofundamento
+17. Quais dados do canal web sao considerados PII?
+    Session ID, IP, User-Agent, preferencias. Dados bancarios sao do backend.
 
-20. Quais dados do canal web sao considerados sensiveis/PII?
-    Necessita aprofundamento
+### Cache Strategy (Consolidado)
 
-### Cache Strategy
-21. Quais dados serao cacheados no BFF?
-    Necessita aprofundamento
+18. Quais dados serao cacheados no BFF?
+    - Tokens de sessao (chave: session cookie)
+    - Dados publicos (noticias, taxas)
+    - Dados frequentes do utilizador (com TTL curto)
 
-22. Qual o TTL para diferentes tipos de cache?
-    Necessita aprofundamento
+19. Qual a estrutura de chaves do cache Redis?
+    Necessita aprofundamento. Sugestao: `session:{id}`, `user:{id}:data`, `public:{type}`
 
-23. Como sera invalidado o cache?
-    Necessita aprofundamento
+20. Qual o TTL para diferentes tipos de cache?
+    Necessita aprofundamento. Sugestao: sessao 30min, publico 1h, utilizador 5min
+
+21. Como sera invalidado o cache?
+    Necessita aprofundamento. Considerar: TTL expiry, invalidacao explicita em logout
 
 ## Decisoes
 

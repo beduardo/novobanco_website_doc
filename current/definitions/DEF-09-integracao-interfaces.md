@@ -110,54 +110,36 @@ Definir as integracoes do HomeBanking Web com sistemas internos e externos. O ca
 
 ### Tratamento de Erros
 
-24. Qual a estrategia padrao de retry para integracoes?
-    - Erros transientes: Exponential backoff (3 retries)
-    - Network Timeout: Imediate retry (1 retry)
-    - Rate limiting: Fixed Delay (429 status)
+> **Nota:** Padroes de resiliencia (retry, circuit breaker) consolidados em [DEF-05-padroes-resiliencia.md](DEF-05-padroes-resiliencia.md)
 
-25. Ha circuit breaker implementado? Qual biblioteca?
-    Não. Será decidido no assessment da aplicação
+24. Como sao comunicados erros de integracao ao utilizador?
+    Mensagem de erro amigavel + registo de log para troubleshooting
 
-26. Quais integracoes tem fallback definido?
-    Necessita aprofundamento
+25. Quais integracoes tem fallback definido?
+    Autenticacao (fallback OTP). Ver DEF-05-padroes-resiliencia.
 
-27. Como sao comunicados erros de integracao ao utilizador?
-    Mensagem de erro para aguardar e registo de log.
+### SLAs de Integracao (Simplificado)
 
-### SLAs de Integracao
+26. Quais sao os SLAs de disponibilidade dos sistemas integrados?
+    Necessita aprofundamento. Backend API deve ter SLA >= 99.9%
 
-28. Quais sao os SLAs de disponibilidade dos sistemas integrados?
-    Necessita aprofundamento
-
-29. Quais sao os tempos de resposta esperados (P50, P95, P99)?
-    Necessita aprofundamento
-
-30. Ha janelas de manutencao programadas que afetam integracoes?
+27. Ha janelas de manutencao programadas que afetam integracoes?
     Necessita aprofundamento
 
 ### API Management
 
-31. Qual API Gateway e utilizado?
+28. Qual API Gateway e utilizado?
     Azure API Gateway
 
-32. Como e feito o rate limiting por integracao?
+29. Como e feito o rate limiting por integracao?
+    Necessita aprofundamento. Gerido pelo Gateway, nao pelo BFF.
+
+### Catalogo de Integracoes (Simplificado)
+
+30. Existe catalogo de APIs/servicos documentado?
     Necessita aprofundamento
 
-33. Ha throttling diferenciado por tipo de operacao?
-    Necessita aprofundamento
-
-34. Como e feito o monitoring de APIs?
-    Necessita aprofundamento
-
-### Catalogo de Integracoes
-
-35. Existe catalogo de APIs/servicos documentado?
-    Necessita aprofundamento
-
-36. Qual ferramenta e usada para documentacao de APIs (Swagger UI, Redoc)?
-    Necessita aprofundamento
-
-37. Ha ambiente de sandbox para testes de integracao?
+31. Ha ambiente de sandbox para testes de integracao?
     Necessita aprofundamento
 
 ## Decisions

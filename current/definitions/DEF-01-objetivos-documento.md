@@ -35,7 +35,7 @@ Este documento de arquitetura servira como referencia tecnica para o desenvolvim
     Segurança, Casos de Uso e Compliance
 
 4. Qual nivel de detalhe tecnico e esperado?
-    HLD (High Level Design) para evitar soluções dúbias. Uma das fases da execução é a produção de documentos LLD (Low Level Design) para aprofundamento da solução
+    HLD (High Level Design) para evitar soluções dúbias. Uma das fases da execução é a produção de documentos LLD (Low Level Design) para aprofundamento da solução, então o HLD não precisará de todas as informações para a execução da implementação, mas precisará das informações principais como a definição da arquitetura, tecnologias envolvidas, principais fluxos e descrição dos passos principais do projeto.
 
 5. Este documento deve servir como baseline para auditoria/compliance?
     Sim.
@@ -46,7 +46,7 @@ Este documento de arquitetura servira como referencia tecnica para o desenvolvim
     MBWay
 
 8. Existe um roadmap de fases de implementacao?
-    Não.
+    Não. Este deve ser um dos entregáveis do documento.
 
 ## Decisoes
 

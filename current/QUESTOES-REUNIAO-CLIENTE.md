@@ -1,186 +1,212 @@
 # Questoes para Reuniao com Cliente
 
-**Data:** 2026-01-11
+**Data:** 2026-01-13
 **Projeto:** HomeBanking Web - HLD
-**Objetivo:** Esclarecer questoes de escopo e requisitos pendentes
+**Objetivo:** Esclarecer questoes pendentes nas definicoes do HLD
+**Versao:** 2.0 (atualizado apos revisao de duplicacoes)
 
 ---
 
-## 1. Escopo do Projeto
+## Prioridade Alta - Decisoes Arquiteturais
 
-### Canais e Aplicacoes
+### 1. PWA e Funcionamento Offline (DEF-04-ux-guidelines)
 
-- O canal web deve suportar apenas browser desktop/mobile ou tambem aplicacoes hibridas (React Native)?
-- As aplicacoes nativas iOS e Android estao no escopo deste projeto?
-- O CMS e backoffice estao no escopo ou sao projetos separados?
-- Qual o sistema legado existente que sera substituido ou coexistira com o novo HomeBanking?
+- O HomeBanking Web deve funcionar como PWA instalavel?
+- Ha requisitos de funcionamento offline? Se sim, quais funcionalidades?
+- Qual o comportamento esperado em conectividade intermitente?
 
-### Funcionalidades
+### 2. Sessao Multi-Canal (DEF-07-autenticacao-autorizacao) [NOVO]
 
-- Quais funcionalidades fazem parte do MVP (Minimum Viable Product)?
-- Existe priorizacao das funcionalidades por fase de implementacao?
-- O HomeBanking web tera paridade funcional com a app mobile ou apenas um subconjunto?
-- PWA (Progressive Web App) com funcionamento offline e necessario?
+- Como a sessao web se relaciona com a sessao mobile (mesmo utilizador)?
+- Ha limite de sessoes ativas por utilizador?
+- O login web deve fazer logout automatico de outras sessoes?
 
----
+### 3. Acessibilidade - WCAG (DEF-04-design-system)
 
-## 2. Infraestrutura e Ferramentas
+- Qual o nivel de WCAG obrigatorio (A, AA, AAA)?
+- Ha requisitos especificos de contraste ou tamanho de fonte?
+- Sera necessaria auditoria de acessibilidade externa?
 
-### Repositorio de Codigo
+### 4. CDN para Assets Estaticos (DEF-04-stack-frontend) [NOVO]
 
-- O repositorio sera Azure Repos ou GitHub? (ha mencao a ambos nos documentos)
-- Qual a estrategia de branching preferida (GitFlow, trunk-based)?
-
-### Ambiente e Deploy
-
-- Confirmar que Azure Kubernetes Service (AKS) sera a plataforma inicial
-- Qual o timeline previsto para migracao para OpenShift?
-- Quantos ambientes serao necessarios (Dev, QA, Staging, Prod)?
-- Existe site de Disaster Recovery? Qual o RTO/RPO esperado?
-
-### Ferramentas de Observabilidade
-
-- Confirmar reutilizacao do ELK Stack existente
-- Qual a ferramenta de alerting em uso (ElastAlert, Watcher, outra)?
+- Sera utilizado CDN para assets estaticos?
+- Se sim, qual provider (Azure CDN, Cloudflare, outro)?
 
 ---
 
-## 3. Seguranca e Conformidade
+## Prioridade Alta - Seguranca e Conformidade
 
-### RGPD
+### 5. RGPD (DEF-08-seguranca-conformidade)
 
 - Qual a base legal para tratamento de dados dos utilizadores?
 - Existe DPO (Data Protection Officer) designado?
-- Como sao tratados os pedidos de Subject Access Request (SAR)?
-- Qual o processo para exercicio do direito ao esquecimento?
 
-### PCI-DSS
+### 6. PCI-DSS (DEF-08-seguranca-conformidade)
 
 - O canal web processa dados de cartao (PAN) diretamente?
-- Qual o nivel de conformidade PCI-DSS necessario?
+- Se sim, qual o nivel de conformidade PCI-DSS necessario?
 - A tokenizacao de cartoes e feita onde (frontend, backend, terceiro)?
 
-### Banco de Portugal
+### 7. Banco de Portugal (DEF-08-seguranca-conformidade)
 
 - Quais os requisitos regulatorios especificos do Banco de Portugal aplicaveis?
-- Existem requisitos de reporte obrigatorio?
 
-### Auditoria
+### 8. Auditoria (DEF-08-seguranca-conformidade, DEF-11-observabilidade)
 
 - Quais eventos devem ser registados para auditoria?
 - Qual o periodo de retencao de logs de auditoria?
 - Os logs devem ser imutaveis (write-once)?
 
-### Resposta a Incidentes
+### 9. Resposta a Incidentes (DEF-08-seguranca-conformidade)
 
 - Existe plano de resposta a incidentes de seguranca?
-- Quais os SLAs de resposta por severidade?
-- Existe CSIRT (Computer Security Incident Response Team)?
+- Quais os SLAs de resposta por severidade de vulnerabilidade?
 
 ---
 
-## 4. Integracoes
+## Prioridade Media - Infraestrutura e Operacoes
 
-### Core Banking
+### 10. OpenShift e Ambientes (DEF-10-arquitetura-operacional)
+
+- Qual o timeline previsto para migracao de AKS para OpenShift?
+- Qual a versao do OpenShift que sera utilizada?
+
+### 11. Observabilidade (DEF-11-observabilidade-operacoes)
+
+- Confirmar reutilizacao do ELK Stack existente ou instancia dedicada?
+- Ha complemento com Prometheus/Grafana para metricas?
+- Qual a ferramenta de alerting em uso?
+
+### 12. Disaster Recovery (DEF-10-arquitetura-operacional)
+
+- Ha site de DR? Onde?
+- Qual a estrategia de failover (automatico, manual)?
+
+### 13. Feature Flags (DEF-10-arquitetura-operacional) [NOVO]
+
+- Sera utilizado sistema de feature flags para rollout gradual?
+- Se sim, qual ferramenta (LaunchDarkly, Unleash, custom)?
+
+---
+
+## Prioridade Media - Integracoes
+
+### 14. Backend API e SLAs (DEF-09-integracao-interfaces)
 
 - Quais os SLAs de disponibilidade do Backend API existente?
-- Qual o tempo de resposta esperado das APIs do Core Banking?
+- Ha janelas de manutencao programadas que afetam integracoes?
 
-### Notificacoes
+### 15. Notificacoes (DEF-09-integracao-interfaces)
 
 - Qual o provider de SMS em uso?
 - Qual o provider de Push Notifications?
 - Qual o provider de Email Transacional?
 
-### Cartoes
+### 16. Cartoes (DEF-09-integracao-interfaces)
 
 - Qual o provider de emissao/processamento de cartoes?
 - Como funciona a integracao 3D Secure?
-- A alteracao de PIN sera suportada no canal web?
 
-### Open Banking / PSD2
+### 17. Open Banking / PSD2 (DEF-09-integracao-interfaces)
 
-- O banco expoe APIs como ASPSP (Account Servicing Payment Service Provider)?
-- O banco consome APIs de terceiros como TPP (Third Party Provider)?
+- O banco expoe APIs como ASPSP?
+- O banco consome APIs de terceiros como TPP?
 - Qual o modelo de gestao de consentimentos PSD2?
 
-### Message Broker
+### 18. Message Broker (DEF-09-integracao-interfaces)
 
 - Existe message broker em uso (RabbitMQ, Kafka, Azure Service Bus)?
-- Quais eventos sao publicados/consumidos?
-- Qual a estrategia de dead-letter para mensagens falhadas?
+- Quais eventos sao publicados/consumidos pelo canal web?
 
 ---
 
-## 5. Implementacao e Go-Live
+## Prioridade Media - Performance e Cache
 
-### Timeline
+### 19. Core Web Vitals (DEF-12-desempenho-fiabilidade) [NOVO]
+
+- Quais metricas Core Web Vitals devem ser atingidas?
+- Ha requisitos especificos de bundle size maximo?
+
+### 20. Auto-scaling (DEF-12-desempenho-fiabilidade)
+
+- Sera configurado Horizontal Pod Autoscaler (HPA)?
+- Quais metricas devem disparar o auto-scaling?
+- Quais os limites minimo e maximo de replicas?
+
+### 21. Cache Strategy (DEF-06-arquitetura-dados)
+
+- Qual o TTL para diferentes tipos de cache (sessao, publico, utilizador)?
+- Como sera invalidado o cache?
+
+---
+
+## Prioridade Normal - Implementacao e Go-Live
+
+### 22. Timeline (DEF-14-plano-migracao-implementacao)
 
 - Qual a data prevista para go-live?
 - O lancamento sera faseado (pilot/beta) ou big-bang?
 - Qual a duracao prevista do periodo de hypercare?
 
-### Cutover
+### 23. Cutover (DEF-14-plano-migracao-implementacao)
 
 - Qual a estrategia de cutover preferida (big-bang, phased, parallel)?
-- Existe janela de cutover definida (ex: fim de semana)?
-- Qual o tempo maximo aceitavel para rollback?
+- Ha sistema HomeBanking web legado a substituir?
 
-### Migracao de Dados
-
-- Existem dados a migrar do sistema legado (preferencias, configuracoes)?
-- Como sera feita a validacao pos-migracao?
-
-### Criterios Go/No-Go
+### 24. Criterios Go/No-Go (DEF-14-plano-migracao-implementacao)
 
 - Quem sao os aprovadores para decisao de go-live?
-- Quais os criterios minimos obrigatorios (alem dos tecnicos)?
+- Quais os criterios minimos obrigatorios?
 
 ---
 
-## 6. Governacao e Equipas
+## Prioridade Normal - Governacao
 
-### Modelo de Trabalho
+### 25. Modelo de Trabalho (DEF-15-governacao-roadmap)
 
 - Qual a metodologia de projeto (Agile, SAFe, tradicional)?
-- Equipas externas participam do desenvolvimento? Se sim, quais?
-- Qual a frequencia de steering committee?
-- Quem sao os stakeholders principais e sponsors?
-
-### Papeis
-
-- Quem sera o Product Owner?
-- Quem sera o Tech Lead?
-- Existe equipa de QA dedicada?
-
-### Processo de Decisao
-
 - Quem aprova decisoes tecnicas/arquiteturais?
+
+### 26. Change Management (DEF-15-governacao-roadmap)
+
 - Existe processo de Change Advisory Board (CAB)?
-- Qual o lead time minimo para mudancas em producao?
+- Quem aprova mudancas em producao?
 
-### Roadmap
+### 27. Roadmap (DEF-15-governacao-roadmap)
 
-- Qual a cadencia de releases prevista (semanal, quinzenal, mensal)?
-- Existem datas fixas de release ou e continuo?
+- Qual a cadencia de releases prevista?
 - Qual a percentagem de capacidade alocada para divida tecnica?
 
 ---
 
-## 7. Performance e Disponibilidade
+## Prioridade Normal - Testes
 
-### Requisitos Confirmados (DEF-02)
+### 28. Estrategia de Testes (DEF-13-estrategia-testes)
 
-- 400 utilizadores concorrentes
-- 10 TPS (transacoes por segundo)
-- Tempo de resposta P95 < 3 segundos
-- Disponibilidade 99.9%
+- Qual a cobertura de codigo minima requerida?
+- Sera utilizado contract testing (Pact) para BFF<->Backend?
+- Ha ambiente com dados anonimizados de producao?
 
-### A Confirmar
+### 29. Penetration Testing (DEF-08-seguranca-conformidade)
 
-- Os valores acima estao corretos e aprovados?
-- Qual o crescimento esperado para os proximos 3-5 anos?
-- Existem periodos de pico conhecidos (fim de mes, pagamentos)?
+- Ha penetration testing periodico?
+- Sera realizado pentest antes do go-live?
+
+---
+
+## Resumo por Area
+
+| Area | Questoes | Criticidade |
+|------|----------|-------------|
+| Arquitetura (PWA, CDN, Sessao) | 4 | Alta |
+| Seguranca/Conformidade | 5 | Alta |
+| Infraestrutura/Operacoes | 4 | Media |
+| Integracoes | 5 | Media |
+| Performance/Cache | 3 | Media |
+| Implementacao | 3 | Normal |
+| Governacao | 3 | Normal |
+| Testes | 2 | Normal |
+| **Total** | **29** | - |
 
 ---
 
@@ -188,10 +214,11 @@
 
 Apos esta reuniao:
 
-1. Atualizar o HLD com as respostas obtidas
-2. Remover itens "A definir" que foram esclarecidos
-3. Identificar questoes que requerem sessoes adicionais de levantamento
-4. Definir data alvo para entrega do HLD
+1. Atualizar as definicoes (DEF-*) com as respostas obtidas
+2. Preencher decisoes nas definicoes que foram esclarecidas
+3. Identificar questoes que requerem sessoes adicionais
+4. Agendar reuniao de follow-up se necessario
+5. Definir data alvo para entrega do HLD
 
 ---
 
@@ -204,4 +231,18 @@ _Espaco para anotacoes durante a reuniao_
 
 ### Respostas e Decisoes
 
-_(preencher durante a reuniao)_
+| # | Questao | Resposta | Acao |
+|---|---------|----------|------|
+| 1 | PWA instalavel? | | |
+| 2 | Sessao multi-canal? | | |
+| 3 | WCAG nivel? | | |
+| ... | ... | | |
+
+---
+
+## Historico de Versoes
+
+| Versao | Data | Alteracoes |
+|--------|------|------------|
+| 1.0 | 2026-01-11 | Versao inicial |
+| 2.0 | 2026-01-13 | Revisao apos consolidacao de duplicacoes nas definicoes. Adicionadas 4 questoes novas (CDN, Sessao Multi-Canal, Feature Flags, Core Web Vitals). Removidas questoes ja respondidas. Reorganizado por prioridade. |

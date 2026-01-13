@@ -83,91 +83,57 @@ Definir a arquitetura operacional do HomeBanking Web, incluindo infraestrutura, 
 ### Estrategia de Deploy
 
 16. Qual a estrategia de deploy (rolling update, blue-green, canary)?
-    Rolling Update (com Kubernetes)
+    Rolling Update (com Kubernetes). Zero downtime.
 
-17. Qual a janela de deploy para producao?
-    Necessita aprofundamento
+17. Ha deploys automaticos ou requerem aprovacao manual?
+    Necessita aprofundamento. Dev/QA automatico, Prod com aprovacao.
 
-18. Ha deploys automaticos ou requerem aprovacao manual?
-    Necessita aprofundamento
-
-19. Qual o tempo maximo de downtime aceitavel durante deploy?
-    Necessita aprofundamento
+18. Sera utilizado sistema de feature flags para rollout gradual?
+    Necessita aprofundamento. Beneficios: rollout gradual, kill switch
 
 ### Infraestrutura como Codigo (IaC)
 
-20. Qual ferramenta de IaC e utilizada (Terraform, Ansible, Helm)?
-    Necessita aprofundamento
-
-21. Como sao geridos os templates/charts?
-    Necessita aprofundamento
-
-22. Ha versionamento de infraestrutura?
-    Necessita aprofundamento
+19. Qual ferramenta de IaC e utilizada (Terraform, Ansible, Helm)?
+    Necessita aprofundamento. Helm para Kubernetes e provavelmente Terraform para Azure.
 
 ### Secrets Management
 
-23. Qual ferramenta de gestao de secrets (Vault, Azure Key Vault, OpenShift Secrets)?
+20. Qual ferramenta de gestao de secrets?
     Azure Key Vault
 
-24. Como sao injetados os secrets nos containers?
-    Usando Secret Store CSI Driver
+21. Como sao injetados os secrets nos containers?
+    Secret Store CSI Driver
 
-25. Qual a politica de rotacao de secrets?
+22. Qual a politica de rotacao de secrets?
     Necessita aprofundamento
 
 ### Container Registry
 
-26. Qual container registry e utilizado?
+23. Qual container registry e utilizado?
     Azure Container Registry
 
-27. Ha scanning de vulnerabilidades nas imagens?
+24. Ha scanning de vulnerabilidades nas imagens?
     Necessita aprofundamento
 
-28. Qual a politica de retencao de imagens?
+### Disaster Recovery (Simplificado)
+
+> **Nota:** RTO/RPO definidos em [DEF-02-requisitos-nao-funcionais.md](DEF-02-requisitos-nao-funcionais.md)
+
+25. Ha site de DR? Onde?
     Necessita aprofundamento
 
-### Disaster Recovery
-
-29. Qual o RTO (Recovery Time Objective)?
-    Necessita aprofundamento
-
-30. Qual o RPO (Recovery Point Objective)?
-    Necessita aprofundamento
-
-31. Ha site de DR? Onde?
-    Necessita aprofundamento
-
-32. Qual a estrategia de failover (automatico, manual)?
-    Necessita aprofundamento
-
-33. Com que frequencia sao testados os procedimentos de DR?
+26. Qual a estrategia de failover?
     Necessita aprofundamento
 
 ### Backup Strategy
 
-34. Quais componentes requerem backup?
-    Os dados acessados pela aplicação são oriundos dos sistemas backend que já possuem políticas de backup
+27. Quais componentes do canal web requerem backup?
+    Nenhum. Dados sao oriundos do backend com politicas proprias.
 
-35. Qual a frequencia de backup?
-    Não se aplica
+### Runbooks (Simplificado)
 
-36. Onde sao armazenados os backups?
-    Não se aplica
-
-37. Qual o periodo de retencao dos backups?
-    Não se aplica
-
-### Runbooks
-
-38. Existem runbooks documentados para operacoes comuns?
-    Necessita aprofundamento
-
-39. Ha runbooks para incidentes de seguranca?
-    Necessita aprofundamento
-
-40. Como sao mantidos e versionados os runbooks?
-    Necessita aprofundamento
+28. Existem runbooks documentados para operacoes criticas?
+    Necessita aprofundamento. Minimo: deploy, rollback, incident response
 
 ## Decisions
 

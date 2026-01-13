@@ -36,119 +36,57 @@ Definir a estrategia de observabilidade do HomeBanking Web, incluindo logging ce
 2. Ha complemento com Prometheus/Grafana para metricas?
     Necessita aprofundamento
 
-3. Qual a versao do ELK Stack utilizada?
-    Necessita aprofundamento
-
 ### Golden Signals
 
-4. Quais metricas golden signals serao monitorizadas?
-    Necessita aprofundamento
-   - Latency (tempo de resposta)?
-   - Traffic (requests por segundo)?
-   - Errors (taxa de erros)?
-   - Saturation (utilizacao de recursos)?
+3. Quais metricas golden signals serao monitorizadas?
+    Minimo: Latency (P95, P99), Traffic (RPS), Errors (%), Saturation (CPU/Mem)
 
-5. Quais sao os thresholds aceitaveis para cada signal?
-    Necessita aprofundamento
-
-### Metricas de Aplicacao
-
-6. Quais metricas de aplicacao serao capturadas no Frontend?
-    Necessita aprofundamento
-
-7. Quais metricas de aplicacao serao capturadas no BFF?
-    Necessita aprofundamento
-
-8. Ha requisitos de metricas customizadas?
-    Necessita aprofundamento
+4. Quais sao os thresholds aceitaveis?
+    Baseados em DEF-02-requisitos-nao-funcionais (3s operacoes, 99.9% disponibilidade)
 
 ### Metricas de Negocio
 
-9. Quais metricas de negocio devem ser capturadas?
-    Necessita aprofundamento
-   - Logins por periodo?
-   - Transacoes por tipo?
-   - Erros de autenticacao?
-
-10. Ha dashboards de negocio requeridos?
-    Necessita aprofundamento
+5. Quais metricas de negocio devem ser capturadas?
+    Necessita aprofundamento. Sugestao: logins/hora, transacoes/tipo, erros auth
 
 ### Distributed Tracing
 
-11. Sera implementado tracing distribuido?
+6. Sera implementado tracing distribuido?
+    Necessita aprofundamento. Essencial para debugging em arquitetura distribuida.
+
+7. Como sera feita a correlacao entre Frontend e BFF?
+    Necessita aprofundamento. Sugestao: correlation-id em headers
+
+### Logging Centralizado (Consolidado)
+
+> **Nota:** Esta e a definicao principal para politica de logs do projeto.
+
+8. Qual o formato de logs?
+    JSON estruturado. Facilita parsing e queries.
+
+9. Quais campos sao obrigatorios em cada log entry?
+    Necessita aprofundamento. Sugestao: timestamp, level, correlation-id, service, message
+
+10. Qual a politica de retencao de logs?
+    Necessita aprofundamento. Sugestao: 30 dias hot, 1 ano cold, 7 anos auditoria
+
+11. Ha requisitos de mascaramento de dados sensiveis?
+    Sim. PII e dados bancarios devem ser mascarados.
+
+### SLIs/SLOs (Simplificado)
+
+> **Nota:** SLAs de negocio em [DEF-02-requisitos-nao-funcionais.md](DEF-02-requisitos-nao-funcionais.md)
+
+12. Quais SLOs target para o canal web?
+    Disponibilidade: 99.9%, Latencia P95: < 3s, Taxa erro: < 0.1%
+
+### Alertas e Dashboards (Simplificado)
+
+13. Qual a ferramenta de alerting?
     Necessita aprofundamento
 
-12. Qual ferramenta de tracing (Jaeger, Zipkin, Application Insights)?
-    Necessita aprofundamento
-
-13. Como sera feita a correlacao entre Frontend e BFF?
-    Necessita aprofundamento
-
-### Logging Centralizado
-
-14. Qual o formato de logs (JSON estruturado, texto)?
-    Necessita aprofundamento
-
-15. Quais campos sao obrigatorios em cada log entry?
-    Necessita aprofundamento
-
-16. Qual a politica de retencao de logs?
-    Necessita aprofundamento
-
-17. Ha requisitos de mascaramento de dados sensiveis nos logs?
-    Necessita aprofundamento
-
-### SLIs (Service Level Indicators)
-
-18. Quais SLIs serao definidos para o HomeBanking Web?
-    Necessita aprofundamento
-
-19. Como serao medidos os SLIs?
-    Necessita aprofundamento
-
-### SLOs (Service Level Objectives)
-
-20. Quais sao os SLOs target?
-    Necessita aprofundamento
-    - Disponibilidade: ?
-    - Latencia P95: ?
-    - Taxa de erro: ?
-
-21. Ha error budget definido?
-    Necessita aprofundamento
-
-### SLAs (Service Level Agreements)
-
-22. Existem SLAs contratuais para o HomeBanking Web?
-    Necessita aprofundamento
-
-23. Quais sao as penalidades por incumprimento de SLA?
-    Necessita aprofundamento
-
-### Alertas
-
-24. Quais alertas serao configurados?
-    Necessita aprofundamento
-
-25. Qual a ferramenta de alerting (PagerDuty, OpsGenie, Email)?
-    Necessita aprofundamento
-
-26. Quais sao os niveis de severidade dos alertas?
-    Necessita aprofundamento
-
-27. Qual a politica de escalacao?
-    Necessita aprofundamento
-
-### Dashboards Operacionais
-
-28. Quais dashboards operacionais sao necessarios?
-    Necessita aprofundamento
-
-29. Quem tem acesso aos dashboards?
-    Necessita aprofundamento
-
-30. Ha requisitos de dashboards em tempo real?
-    Necessita aprofundamento
+14. Quais dashboards operacionais sao necessarios?
+    Necessita aprofundamento. Minimo: health overview, performance, errors
 
 ## Decisions
 

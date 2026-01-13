@@ -69,98 +69,63 @@ Definir os requisitos de seguranca e conformidade regulatoria do HomeBanking Web
      - CORS bem configurado
      - GET somente idempotentes e sem efeitos colaterais
 
-### OWASP Top 10
-10. Quais controlos especificos para cada categoria OWASP Top 10?
+### OWASP Top 10 (Simplificado)
+10. Ha ferramentas de SAST/DAST integradas no pipeline?
+    SAST: Sim (ver DEF-10). DAST: Necessita aprofundamento
 
-
-11. Ha ferramentas de SAST/DAST integradas no pipeline?
-
-
-12. Qual a frequencia de scans de vulnerabilidades?
+11. Sera realizado penetration testing antes do go-live?
+    Necessita aprofundamento
 
 
 ### Conformidade PSD2
-13. Como sera implementado o Dynamic Linking (valor + beneficiario)?
-    Cliente informa que estrutura app já segue PSD2. Necessita aprofundamento.
+12. Como sera implementado o Dynamic Linking (valor + beneficiario)?
+    App mobile ja segue PSD2. Canal web reutiliza mesma implementacao.
 
-14. Quais operacoes requerem SCA obrigatorio?
-    Todas as operações
+13. Quais operacoes requerem SCA obrigatorio?
+    Todas as operacoes (sem isencoes)
 
-15. Ha operacoes elegiveis para isencoes SCA? Quais?
-    Nenhuma
+14. Qual a versao minima de TLS?
+    TLS 1.2+ obrigatorio
 
-16. Como sera tratada a comunicacao segura (TLS 1.2+)?
+### Conformidade RGPD (Consolidado)
+15. Qual a base legal para tratamento de dados?
+    Necessita aprofundamento junto a DPO
 
-
-### Conformidade RGPD
-17. Qual a base legal para tratamento de dados?
-    Necessita aprofundamento
-
-18. Como sera obtido o consentimento do utilizador?
-    Necessita aprofundamento
-
-19. Ha DPO (Data Protection Officer) designado?
-    Necessita aprofundamento
-
-20. Como serao documentadas as atividades de tratamento (ROPA)?
+16. Ha DPO (Data Protection Officer) designado?
     Necessita aprofundamento
 
 ### PCI-DSS
-21. O canal web processara dados de cartao (PAN)?
-    Necessita aprofundamento
+17. O canal web processara dados de cartao (PAN)?
+    Necessita aprofundamento. Se sim, definir nivel de conformidade.
 
-22. Se sim, qual o nivel de conformidade PCI-DSS requerido?
-    Necessita aprofundamento
-
-23. Ha tokenizacao de dados de cartao?
+18. Ha tokenizacao de dados de cartao?
     Necessita aprofundamento
 
 ### Banco de Portugal
-24. Quais requisitos regulatorios especificos do BdP se aplicam?
+19. Quais requisitos regulatorios especificos do BdP se aplicam?
     Necessita aprofundamento
 
-25. Ha requisitos de reporte ao BdP?
+### Registo de Auditoria (Consolidado)
+> **Nota:** Retencao de logs em [DEF-11-observabilidade-operacoes.md](DEF-11-observabilidade-operacoes.md)
+
+20. Quais eventos devem ser registados para auditoria?
+    Necessita aprofundamento. Minimo: logins, transacoes, alteracoes de dados
+
+21. Ha requisitos de imutabilidade dos logs?
     Necessita aprofundamento
 
-### Registo de Auditoria
-26. Quais eventos devem ser registados para auditoria?
+### Resposta a Incidentes e Vulnerabilidades (Simplificado)
+22. Existe plano de resposta a incidentes de seguranca?
     Necessita aprofundamento
 
-27. Qual o formato do log de auditoria?
-    Necessita aprofundamento
-
-28. Qual o periodo de retencao dos logs de auditoria?
-    Necessita aprofundamento
-
-29. Ha requisitos de imutabilidade dos logs?
-    Necessita aprofundamento
-
-### Resposta a Incidentes
-30. Existe plano de resposta a incidentes de seguranca?
-    Necessita aprofundamento
-
-31. Quais sao os tempos de resposta definidos (SLAs)?
-    Necessita aprofundamento
-
-32. Ha equipa de resposta a incidentes (CSIRT)?
-    Necessita aprofundamento
-
-### Gestao de Vulnerabilidades
-33. Qual o processo de gestao de vulnerabilidades?
-    Necessita aprofundamento
-
-34. Quais SLAs para correcao de vulnerabilidades (critica, alta, media, baixa)?
-    Necessita aprofundamento
-
-35. Ha programa de bug bounty?
-    Necessita aprofundamento
+23. Quais SLAs para correcao de vulnerabilidades criticas?
+    Necessita aprofundamento. Sugestao: Criticas < 24h, Altas < 7 dias
 
 ### Segregacao de Ambientes
-36. Como serao segregados os ambientes (dev, staging, prod)?
-    Necessita aprofundamento
+> **Nota:** Ver [DEF-10-arquitetura-operacional.md](DEF-10-arquitetura-operacional.md) para detalhes de ambientes
 
-37. Ha requisitos de segregacao de dados entre ambientes?
-    Necessita aprofundamento
+24. Ha requisitos de segregacao de dados entre ambientes?
+    Necessita aprofundamento. Producao nunca deve usar dados reais em dev/qa.
 
 ## Decisoes
 

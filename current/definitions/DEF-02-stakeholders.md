@@ -26,7 +26,9 @@ Identificar todas as partes interessadas no projeto HomeBanking web e seus papei
 ## Perguntas a Responder
 
 1. Quem sao os sponsors do projeto?
+    O fórum designado pelo Banco Best. Ele pode ser alterado conforme a necessidade.
 2. Quais equipas tecnicas estarao envolvidas no desenvolvimento?
+    As equipas serão definidas no início da execução do projeto.
 3. Quem e responsavel pela operacao e manutencao?
 4. Quais departamentos de negocio serao impactados?
 5. Ha envolvimento de entidades externas (reguladores, parceiros, fornecedores)?
