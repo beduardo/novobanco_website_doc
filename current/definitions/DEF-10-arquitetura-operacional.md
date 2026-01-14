@@ -19,13 +19,13 @@ status: structure
 
 # DEF-10: Arquitetura Operacional
 
-> **Related section:** [10 - Arquitetura Operacional](../sections/SEC-10-arquitetura-operacional.md)
+> **Secção relacionada:** [10 - Arquitetura Operacional](../sections/SEC-10-arquitetura-operacional.md)
 
-## Context
+## Contexto
 
 Definir a arquitetura operacional do HomeBanking Web, incluindo infraestrutura, ambientes, pipelines CI/CD, estrategia de deploy, gestao de secrets e disaster recovery. O canal web sera deployado em OpenShift, reutilizando a infraestrutura existente.
 
-## Questions to Answer
+## Perguntas a Responder
 
 ### Infraestrutura
 
@@ -135,34 +135,34 @@ Definir a arquitetura operacional do HomeBanking Web, incluindo infraestrutura, 
 28. Existem runbooks documentados para operacoes criticas?
     Necessita aprofundamento. Minimo: deploy, rollback, incident response
 
-## Decisions
+## Decisões
 
-### Infrastructure Platform
-- **Decision:** _Pending_
-- **Justification:** _Pending_
-- **Alternatives considered:** _Pending_
+### Plataforma de Infraestrutura
+- **Decisão:** _Pendente_
+- **Justificação:** _Pendente_
+- **Alternativas consideradas:** _Pendente_
 
-### CI/CD Strategy
-- **Decision:** _Pending_
-- **Justification:** _Pending_
-- **Alternatives considered:** _Pending_
+### Estrategia CI/CD
+- **Decisão:** _Pendente_
+- **Justificação:** _Pendente_
+- **Alternativas consideradas:** _Pendente_
 
-### Deployment Strategy
-- **Decision:** _Pending_
-- **Justification:** _Pending_
-- **Alternatives considered:** _Pending_
+### Estrategia de Deploy
+- **Decisão:** _Pendente_
+- **Justificação:** _Pendente_
+- **Alternativas consideradas:** _Pendente_
 
-### Secrets Management
-- **Decision:** _Pending_
-- **Justification:** _Pending_
-- **Alternatives considered:** _Pending_
+### Gestão de Secrets
+- **Decisão:** _Pendente_
+- **Justificação:** _Pendente_
+- **Alternativas consideradas:** _Pendente_
 
 ### Disaster Recovery
-- **Decision:** _Pending_
-- **Justification:** _Pending_
-- **Alternatives considered:** _Pending_
+- **Decisão:** _Pendente_
+- **Justificação:** _Pendente_
+- **Alternativas consideradas:** _Pendente_
 
-## Known Constraints
+## Restrições Conhecidas
 
 - Deploy em OpenShift (decisao ja aceite - DEC-006)
 - Stack ELK para observabilidade (decisao ja aceite - DEC-008)
@@ -170,13 +170,13 @@ Definir a arquitetura operacional do HomeBanking Web, incluindo infraestrutura, 
 - RTO: 30 minutos (referencia DEF-02)
 - RPO: 5 minutos (referencia DEF-02)
 
-## Related Decisions
+## Decisões Relacionadas
 
 - [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Estrategia de containers
 - [DEC-008-stack-observabilidade-elk.md](../decisions/DEC-008-stack-observabilidade-elk.md) - Stack de observabilidade
 - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack tecnologica backend
 
-## References
+## Referências
 
 - [DEF-02-requisitos-nao-funcionais.md](DEF-02-requisitos-nao-funcionais.md) - RTO/RPO
 - [DEF-03-principios-arquitetura.md](DEF-03-principios-arquitetura.md) - Principios de arquitetura

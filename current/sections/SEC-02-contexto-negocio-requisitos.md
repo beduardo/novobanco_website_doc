@@ -18,7 +18,7 @@ status: in-progress
 # 2. Contexto de Negocio & Requisitos
 
 > **Definicoes requeridas:**
-> - [DEF-02-stakeholders.md](../definitions/DEF-02-stakeholders.md) - Status: in-progress
+> - [DEF-02-stakeholders.md](../definitions/DEF-02-stakeholders.md) - Status: completed
 > - [DEF-02-requisitos-funcionais.md](../definitions/DEF-02-requisitos-funcionais.md) - Status: completed
 > - [DEF-02-requisitos-nao-funcionais.md](../definitions/DEF-02-requisitos-nao-funcionais.md) - Status: completed
 >
@@ -42,16 +42,22 @@ O projeto HomeBanking Web visa disponibilizar aos clientes do Novo Banco uma pla
 
 ### 2.2 Partes Interessadas (Stakeholders)
 
-| Stakeholder | Papel | Status |
-|-------------|-------|--------|
-| Sponsors | _A definir_ | Pendente |
-| Equipas Tecnicas | _A definir_ | Pendente |
-| Operacoes | _A definir_ | Pendente |
-| Areas de Negocio | _A definir_ | Pendente |
-| Utilizadores Finais | Clientes do Novo Banco | Definido |
-| Entidades Externas | Nao aplicavel | Definido |
+| Papel | Responsabilidade | Contacto/Status |
+|-------|------------------|-----------------|
+| Sponsor | Patrocinador executivo do projeto | Forum designado pelo Banco Best |
+| Product Owner | Definicao de requisitos e priorizacao | A definir no inicio do projeto |
+| Arquiteto NovoBanco | Validacao tecnica e integracao com sistemas existentes | A definir no inicio do projeto |
+| Equipa Seguranca | Validacao de conformidade e seguranca | A definir no inicio do projeto |
+| Equipa Infraestrutura | Suporte Azure e ambientes | A definir no inicio do projeto |
+| Equipa Core Banking | Integracao com APIs do Core | A definir no inicio do projeto |
+| Equipa Mobile | Coordenacao com app nativa existente | A definir no inicio do projeto |
+| DPO (Data Protection Officer) | Conformidade RGPD | A definir no inicio do projeto |
+| Utilizadores Finais | Clientes do Novo Banco | N/A |
 
-**Nota:** O projeto nao envolve diretamente entidades externas (reguladores, parceiros, fornecedores). As integracoes com terceiros sao as ja existentes na app mobile.
+**Notas:**
+- O sponsor e o forum designado pelo Banco Best, podendo ser alterado conforme necessidade
+- As equipas tecnicas serao definidas no inicio da execucao do projeto
+- O projeto nao envolve diretamente entidades externas (reguladores, parceiros, fornecedores). As integracoes com terceiros sao as ja existentes na app mobile
 
 ### 2.3 Requisitos Funcionais
 
@@ -192,7 +198,7 @@ end note
 ## Entregaveis
 
 - [x] Descricao do contexto de negocio
-- [ ] Matriz de stakeholders com papeis e responsabilidades (parcial)
+- [x] Matriz de stakeholders com papeis e responsabilidades (contactos a definir no inicio do projeto)
 - [x] Lista priorizada de requisitos funcionais
 - [x] Lista de requisitos nao funcionais com metricas
 - [x] Documentacao de restricoes tecnicas e de negocio
@@ -201,7 +207,7 @@ end note
 
 ## Definicoes Utilizadas
 
-- [ ] [DEF-02-stakeholders.md](../definitions/DEF-02-stakeholders.md) - Status: in-progress (informacoes pendentes)
+- [x] [DEF-02-stakeholders.md](../definitions/DEF-02-stakeholders.md) - Status: completed (contactos a definir no inicio do projeto)
 - [x] [DEF-02-requisitos-funcionais.md](../definitions/DEF-02-requisitos-funcionais.md) - Status: completed
 - [x] [DEF-02-requisitos-nao-funcionais.md](../definitions/DEF-02-requisitos-nao-funcionais.md) - Status: completed
 
@@ -215,8 +221,8 @@ Os seguintes itens requerem informacao adicional:
 
 | Item | Documento | Responsavel |
 |------|-----------|-------------|
-| Stakeholders (sponsors, equipas, governacao) | DEF-02-stakeholders | Gestao do Projeto |
-| Requisitos de Acessibilidade WCAG | DEF-02-requisitos-funcionais | Equipa UX |
+| Contactos dos stakeholders | DEF-02-stakeholders | A definir no inicio do projeto |
+| Requisitos de Acessibilidade WCAG | DEF-04-design-system | Equipa UX |
 | Certificacoes de Seguranca | DEF-02-requisitos-nao-funcionais | Area de Seguranca |
 | Requisitos de Encriptacao | DEF-02-requisitos-nao-funcionais | Area de Seguranca |
 | Politica de Retencao de Logs | DEF-02-requisitos-nao-funcionais | Compliance |

@@ -20,13 +20,13 @@ status: structure
 
 # DEF-12: Desempenho & Fiabilidade
 
-> **Related section:** [12 - Desempenho & Fiabilidade](../sections/SEC-12-desempenho-fiabilidade.md)
+> **Secção relacionada:** [12 - Desempenho & Fiabilidade](../sections/SEC-12-desempenho-fiabilidade.md)
 
-## Context
+## Contexto
 
 Definir os requisitos e estrategias de desempenho e fiabilidade do HomeBanking Web, incluindo objetivos de carga, estrategias de caching, otimizacoes frontend e backend, auto-scaling, capacity planning e testes de carga.
 
-## Questions to Answer
+## Perguntas a Responder
 
 ### Objetivos de Carga
 
@@ -102,43 +102,43 @@ Definir os requisitos e estrategias de desempenho e fiabilidade do HomeBanking W
 16. Sera realizado load test antes do go-live?
     Necessita aprofundamento. Essencial para validar capacidade.
 
-## Decisions
+## Decisões
 
-### Performance Targets
-- **Decision:** Definido em DEF-02
-- **Justification:** Alinhamento com requisitos nao funcionais
-- **Alternatives considered:** N/A
+### Targets de Performance
+- **Decisão:** Definido em DEF-02
+- **Justificação:** Alinhamento com requisitos nao funcionais
+- **Alternativas consideradas:** N/A
 
-### Caching Strategy
-- **Decision:** _Pending_
-- **Justification:** _Pending_
-- **Alternatives considered:** _Pending_
+### Estrategia de Cache
+- **Decisão:** _Pendente_
+- **Justificação:** _Pendente_
+- **Alternativas consideradas:** _Pendente_
 
-### Auto-scaling Strategy
-- **Decision:** _Pending_
-- **Justification:** _Pending_
-- **Alternatives considered:** _Pending_
+### Estrategia de Auto-scaling
+- **Decisão:** _Pendente_
+- **Justificação:** _Pendente_
+- **Alternativas consideradas:** _Pendente_
 
-### Load Testing
-- **Decision:** _Pending_
-- **Justification:** _Pending_
-- **Alternatives considered:** _Pending_
+### Testes de Carga
+- **Decisão:** _Pendente_
+- **Justificação:** _Pendente_
+- **Alternativas consideradas:** _Pendente_
 
-## Known Constraints
+## Restrições Conhecidas
 
 - Requisitos de performance de DEF-02
 - Infraestrutura AKS/OpenShift (DEF-10)
 - BFF .NET 8 com suporte a Redis (DEC-010)
 - Estrategia de resiliencia definida em DEF-09
 
-## Related Decisions
+## Decisões Relacionadas
 
 - [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Containers e auto-scaling
 - [DEC-007-arquitetura-bff.md](../decisions/DEC-007-arquitetura-bff.md) - Arquitetura BFF
 - [DEC-009-stack-tecnologica-frontend.md](../decisions/DEC-009-stack-tecnologica-frontend.md) - Stack frontend
 - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack backend
 
-## References
+## Referências
 
 - [DEF-02-requisitos-nao-funcionais.md](DEF-02-requisitos-nao-funcionais.md) - NFRs de performance
 - [DEF-05-padroes-resiliencia.md](DEF-05-padroes-resiliencia.md) - Padroes de resiliencia

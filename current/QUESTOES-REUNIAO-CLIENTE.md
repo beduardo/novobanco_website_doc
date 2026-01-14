@@ -3,7 +3,7 @@
 **Data:** 2026-01-13
 **Projeto:** HomeBanking Web - HLD
 **Objetivo:** Esclarecer questoes pendentes nas definicoes do HLD
-**Versao:** 2.1 (adicionadas questoes de autenticacao)
+**Versão:** 2.3 (consolidação de itens pendentes das definições)
 
 ---
 
@@ -143,22 +143,40 @@
 - Existe message broker em uso (RabbitMQ, Kafka, Azure Service Bus)?
 - Quais eventos sao publicados/consumidos pelo canal web?
 
+### 23. HSM - Hardware Security Module (DEF-09-integracao-interfaces) [NOVO]
+
+- Qual HSM e utilizado pelo banco (Thales, AWS CloudHSM, Azure Dedicated HSM)?
+- Quais operacoes do canal web requerem HSM (assinatura digital, encriptacao)?
+- A integracao HSM ja esta disponivel via Backend API?
+
+### 24. Identity Provider / SSO (DEF-09-integracao-interfaces) [NOVO]
+
+- Existe Identity Provider corporativo (Azure AD, Okta, outro)?
+- Ha requisitos de SSO entre o canal web e outros sistemas internos?
+- O Identity Provider e o mesmo utilizado pela app mobile?
+
+### 25. Document Management System (DEF-09-integracao-interfaces) [NOVO]
+
+- Existe DMS centralizado para extratos e comprovativos?
+- Os documentos sao gerados em tempo real ou pre-gerados?
+- Ha requisitos de assinatura digital em documentos?
+
 ---
 
 ## Prioridade Media - Performance e Cache
 
-### 23. Core Web Vitals (DEF-12-desempenho-fiabilidade)
+### 26. Core Web Vitals (DEF-12-desempenho-fiabilidade)
 
 - Quais metricas Core Web Vitals devem ser atingidas?
 - Ha requisitos especificos de bundle size maximo?
 
-### 24. Auto-scaling (DEF-12-desempenho-fiabilidade)
+### 27. Auto-scaling (DEF-12-desempenho-fiabilidade)
 
 - Sera configurado Horizontal Pod Autoscaler (HPA)?
 - Quais metricas devem disparar o auto-scaling?
 - Quais os limites minimo e maximo de replicas?
 
-### 25. Cache Strategy (DEF-06-arquitetura-dados)
+### 28. Cache Strategy (DEF-06-arquitetura-dados)
 
 - Qual o TTL para diferentes tipos de cache (sessao, publico, utilizador)?
 - Como sera invalidado o cache?
@@ -167,18 +185,18 @@
 
 ## Prioridade Normal - Implementacao e Go-Live
 
-### 26. Timeline (DEF-14-plano-migracao-implementacao)
+### 29. Timeline (DEF-14-plano-migracao-implementacao)
 
 - Qual a data prevista para go-live?
 - O lancamento sera faseado (pilot/beta) ou big-bang?
 - Qual a duracao prevista do periodo de hypercare?
 
-### 27. Cutover (DEF-14-plano-migracao-implementacao)
+### 30. Cutover (DEF-14-plano-migracao-implementacao)
 
 - Qual a estrategia de cutover preferida (big-bang, phased, parallel)?
 - Ha sistema HomeBanking web legado a substituir?
 
-### 28. Criterios Go/No-Go (DEF-14-plano-migracao-implementacao)
+### 31. Criterios Go/No-Go (DEF-14-plano-migracao-implementacao)
 
 - Quem sao os aprovadores para decisao de go-live?
 - Quais os criterios minimos obrigatorios?
@@ -187,17 +205,17 @@
 
 ## Prioridade Normal - Governacao
 
-### 29. Modelo de Trabalho (DEF-15-governacao-roadmap)
+### 32. Modelo de Trabalho (DEF-15-governacao-roadmap)
 
 - Qual a metodologia de projeto (Agile, SAFe, tradicional)?
 - Quem aprova decisoes tecnicas/arquiteturais?
 
-### 30. Change Management (DEF-15-governacao-roadmap)
+### 33. Change Management (DEF-15-governacao-roadmap)
 
 - Existe processo de Change Advisory Board (CAB)?
 - Quem aprova mudancas em producao?
 
-### 31. Roadmap (DEF-15-governacao-roadmap)
+### 34. Roadmap (DEF-15-governacao-roadmap)
 
 - Qual a cadencia de releases prevista?
 - Qual a percentagem de capacidade alocada para divida tecnica?
@@ -206,16 +224,89 @@
 
 ## Prioridade Normal - Testes
 
-### 32. Estrategia de Testes (DEF-13-estrategia-testes)
+### 35. Estrategia de Testes (DEF-13-estrategia-testes)
 
 - Qual a cobertura de codigo minima requerida?
 - Sera utilizado contract testing (Pact) para BFF<->Backend?
 - Ha ambiente com dados anonimizados de producao?
 
-### 33. Penetration Testing (DEF-08-seguranca-conformidade)
+### 36. Penetration Testing (DEF-08-seguranca-conformidade)
 
 - Ha penetration testing periodico?
 - Sera realizado pentest antes do go-live?
+
+---
+
+## Inconsistencias e Clarificacoes Necessarias [NOVO]
+
+As seguintes inconsistencias foram identificadas no cruzamento entre definicoes e decisoes:
+
+### 37. Retencao de Logs (DEF-02-requisitos-nao-funcionais vs DEC-008)
+
+- DEF-02-nfr marca "Falta aprofundamento" para politica de retencao
+- DEC-008 indica "definir politica conforme compliance"
+- **Questao:** Qual o requisito regulatorio especifico? (tipico bancario: 7 anos)
+
+### 38. Fluxo de Onboarding Web (DEF-09-integracao-interfaces)
+
+- Questao 6 indica KYC "ja implementado no backend"
+- Questao 7 sobre onboarding web esta "Necessita aprofundamento"
+- **Questao:** O canal web tera fluxo de onboarding/registo proprio ou apenas login para utilizadores ja registados na app mobile?
+
+### 39. Gateway de Pagamentos (DEF-09-integracao-interfaces)
+
+- Catalogo de dependencias indica: Criticidade Alta, status "A validar"
+- **Questao:** O Gateway de Pagamentos e o mesmo utilizado pela app mobile ou sera um novo?
+
+### 40. Notificacoes - Reutilizacao (DEF-09-integracao-interfaces)
+
+- Questoes 9-11 indicam "A definir no assessment"
+- **Questao:** Confirmar se SMS, Push e Email serao os mesmos servicos da app mobile (reutilizacao) ou novos providers
+
+---
+
+## Prioridade Média - Segurança Adicional [NOVO v2.3]
+
+### 41. Threat Modeling (DEF-08-seguranca-conformidade)
+
+- Qual metodologia será utilizada para threat modeling (STRIDE, PASTA, outra)?
+- Já foi realizada análise de ameaças para outros canais que possa ser reutilizada?
+
+### 42. WAF - Web Application Firewall (DEF-08-seguranca-conformidade)
+
+- Há WAF implementado na infraestrutura?
+- Se sim, qual solução (Azure WAF, F5, Cloudflare)?
+- Quais regras/políticas estão configuradas?
+
+### 43. Segregação de Dados entre Ambientes (DEF-08-seguranca-conformidade)
+
+- Qual a política de segregação de dados entre ambientes (dev/qa/prod)?
+- É permitido uso de dados de produção em ambientes inferiores?
+- Há processo de anonimização de dados para testes?
+
+---
+
+## Prioridade Média - Observabilidade Adicional [NOVO v2.3]
+
+### 44. Tracing Distribuído (DEF-11-observabilidade-operacoes)
+
+- Será implementado tracing distribuído (OpenTelemetry, Jaeger)?
+- Como será feita a correlação de requests entre Frontend e BFF (correlation-id)?
+
+### 45. Load Testing (DEF-12-desempenho-fiabilidade)
+
+- Qual ferramenta de load testing será utilizada (k6, JMeter, Gatling)?
+- Há ambiente dedicado para testes de carga?
+- Quais cenários de carga devem ser validados antes do go-live?
+
+---
+
+## Prioridade Normal - UX Adicional [NOVO v2.3]
+
+### 46. Pontos de Dor App Mobile (DEF-04-ux-guidelines)
+
+- Existem pontos de dor conhecidos na app mobile que devem ser evitados no canal web?
+- Há feedback de utilizadores documentado sobre a app mobile?
 
 ---
 
@@ -226,12 +317,16 @@
 | Arquitetura (PWA, Sessao, Autenticacao) | 8 | Alta |
 | Seguranca/Conformidade | 5 | Alta |
 | Infraestrutura/Operacoes | 4 | Media |
-| Integracoes | 5 | Media |
+| Integracoes (incl. HSM, SSO, DMS) | 8 | Media |
 | Performance/Cache | 3 | Media |
 | Implementacao | 3 | Normal |
 | Governacao | 3 | Normal |
 | Testes | 2 | Normal |
-| **Total** | **33** | - |
+| Inconsistencias/Clarificacoes | 4 | Alta |
+| Segurança Adicional (v2.3) | 3 | Média |
+| Observabilidade Adicional (v2.3) | 2 | Média |
+| UX Adicional (v2.3) | 1 | Normal |
+| **Total** | **46** | - |
 
 ---
 
@@ -272,3 +367,5 @@ _Espaco para anotacoes durante a reuniao_
 | 1.0 | 2026-01-11 | Versao inicial |
 | 2.0 | 2026-01-13 | Revisao apos consolidacao de duplicacoes nas definicoes. Adicionadas 4 questoes novas (CDN, Sessao Multi-Canal, Feature Flags, Core Web Vitals). Removidas questoes ja respondidas. Reorganizado por prioridade. |
 | 2.1 | 2026-01-13 | Adicionadas 4 questoes de autenticacao pendentes das decisoes DEC-001/DEC-002: Fluxos Fallback (#3), Primeiro Acesso Web (#4), Politicas Password (#5), Anti-automacao e Revogacao (#6). Total de questoes: 33. |
+| 2.2 | 2026-01-13 | Adicionadas 7 questoes de integracao (HSM #23, SSO #24, DMS #25) e 4 questoes de inconsistencias identificadas no cruzamento DEF/DEC (#37-40). Renumeracao de questoes. Total de questoes: 40. |
+| 2.3 | 2026-01-14 | Consolidação de itens pendentes das definições DEF-04, DEF-08, DEF-10, DEF-11, DEF-12. Adicionadas 6 questões: Threat Modeling (#41), WAF (#42), Segregação Ambientes (#43), Tracing (#44), Load Testing (#45), Pontos de Dor Mobile (#46). Correcção ortográfica (português europeu). Total: 46 questões. |

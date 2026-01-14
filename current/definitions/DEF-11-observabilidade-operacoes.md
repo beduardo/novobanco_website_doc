@@ -20,13 +20,13 @@ status: structure
 
 # DEF-11: Observabilidade & Operacoes
 
-> **Related section:** [11 - Observabilidade & Operacoes](../sections/SEC-11-observabilidade-operacoes.md)
+> **Secção relacionada:** [11 - Observabilidade & Operacoes](../sections/SEC-11-observabilidade-operacoes.md)
 
-## Context
+## Contexto
 
 Definir a estrategia de observabilidade do HomeBanking Web, incluindo logging centralizado, metricas, tracing distribuido, alertas e dashboards operacionais. A stack ELK ja foi definida como base (DEC-008).
 
-## Questions to Answer
+## Perguntas a Responder
 
 ### Stack de Observabilidade
 
@@ -88,40 +88,40 @@ Definir a estrategia de observabilidade do HomeBanking Web, incluindo logging ce
 14. Quais dashboards operacionais sao necessarios?
     Necessita aprofundamento. Minimo: health overview, performance, errors
 
-## Decisions
+## Decisões
 
-### Observability Stack
-- **Decision:** ELK Stack (DEC-008 aceite)
-- **Justification:** Reutilizacao de infraestrutura existente
-- **Alternatives considered:** Prometheus/Grafana, Datadog, Jaeger+Loki
+### Stack de Observabilidade
+- **Decisão:** ELK Stack (DEC-008 aceite)
+- **Justificação:** Reutilizacao de infraestrutura existente
+- **Alternativas consideradas:** Prometheus/Grafana, Datadog, Jaeger+Loki
 
-### Distributed Tracing
-- **Decision:** _Pending_
-- **Justification:** _Pending_
-- **Alternatives considered:** _Pending_
+### Tracing Distribuido
+- **Decisão:** _Pendente_
+- **Justificação:** _Pendente_
+- **Alternativas consideradas:** _Pendente_
 
 ### Alerting
-- **Decision:** _Pending_
-- **Justification:** _Pending_
-- **Alternatives considered:** _Pending_
+- **Decisão:** _Pendente_
+- **Justificação:** _Pendente_
+- **Alternativas consideradas:** _Pendente_
 
 ### SLOs
-- **Decision:** _Pending_
-- **Justification:** _Pending_
-- **Alternatives considered:** _Pending_
+- **Decisão:** _Pendente_
+- **Justificação:** _Pendente_
+- **Alternativas consideradas:** _Pendente_
 
-## Known Constraints
+## Restrições Conhecidas
 
 - Stack ELK como base (DEC-008)
 - Requisitos de auditoria bancaria
-- Retencao de logs conforme compliance
+- Retenção de logs conforme compliance
 - Mascaramento de dados sensiveis (PII)
 
-## Related Decisions
+## Decisões Relacionadas
 
 - [DEC-008-stack-observabilidade-elk.md](../decisions/DEC-008-stack-observabilidade-elk.md) - Stack de observabilidade
 
-## References
+## Referências
 
 - [DEF-02-requisitos-nao-funcionais.md](DEF-02-requisitos-nao-funcionais.md) - SLAs
 - [DEF-10-arquitetura-operacional.md](DEF-10-arquitetura-operacional.md) - Infraestrutura

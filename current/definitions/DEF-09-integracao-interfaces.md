@@ -14,20 +14,38 @@ hubs:
   - "[[nextreality]]"
 para-code: R
 reviewed: true
-status: structure
+status: in-progress
 ---
 
 # DEF-09: Integracao & Interfaces Externas
 
-> **Related section:** [9 - Integracao & Interfaces Externas](../sections/SEC-09-integracao-interfaces-externas.md)
+> **Secção relacionada:** [9 - Integracao & Interfaces Externas](../sections/SEC-09-integracao-interfaces-externas.md)
 
-## Context
+## Contexto
 
 Definir as integracoes do HomeBanking Web com sistemas internos e externos. O canal web reutiliza a infraestrutura da app mobile, portanto muitas integracoes ja existem. Este documento foca nas especificidades do canal web e decisoes de integracao.
 
-## Questions to Answer
+## Catalogo de Dependencias Externas
 
-### Integracao Core Banking
+| Sistema | Tipo | Proprietario | Criticidade | Status |
+|---------|------|--------------|-------------|--------|
+| Core Banking APIs | Integracao | NovoBanco | Alta | Existente |
+| App Mobile Nativa | Referencia | NovoBanco | Media | Existente |
+| Azure Infrastructure | Plataforma | NovoBanco | Alta | Existente |
+| Gateway de Pagamentos | Integracao | [A DEFINIR] | Alta | A validar |
+| KYC/AML Provider | Integracao | [A DEFINIR] | Alta | A validar |
+| SMS Gateway | Integracao | [A DEFINIR] | Alta | A definir no assessment |
+| Push Notifications Service | Integracao | [A DEFINIR] | Media | A definir no assessment |
+| Document Management System | Integracao | [A DEFINIR] | Media | A validar |
+| HSM (Hardware Security Module) | Seguranca | [A DEFINIR] | Alta | A validar |
+| Identity Provider (SSO) | Autenticacao | [A DEFINIR] | Media | A validar |
+| Email Service Provider | Notificacoes | [A DEFINIR] | Media | A definir no assessment |
+
+> **Nota:** Sistemas marcados como "Existente" ja estao integrados na app mobile e serao reutilizados.
+
+## Perguntas a Responder
+
+### Integração Core Banking
 
 1. Quais servicos do Core Banking serao consumidos pelo canal web?
     Não há acesso direto. O BFF irá acessar uma api chamada Backend API (Um Facade geral) que se encarregará de acionar os backends devidos conforme chamads.
@@ -142,46 +160,102 @@ Definir as integracoes do HomeBanking Web com sistemas internos e externos. O ca
 31. Ha ambiente de sandbox para testes de integracao?
     Necessita aprofundamento
 
-## Decisions
+### HSM (Hardware Security Module)
 
-### Core Banking Integration
-- **Decision:** _Pending_
-- **Justification:** _Pending_
-- **Alternatives considered:** _Pending_
+32. Qual HSM e utilizado pelo banco (Thales, AWS CloudHSM, Azure Dedicated HSM)?
+    Necessita aprofundamento
 
-### Third-party Providers
-- **Decision:** _Pending_
-- **Justification:** _Pending_
-- **Alternatives considered:** _Pending_
+33. Quais operacoes do canal web requerem HSM (assinatura digital, encriptacao de dados sensiveis)?
+    Necessita aprofundamento
+
+34. Existe integracao HSM ja disponivel via Backend API?
+    Necessita aprofundamento
+
+35. O HSM e utilizado para armazenamento de chaves de encriptacao de tokens?
+    Necessita aprofundamento
+
+### Identity Provider / SSO
+
+36. Existe Identity Provider corporativo (Azure AD, Okta, outro)?
+    Necessita aprofundamento
+
+37. Ha requisitos de SSO com outros sistemas internos do banco?
+    Necessita aprofundamento
+
+38. O SSO e aplicavel ao canal web ou apenas a sistemas internos/backoffice?
+    Necessita aprofundamento
+
+39. O Identity Provider e o mesmo utilizado pela app mobile?
+    Necessita aprofundamento
+
+### Document Management System
+
+40. Existe DMS centralizado para extratos e comprovativos?
+    Necessita aprofundamento
+
+41. Os documentos sao gerados em tempo real ou pre-gerados?
+    Necessita aprofundamento
+
+42. Qual o formato de documentos suportado (PDF, outro)?
+    Necessita aprofundamento
+
+43. Ha requisitos de assinatura digital em documentos?
+    Necessita aprofundamento
+
+### Notificacoes - Detalhamento
+
+44. SMS Gateway, Push e Email serao os mesmos servicos da app mobile?
+    Necessita aprofundamento
+
+45. Ha requisitos de templates de notificacao especificos para o canal web?
+    Necessita aprofundamento
+
+46. Existe servico de preferencias de notificacao do utilizador?
+    Necessita aprofundamento
+
+47. Ha requisitos de notificacoes em tempo real (WebSocket) para o canal web?
+    Necessita aprofundamento
+
+## Decisões
+
+### Integração Core Banking
+- **Decisão:** _Pendente_
+- **Justificação:** _Pendente_
+- **Alternativas consideradas:** _Pendente_
+
+### Fornecedores Terceiros
+- **Decisão:** _Pendente_
+- **Justificação:** _Pendente_
+- **Alternativas consideradas:** _Pendente_
 
 ### Message Broker
-- **Decision:** _Pending_
-- **Justification:** _Pending_
-- **Alternatives considered:** _Pending_
+- **Decisão:** _Pendente_
+- **Justificação:** _Pendente_
+- **Alternativas consideradas:** _Pendente_
 
 ### Open Banking
-- **Decision:** _Pending_
-- **Justification:** _Pending_
-- **Alternatives considered:** _Pending_
+- **Decisão:** _Pendente_
+- **Justificação:** _Pendente_
+- **Alternativas consideradas:** _Pendente_
 
-### Error Handling
-- **Decision:** _Pending_
-- **Justification:** _Pending_
-- **Alternatives considered:** _Pending_
+### Tratamento de Erros
+- **Decisão:** _Pendente_
+- **Justificação:** _Pendente_
+- **Alternativas consideradas:** _Pendente_
 
-## Known Constraints
+## Restrições Conhecidas
 
 - Reutilizacao da infraestrutura da app mobile
 - Integracao via BFF (nao ha acesso direto do frontend a sistemas externos)
 - Conformidade PSD2 para Open Banking
 - SLAs de disponibilidade do Core Banking
 
-## Related Decisions
+## Decisões Relacionadas
 
 - [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - BFF como ponto unico de integracao
 - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack tecnologica backend
 
-## References
+## Referências
 
 - [DEF-05-arquitetura-bff.md](DEF-05-arquitetura-bff.md) - Arquitetura BFF
 - [DEF-05-api-design.md](DEF-05-api-design.md) - Padroes de API
