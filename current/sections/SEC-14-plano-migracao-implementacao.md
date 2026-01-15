@@ -14,267 +14,233 @@ hubs:
   - "[[nextreality]]"
 para-code: R
 reviewed: true
-status: in-progress
+status: completed
 ---
 
 # 14. Plano de Migracao & Implementacao
 
-> **Required definitions:** [DEF-14-plano-migracao-implementacao.md](../definitions/DEF-14-plano-migracao-implementacao.md)
-> **Related decisions:**
-> - [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Status: accepted
+> **Definicao:** [DEF-14-plano-migracao-implementacao.md](../definitions/DEF-14-plano-migracao-implementacao.md)
 
 ## Proposito
 
-Definir o plano de migracao e implementacao do HomeBanking Web, incluindo roadmap, estrategia de cutover, coexistencia com sistemas legados, migracao de dados, criterios go/no-go, procedimentos de rollback, plano de comunicacao, formacao e periodo de hypercare.
+Definir o plano de migracao e implementacao do HomeBanking Web, incluindo roadmap, estrategia de cutover, coexistencia com app mobile, criterios go/no-go, procedimentos de rollback, beta testing e periodo de hypercare.
 
 ## Conteudo
 
 ### 14.1 Roadmap de Implementacao
 
-_O roadmap de implementacao necessita aprofundamento._
-
-| Aspecto | Status |
-|---------|--------|
-| Data prevista go-live | Necessita aprofundamento |
-| Fases de implementacao | Necessita aprofundamento |
-| MVP definido | Necessita aprofundamento |
-| Dependencias externas | Necessita aprofundamento |
-
-#### Fases (Proposta)
-
 ```plantuml
 @startuml
 skinparam backgroundColor white
 
-title Roadmap de Implementacao (Proposta)
+title Roadmap de Implementacao - HomeBanking Web
 
-concise "Fase" as F
+project starts 2026-02-01
 
-@0
-F is "Setup"
+[Fase 0: Setup] as setup lasts 4 weeks
+[Fase 1: MVP Core] as mvp lasts 12 weeks
+[Fase 2: Features Completas] as features lasts 8 weeks
+[Fase 3: Beta/UAT] as beta lasts 4 weeks
+[Fase 4: Go-Live] as golive lasts 2 weeks
+[Fase 5: Hypercare] as hypercare lasts 4 weeks
 
-@4
-F is "MVP"
-
-@12
-F is "Beta"
-
-@16
-F is "Go-Live"
-
-@20
-F is "Hypercare"
-
-@24
-F is "BAU"
-
-@F
-0 <-> 4 : Infraestrutura\ne Setup Inicial
-4 <-> 12 : Desenvolvimento\nMVP
-12 <-> 16 : Beta Testing\ne Ajustes
-16 <-> 20 : Lancamento\nGradual
-20 <-> 24 : Suporte\nIntensivo
+setup -> mvp
+mvp -> features
+features -> beta
+beta -> golive
+golive -> hypercare
 
 @enduml
 ```
 
-| Fase | Descricao | Duracao | Status |
-|------|-----------|---------|--------|
-| **1. Setup** | Infraestrutura, pipelines, ambientes | Necessita aprofundamento | Pendente |
-| **2. MVP** | Funcionalidades core | Necessita aprofundamento | Pendente |
-| **3. Beta** | Testes com utilizadores reais | Necessita aprofundamento | Pendente |
-| **4. Go-Live** | Lancamento em producao | Necessita aprofundamento | Pendente |
-| **5. Hypercare** | Suporte intensivo | Necessita aprofundamento | Pendente |
+| Fase | Duracao | Entregas |
+|------|---------|----------|
+| **0: Setup** | 4 semanas | Infraestrutura, pipelines CI/CD, ambientes, design system base |
+| **1: MVP Core** | 12 semanas | Login (4 fluxos), Dashboard, Contas, Saldos, Transferencias |
+| **2: Features** | 8 semanas | Restantes 35 funcionalidades (paridade mobile) |
+| **3: Beta/UAT** | 4 semanas | Testes UAT, correcoes, pentest |
+| **4: Go-Live** | 2 semanas | Cutover, lancamento controlado |
+| **5: Hypercare** | 4 semanas | Suporte intensivo, monitorizacao, ajustes |
 
-#### MVP - Funcionalidades (Proposta)
+### 14.2 MVP - Funcionalidades Core
 
-_As funcionalidades do MVP necessitam aprofundamento._
+| Funcionalidade | Prioridade | Complexidade |
+|----------------|------------|--------------|
+| Login QR Code (principal) | P1 | Alta |
+| Login tradicional (fallback) | P1 | Media |
+| Dashboard / Home | P1 | Media |
+| Consulta de contas | P1 | Baixa |
+| Consulta de saldos | P1 | Baixa |
+| Transferencias nacionais | P1 | Alta |
+| Pagamentos de servicos | P1 | Alta |
+| Logout | P1 | Baixa |
 
-| Funcionalidade | Prioridade | Status |
-|----------------|------------|--------|
-| Login/Autenticacao | Alta | Necessita aprofundamento |
-| Dashboard (saldo) | Alta | Necessita aprofundamento |
-| Extrato de conta | Alta | Necessita aprofundamento |
-| Transferencias | Alta | Necessita aprofundamento |
-| Pagamentos | Alta | Necessita aprofundamento |
-| Cartoes (consulta) | Media | Necessita aprofundamento |
-| Perfil utilizador | Media | Necessita aprofundamento |
+### 14.3 Estrategia de Cutover
 
-### 14.2 Estrategia de Cutover
-
-_A estrategia de cutover necessita aprofundamento._
-
-| Aspecto | Status |
-|---------|--------|
-| Estrategia (big bang/phased/parallel) | Necessita aprofundamento |
-| Janela de cutover | Necessita aprofundamento |
-| Tempo estimado | Necessita aprofundamento |
-
-#### Opcoes de Cutover
-
-| Estrategia | Descricao | Risco | Complexidade |
-|------------|-----------|-------|--------------|
-| **Big Bang** | Substituicao total num unico momento | Alto | Baixa |
-| **Phased** | Rollout gradual por funcionalidade | Medio | Media |
-| **Parallel** | Sistemas coexistem por periodo | Baixo | Alta |
-
-#### Fluxo de Cutover (Proposta)
+**Abordagem:** Lancamento Gradual (Phased Rollout) com Feature Flags
 
 ```plantuml
 @startuml
 skinparam backgroundColor white
 
-title Cutover Flow (Proposta)
+title Estrategia de Lancamento Gradual
 
+|Semana 1|
 start
+:Beta privado;
+note right: 100 utilizadores internos
 
-:Pre-Cutover Checklist;
-note right: Validar criterios go/no-go
+|Semana 2|
+:Beta controlado;
+note right: 500 utilizadores selecionados
 
-:Freeze Changes;
-note right: Code freeze 24h antes
+|Semana 3|
+:Lancamento parcial;
+note right: 20% dos utilizadores
 
-:Final Backup;
-
-:Deploy para Producao;
-
-if (Smoke Tests OK?) then (sim)
-  :DNS Switch / Load Balancer Update;
-  :Validacao Pos-Deploy;
-
-  if (Validacao OK?) then (sim)
-    :Go-Live Confirmado;
-    :Comunicacao aos Utilizadores;
-    stop
-  else (nao)
-    :Avaliar Rollback;
-  endif
-else (nao)
-  :Rollback Imediato;
-endif
-
-:Rollback Executado;
-:Post-Mortem;
+|Semana 4|
+:Lancamento geral;
+note right: 100% dos utilizadores
 
 stop
 
 @enduml
 ```
 
-### 14.3 Coexistencia com Legado
+#### Criterios de Progressao
 
-_Os detalhes de coexistencia necessitam aprofundamento._
+| Etapa | Condicao para Avancar |
+|-------|----------------------|
+| Beta -> Lancamento Parcial | 0 bugs criticos, taxa de erro < 1% |
+| Parcial -> Geral | SLOs cumpridos, feedback positivo, 0 P1 abertos |
 
-| Aspecto | Status |
-|---------|--------|
-| Sistema legado existente | Necessita aprofundamento |
-| Estrategia de coexistencia | Necessita aprofundamento |
-| Periodo de transicao | Necessita aprofundamento |
-| URLs retrocompativeis | Necessita aprofundamento |
+#### Feature Flags para Rollout
 
-**Nota:** Conforme CONTEXT.md, a aplicacao reutiliza infraestrutura e servicos da app mobile nativa, o que minimiza necessidade de migracao de backend.
+| Flag | Descricao | Default |
+|------|-----------|---------|
+| `enable_web_banking` | Habilita acesso ao canal web | false |
+| `enable_qr_login` | Habilita login via QR Code | true |
+| `enable_transfers` | Habilita transferencias | true |
+| `maintenance_mode` | Modo manutencao (bloqueia acessos) | false |
 
-### 14.4 Migracao de Dados
-
-_Os detalhes de migracao de dados necessitam aprofundamento._
-
-| Aspecto | Status |
-|---------|--------|
-| Dados a migrar | Necessita aprofundamento |
-| Estrategia de migracao | Necessita aprofundamento |
-| Validacao pos-migracao | Necessita aprofundamento |
-
-**Nota:** Os dados de negocio sao geridos pelo Backend API (sistemas core), que ja suporta a app mobile. A migracao de dados do cliente e minima.
-
-#### Dados Potenciais para Migracao
-
-| Tipo de Dado | Origem | Destino | Status |
-|--------------|--------|---------|--------|
-| Preferencias de utilizador (legado) | Necessita aprofundamento | Necessita aprofundamento | Pendente |
-| Configuracoes de app | Necessita aprofundamento | Necessita aprofundamento | Pendente |
-| Historico de sessoes | Necessita aprofundamento | Necessita aprofundamento | Pendente |
-
-### 14.5 Criterios Go/No-Go
-
-_Os criterios go/no-go necessitam aprofundamento._
-
-#### Criterios Funcionais (Proposta)
-
-| Criterio | Descricao | Status |
-|----------|-----------|--------|
-| Funcionalidades MVP completas | Todas as features do MVP implementadas | Necessita aprofundamento |
-| Testes E2E a passar | Suite de testes criticos sem falhas | Necessita aprofundamento |
-| UAT aprovado | Sign-off do cliente | Necessita aprofundamento |
-| Integracao Backend API | Todas as integracoes funcionais | Necessita aprofundamento |
-
-#### Criterios Nao Funcionais (Proposta)
-
-| Criterio | Target | Status |
-|----------|--------|--------|
-| Performance (P95 < 3s) | DEF-02 | Necessita aprofundamento |
-| Load test (400 users) | DEF-02 | Necessita aprofundamento |
-| Disponibilidade (ambiente QA) | 99.9% | Necessita aprofundamento |
-
-#### Criterios de Seguranca (Proposta)
-
-| Criterio | Descricao | Status |
-|----------|-----------|--------|
-| SAST sem findings Critical/High | Scan de seguranca limpo | Necessita aprofundamento |
-| DAST sem findings Critical | Testes dinamicos aprovados | Necessita aprofundamento |
-| Penetration test | Se aplicavel | Necessita aprofundamento |
-| Revisao de seguranca | Sign-off da equipa de seguranca | Necessita aprofundamento |
-
-#### Aprovadores
-
-| Papel | Responsavel | Status |
-|-------|-------------|--------|
-| Product Owner | Necessita aprofundamento | Pendente |
-| Tech Lead | Necessita aprofundamento | Pendente |
-| Security | Necessita aprofundamento | Pendente |
-| Operations | Necessita aprofundamento | Pendente |
-
-### 14.6 Procedimentos de Rollback
-
-_Os procedimentos de rollback necessitam aprofundamento._
-
-| Aspecto | Status |
-|---------|--------|
-| Estrategia de rollback | Necessita aprofundamento |
-| Tempo maximo para decisao | Necessita aprofundamento |
-| Runbook documentado | Necessita aprofundamento |
-
-#### Estrategia (Proposta)
+### 14.4 Coexistencia com App Mobile
 
 ```plantuml
 @startuml
 skinparam backgroundColor white
 
-title Rollback Strategy (Proposta)
+title Coexistencia Web + Mobile
+
+actor Cliente
+
+rectangle "App Mobile" as mobile {
+    card "Todas as features"
+    card "QR Code authorization"
+}
+
+rectangle "HomeBanking Web" as web {
+    card "35 features (paridade)"
+    card "Depende da App para login"
+}
+
+rectangle "Backend API" as backend {
+    card "APIs compartilhadas"
+    card "Sessoes independentes"
+}
+
+Cliente --> mobile : Usa
+Cliente --> web : Usa
+mobile --> backend : API calls
+web --> backend : API calls (via BFF)
+mobile ..> web : Autoriza login
+
+note bottom of web
+Web depende da App para:
+- Login via QR Code
+- Confirmacao de transacoes (SCA)
+end note
+
+@enduml
+```
+
+| Aspecto | Comportamento |
+|---------|---------------|
+| Sessoes simultaneas | Permitidas (Web + Mobile) |
+| Logout | Independente por canal |
+| Tokens | Separados (App vs Web BFF) |
+
+### 14.5 Migracao de Dados
+
+> **Conclusao:** O canal web e **stateless** e nao requer migracao de dados. Todos os dados de negocio estao no backend existente que ja serve a App Mobile.
+
+| Tipo de Dado | Migracao Necessaria? | Notas |
+|--------------|---------------------|-------|
+| Dados de utilizadores | Nao | Backend existente |
+| Contas e saldos | Nao | Backend existente |
+| Historico de transacoes | Nao | Backend existente |
+| Preferencias de utilizador | Nao | Geridas no backend |
+| Configuracoes do sistema | Nao | Novas configs para Web |
+
+### 14.6 Criterios Go/No-Go
+
+#### Checklist Pre-Go-Live
+
+| Categoria | Criterio | Bloqueante |
+|-----------|----------|------------|
+| **Funcional** | 100% dos testes E2E criticos passam | Sim |
+| **Funcional** | UAT aprovado pelo PO | Sim |
+| **Performance** | Load test 400 users OK | Sim |
+| **Performance** | SLOs validados (99.9%, < 3s) | Sim |
+| **Seguranca** | Pentest concluido | Sim |
+| **Seguranca** | 0 vulnerabilidades criticas/altas | Sim |
+| **Seguranca** | SAST/DAST sem findings criticos | Sim |
+| **Operacional** | Runbooks documentados | Sim |
+| **Operacional** | Alertas configurados | Sim |
+| **Operacional** | Dashboards operacionais prontos | Sim |
+| **Operacional** | Equipa de suporte treinada | Sim |
+| **Legal** | Aprovacao compliance | Sim |
+
+#### Comite de Aprovacao
+
+| Papel | Responsabilidade |
+|-------|------------------|
+| Tech Lead | Validacao tecnica |
+| PO / Product Manager | Validacao funcional |
+| Security Officer | Validacao de seguranca |
+| Operations Lead | Validacao operacional |
+| Sponsor | Aprovacao final |
+
+### 14.7 Procedimentos de Rollback
+
+```plantuml
+@startuml
+skinparam backgroundColor white
+
+title Procedimento de Rollback
 
 start
+:Incidente detectado;
+:Avaliar severidade;
 
-:Incidente Detetado;
+if (Severidade P1?) then (sim)
+    :Decisao de rollback (Tech Lead);
+    :Comunicar stakeholders;
 
-:Avaliar Severidade;
-
-if (P1 - Critical?) then (sim)
-  :Rollback Imediato;
-  note right: < 30 minutos
-else (nao)
-  if (P2 - High?) then (sim)
-    :Avaliar Impacto;
-    if (Fix rapido possivel?) then (sim)
-      :Hotfix;
+    if (Feature flag disponivel?) then (sim)
+        :Desativar feature flag;
+        note right: Rollback instantaneo
     else (nao)
-      :Rollback;
+        :kubectl rollout undo;
+        note right: Rollback de deployment
     endif
-  else (nao)
-    :Fix em proxima release;
-  endif
-endif
 
-:Comunicacao;
-:Post-Mortem;
+    :Validar servico restaurado;
+    :Abrir post-mortem;
+else (nao)
+    :Investigar root cause;
+    :Planear hotfix;
+    :Agendar deploy corretivo;
+endif
 
 stop
 
@@ -283,181 +249,89 @@ stop
 
 #### Tipos de Rollback
 
-| Tipo | Descricao | Tempo Estimado |
-|------|-----------|----------------|
-| **Container rollback** | Reverter para imagem anterior | < 5 min |
-| **DNS rollback** | Redirecionar para sistema anterior | < 2 min |
-| **Feature flag** | Desativar funcionalidade especifica | Imediato |
-| **Full rollback** | Reverter toda a implementacao | Necessita aprofundamento |
+| Tipo | Tempo | Quando Usar |
+|------|-------|-------------|
+| Feature Flag | Instantaneo | Problema em feature especifica |
+| Deployment | 2-5 min | Problema geral na versao |
+| Full Rollback | 15-30 min | Problema sistemico |
 
-### 14.7 Plano de Comunicacao
+### 14.8 Beta Testing
 
-_O plano de comunicacao necessita aprofundamento._
+| Fase | Duracao | Participantes | Objetivo |
+|------|---------|---------------|----------|
+| Alpha | 1 semana | Equipa interna (50) | Smoke testing |
+| Beta fechado | 2 semanas | Colaboradores selecionados (500) | Funcional completo |
+| Beta aberto | 1 semana | Early adopters (2000) | Stress real |
 
-| Aspecto | Status |
-|---------|--------|
-| Comunicacao pre-lancamento | Necessita aprofundamento |
-| Canais de comunicacao | Necessita aprofundamento |
-| Comunicacao pos-lancamento | Necessita aprofundamento |
+#### Criterios de Selecao Beta
 
-#### Timeline de Comunicacao (Proposta)
+| Criterio | Justificacao |
+|----------|--------------|
+| Utilizadores ativos da App | Familiarizados com fluxos |
+| Diferentes perfis | Standard, Premium, Empresas |
+| Diferentes regioes | Testar latencia |
+| Tech-savvy | Feedback qualitativo |
 
-| Momento | Mensagem | Canal | Status |
-|---------|----------|-------|--------|
-| T-4 semanas | Anuncio de novo HomeBanking | Necessita aprofundamento | Pendente |
-| T-2 semanas | Preview de funcionalidades | Necessita aprofundamento | Pendente |
-| T-1 semana | Instrucoes de acesso | Necessita aprofundamento | Pendente |
-| Go-Live | Lancamento oficial | Necessita aprofundamento | Pendente |
-| T+1 semana | Follow-up e feedback | Necessita aprofundamento | Pendente |
+#### Feedback Collection
 
-### 14.8 Formacao
+| Canal | Tipo de Feedback |
+|-------|------------------|
+| In-app widget | Bugs e sugestoes |
+| Formulario dedicado | Feedback estruturado |
+| Analytics | Comportamento (heatmaps, funnels) |
+| Entrevistas | Qualitativo (amostra) |
 
-_O plano de formacao necessita aprofundamento._
+### 14.9 Hypercare Period
 
-| Aspecto | Status |
-|---------|--------|
-| Formacao equipas internas | Necessita aprofundamento |
-| Formacao utilizadores finais | Necessita aprofundamento |
-| Documentacao de utilizador | Necessita aprofundamento |
+| Aspecto | Especificacao |
+|---------|---------------|
+| **Duracao** | 4 semanas apos go-live |
+| **Cobertura** | 24/7 na primeira semana, 8-20h restantes |
+| **Equipa** | Dev + Ops + Suporte dedicados |
 
-#### Audiencias (Proposta)
+#### Actividades por Semana
 
-| Audiencia | Tipo de Formacao | Status |
-|-----------|------------------|--------|
-| Equipa de Suporte | Tecnica + Funcional | Necessita aprofundamento |
-| Equipa de Operacoes | Tecnica (runbooks) | Necessita aprofundamento |
-| Utilizadores Finais | Self-service (guias) | Necessita aprofundamento |
+| Semana | Foco |
+|--------|------|
+| 1 | Monitorizacao intensiva, resolucao imediata de bugs |
+| 2 | Estabilizacao, ajustes de performance |
+| 3 | Optimizacao, resolucao de feedback |
+| 4 | Transicao para operacao normal |
 
-### 14.9 Pilot/Beta Testing
+#### Criterios de Saida do Hypercare
 
-_Os detalhes de beta testing necessitam aprofundamento._
+| Criterio | Threshold |
+|----------|-----------|
+| Bugs P1/P2 abertos | 0 |
+| SLOs cumpridos | 3 dias consecutivos |
+| Taxa de erro | < 0.1% |
+| Feedback negativo | < 5% |
 
-| Aspecto | Status |
-|---------|--------|
-| Pilot previsto | Necessita aprofundamento |
-| Criterio de selecao | Necessita aprofundamento |
-| Duracao | Necessita aprofundamento |
-| Metricas de sucesso | Necessita aprofundamento |
+### 14.10 Comunicacao e Formacao
 
-#### Estrategia (Proposta)
+#### Plano de Comunicacao
 
-```plantuml
-@startuml
-skinparam backgroundColor white
+| Audiencia | Canal | Mensagem | Timing |
+|-----------|-------|----------|--------|
+| Utilizadores | Email + App | Lancamento do novo canal | 2 semanas antes |
+| Utilizadores | Landing page | Features e beneficios | Go-live |
+| Suporte | Training | Novos fluxos e FAQs | 1 semana antes |
+| Internos | Intranet | Anuncio de lancamento | Go-live |
 
-title Beta Testing Strategy (Proposta)
+#### Formacao
 
-rectangle "Fase 1\nInternal Beta" as P1 #LightBlue
-rectangle "Fase 2\nClosed Beta" as P2 #LightGreen
-rectangle "Fase 3\nOpen Beta" as P3 #LightYellow
-rectangle "Go-Live" as GL #LightGray
-
-P1 --> P2 : Validacao interna OK
-P2 --> P3 : Metricas OK
-P3 --> GL : Criterios go/no-go OK
-
-note bottom of P1
-  - Colaboradores
-  - 1-2 semanas
-end note
-
-note bottom of P2
-  - Utilizadores selecionados
-  - 2-4 semanas
-end note
-
-note bottom of P3
-  - Rollout gradual
-  - 1-2 semanas
-end note
-
-@enduml
-```
-
-### 14.10 Hypercare Period
-
-_Os detalhes do periodo de hypercare necessitam aprofundamento._
-
-| Aspecto | Status |
-|---------|--------|
-| Duracao | Necessita aprofundamento |
-| Equipa de suporte | Necessita aprofundamento |
-| SLAs | Necessita aprofundamento |
-| Cobertura horaria | Necessita aprofundamento |
-
-#### Proposta de Hypercare
-
-| Periodo | Cobertura | SLA Resposta | Status |
-|---------|-----------|--------------|--------|
-| Semana 1 | 24/7 | P1: 15 min | Necessita aprofundamento |
-| Semana 2 | 24/7 | P1: 30 min | Necessita aprofundamento |
-| Semana 3-4 | Horario alargado | P1: 1 hora | Necessita aprofundamento |
-| Apos 4 semanas | BAU | DEF-02 | Necessita aprofundamento |
-
-## Diagramas
-
-### Visao Geral do Processo de Implementacao
-
-```plantuml
-@startuml
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
-
-LAYOUT_WITH_LEGEND()
-
-title Implementation Process Overview
-
-Person(pm, "Project Manager", "Coordena implementacao")
-Person(dev, "Development Team", "Desenvolve solucao")
-Person(qa, "QA Team", "Valida qualidade")
-Person(ops, "Operations", "Deploy e suporte")
-Person(user, "Beta Users", "Testa em producao")
-
-System_Boundary(impl, "Implementacao") {
-  Container(mvp, "MVP", "Fase 1", "Funcionalidades core")
-  Container(beta, "Beta", "Fase 2", "Testes com utilizadores")
-  Container(golive, "Go-Live", "Fase 3", "Lancamento")
-  Container(hyper, "Hypercare", "Fase 4", "Suporte intensivo")
-}
-
-Rel(dev, mvp, "Desenvolve")
-Rel(qa, mvp, "Valida")
-Rel(ops, beta, "Deploy")
-Rel(user, beta, "Testa")
-Rel(pm, golive, "Coordena")
-Rel(ops, hyper, "Suporta")
-
-@enduml
-```
-
-## Entregaveis
-
-- [ ] Roadmap detalhado com datas
-- [ ] Checklist de go/no-go
-- [ ] Runbook de cutover
-- [ ] Runbook de rollback
-- [ ] Plano de comunicacao
-- [ ] Material de formacao
-- [ ] Criterios de beta testing
-
-## Definicoes Utilizadas
-
-- [x] [DEF-14-plano-migracao-implementacao.md](../definitions/DEF-14-plano-migracao-implementacao.md) - Status: structure
-- [x] [DEF-02-requisitos-nao-funcionais.md](../definitions/DEF-02-requisitos-nao-funcionais.md) - Status: completed
+| Grupo | Conteudo | Formato |
+|-------|----------|---------|
+| Equipa de Suporte | Fluxos, troubleshooting, FAQs | Workshop presencial |
+| Gestores de Conta | Demo, beneficios | Video + Demo |
+| Equipa Tecnica | Arquitetura, runbooks | Documentacao + Sessao |
 
 ## Decisoes Referenciadas
 
-- [x] [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Status: accepted
+- [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Deploy strategy
 
-## Itens Pendentes
+## Definicoes Utilizadas
 
-| Item | Responsavel | Prioridade |
-|------|-------------|------------|
-| Definir data de go-live | PM + Cliente | Alta |
-| Definir funcionalidades MVP | PO + Cliente | Alta |
-| Definir criterios go/no-go | Arquitetura | Alta |
-| Estrategia de cutover | Operacoes | Alta |
-| Runbook de rollback | Operacoes | Alta |
-| Plano de comunicacao | Marketing/PM | Media |
-| Estrategia de beta testing | QA + PM | Media |
-| Plano de formacao | PM | Media |
-| Periodo de hypercare | Operacoes | Media |
+- [DEF-14-plano-migracao-implementacao.md](../definitions/DEF-14-plano-migracao-implementacao.md) - Detalhes completos
+- [DEF-02-requisitos-nao-funcionais.md](../definitions/DEF-02-requisitos-nao-funcionais.md) - SLAs
+- [DEF-10-arquitetura-operacional.md](../definitions/DEF-10-arquitetura-operacional.md) - CI/CD e Deploy

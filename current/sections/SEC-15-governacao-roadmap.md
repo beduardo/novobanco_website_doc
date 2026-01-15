@@ -14,93 +14,84 @@ hubs:
   - "[[nextreality]]"
 para-code: R
 reviewed: true
-status: in-progress
+status: completed
 ---
 
 # 15. Governacao & Roadmap
 
-> **Required definitions:** [DEF-15-governacao-roadmap.md](../definitions/DEF-15-governacao-roadmap.md)
-> **Related decisions:**
-> - All architectural decisions (DEC-001 to DEC-010)
+> **Definicao:** [DEF-15-governacao-roadmap.md](../definitions/DEF-15-governacao-roadmap.md)
 
 ## Proposito
 
-Definir o modelo de governacao e roadmap do HomeBanking Web, incluindo modelo de governacao, gestao de decisoes, roadmap de produto, gestao de divida tecnica, processo de gestao de mudanca, KPIs de sucesso e continuous improvement.
+Definir o modelo de governacao e roadmap do HomeBanking Web, incluindo modelo de governacao, gestao de decisoes arquiteturais, roadmap de produto, gestao de divida tecnica, processo de gestao de mudanca, KPIs de sucesso e continuous improvement.
 
 ## Conteudo
 
 ### 15.1 Modelo de Governacao
 
-_O modelo de governacao necessita aprofundamento._
-
-| Aspecto | Status |
-|---------|--------|
-| Metodologia (Agile/SAFe/tradicional) | Necessita aprofundamento |
-| Papeis e responsabilidades | Necessita aprofundamento |
-| Frequencia de steering | Necessita aprofundamento |
-| Stakeholders principais | Necessita aprofundamento |
-| Processo de escalacao | Necessita aprofundamento |
-
-#### Estrutura de Governacao (Proposta)
-
 ```plantuml
 @startuml
 skinparam backgroundColor white
 
-title Estrutura de Governacao (Proposta)
+title Estrutura de Governanca - HomeBanking Web
 
-rectangle "Steering Committee" as SC #LightBlue {
-  rectangle "Sponsor" as SP
-  rectangle "Product Owner" as PO
-  rectangle "Tech Lead" as TL
+rectangle "Steering Committee" as steering {
+    card "Sponsor"
+    card "PO"
+    card "Tech Lead"
 }
 
-rectangle "Delivery Team" as DT #LightGreen {
-  rectangle "Dev Team" as DEV
-  rectangle "QA Team" as QA
-  rectangle "DevOps" as OPS
+rectangle "Delivery Team" as delivery {
+    rectangle "Frontend" as fe {
+        card "Lead"
+        card "Developers"
+    }
+    rectangle "Backend" as be {
+        card "Lead"
+        card "Developers"
+    }
+    rectangle "QA" as qa {
+        card "Lead"
+        card "QA Engineers"
+    }
 }
 
-rectangle "Support Functions" as SF #LightYellow {
-  rectangle "Security" as SEC
-  rectangle "Architecture" as ARCH
-  rectangle "Compliance" as COMP
+rectangle "Support Functions" as support {
+    card "DevOps"
+    card "Security"
+    card "UX"
 }
 
-SC --> DT : Direcao
-SF --> DT : Suporte
-DT --> SC : Report
-
-note right of SC
-  Decisoes estrategicas
-  Aprovacao de releases
-  Gestao de riscos
-end note
-
-note right of DT
-  Execucao do desenvolvimento
-  Entregas iterativas
-  Resolucao de issues
-end note
+steering --> delivery : Direction
+support --> delivery : Support
 
 @enduml
 ```
 
-#### Papeis (Proposta)
+#### Modelo de Trabalho
 
-| Papel | Responsabilidades | Status |
-|-------|-------------------|--------|
-| **Sponsor** | Visao, financiamento, decisoes estrategicas | Necessita aprofundamento |
-| **Product Owner** | Backlog, priorizacao, aceitacao | Necessita aprofundamento |
-| **Tech Lead** | Decisoes tecnicas, arquitetura | Necessita aprofundamento |
-| **Scrum Master** | Processo, impedimentos | Necessita aprofundamento |
-| **Dev Team** | Implementacao | Necessita aprofundamento |
-| **QA Lead** | Estrategia de testes | Necessita aprofundamento |
-| **DevOps Lead** | CI/CD, infraestrutura | Necessita aprofundamento |
+| Aspecto | Especificacao |
+|---------|---------------|
+| **Metodologia** | Scrum (2-week sprints) |
+| **Cerimonias** | Daily, Planning, Review, Retro |
+| **Ferramentas** | Azure DevOps (boards), Teams |
+| **Reporting** | Sprint Review + Monthly Report |
 
-### 15.2 Gestao de Decisoes
+#### Papeis e Responsabilidades
 
-Este documento utiliza o formato de Architecture Decision Records (ADRs) para documentar decisoes arquiteturais.
+| Papel | Responsabilidades |
+|-------|-------------------|
+| **Sponsor** | Aprovacao estrategica, budget, escalacao |
+| **Product Owner** | Backlog, priorizacao, aceitacao |
+| **Tech Lead** | Decisoes tecnicas, arquitetura, quality |
+| **Scrum Master** | Processo, impedimentos, cerimonias |
+| **Frontend Lead** | Arquitetura frontend, code review |
+| **Backend Lead** | Arquitetura BFF, code review |
+| **QA Lead** | Estrategia de testes, qualidade |
+| **DevOps** | Infraestrutura, CI/CD, operacoes |
+| **Security** | Validacao de seguranca, compliance |
+
+### 15.2 Gestao de Decisoes Arquiteturais
 
 #### Processo de Decisao
 
@@ -108,244 +99,232 @@ Este documento utiliza o formato de Architecture Decision Records (ADRs) para do
 @startuml
 skinparam backgroundColor white
 
-title Processo de Decisao Arquitetural
+title Processo de Decisao Arquitetural (ADR)
 
 start
-
-:Identificar necessidade\nde decisao;
-
-:Criar proposta de decisao;
-note right: Template DEC-XXX
+:Identificar necessidade de decisao;
+:Criar ADR (status: proposed);
 
 :Analisar alternativas;
+:Documentar pros/cons;
 
-:Revisao tecnica;
-note right: Arquitetura + Tech Lead
-
-if (Consenso?) then (sim)
-  :Aprovar decisao;
-  :Atualizar status: accepted;
-  :Comunicar decisao;
+:Tech Review;
+if (Impacto alto?) then (sim)
+    :Steering Committee;
+    if (Aprovado?) then (sim)
+        :Atualizar status: accepted;
+    else (nao)
+        :Revisar ou rejeitar;
+        stop
+    endif
 else (nao)
-  :Escalar para Steering;
-  if (Aprovado?) then (sim)
+    :Tech Lead aprova;
     :Atualizar status: accepted;
-  else (nao)
-    :Atualizar status: rejected;
-    :Documentar razoes;
-  endif
 endif
 
-:Implementar decisao;
-:Vincular a definicoes/secoes;
-
+:Comunicar equipa;
+:Implementar;
 stop
 
 @enduml
 ```
 
-#### Decisoes Arquiteturais Documentadas
+#### Tipos de Decisao
 
-| ID | Titulo | Status | Data |
-|----|--------|--------|------|
-| DEC-001 | Estrategia de Autenticacao OIDC | accepted | 2026-01-01 |
-| DEC-002 | Tokens JWT | accepted | 2026-01-01 |
-| DEC-003 | Gestao de Sessoes | accepted | 2026-01-01 |
-| DEC-004 | PCI-DSS Web SAQ-A | accepted | 2026-01-01 |
-| DEC-005 | Encriptacao AES-256 | accepted | 2026-01-01 |
-| DEC-006 | Estrategia Containers OpenShift | accepted | 2026-01-01 |
-| DEC-007 | Arquitetura BFF | accepted | 2026-01-01 |
-| DEC-008 | Stack Observabilidade ELK | accepted | 2026-01-01 |
-| DEC-009 | Stack Tecnologica Frontend | accepted | 2026-01-01 |
-| DEC-010 | Stack Tecnologica Backend | accepted | 2026-01-08 |
+| Tipo | Aprovador | Exemplos |
+|------|-----------|----------|
+| **Estrategica** | Steering Committee | Stack tecnologica, arquitetura global |
+| **Tatica** | Tech Lead | Padroes de codigo, bibliotecas |
+| **Operacional** | Lead da area | Configuracoes, tooling |
 
-#### Quem Aprova
+#### ADRs do Projeto
 
-| Aspecto | Status |
-|---------|--------|
-| Aprovador de decisoes tecnicas | Necessita aprofundamento |
-| Processo de revisao | Necessita aprofundamento |
+| ID | Decisao | Status | Data |
+|----|---------|--------|------|
+| DEC-001 | Estrategia de autenticacao web | Accepted | 2026-01-04 |
+| DEC-002 | Gestao de sessoes e tokens | Accepted | 2026-01-04 |
+| DEC-003 | Modelo de autorizacao ABAC | Accepted | 2026-01-04 |
+| DEC-004 | Controlos de seguranca frontend | Accepted | 2026-01-04 |
+| DEC-005 | Armazenamento de dados canal web | Accepted | 2026-01-04 |
+| DEC-006 | Estrategia de containers OpenShift | Accepted | 2026-01-04 |
+| DEC-007 | Padrao BFF | Accepted | 2026-01-04 |
+| DEC-008 | Stack de observabilidade ELK | Accepted | 2026-01-04 |
+| DEC-009 | Stack tecnologica frontend | Accepted | 2026-01-04 |
+| DEC-010 | Stack tecnologica backend | Accepted | 2026-01-04 |
 
 ### 15.3 Roadmap de Produto
 
-_O roadmap de produto necessita aprofundamento._
-
-| Aspecto | Status |
-|---------|--------|
-| Funcionalidades pos-MVP | Necessita aprofundamento |
-| Frequencia de releases | Necessita aprofundamento |
-| Priorizacao de backlog | Necessita aprofundamento |
-
-#### Roadmap (Proposta)
-
 ```plantuml
 @startuml
 skinparam backgroundColor white
 
-title Product Roadmap (Proposta)
+title Roadmap - Visao de Longo Prazo
 
-concise "Fase" as F
-concise "Features" as FT
+|2026 Q1-Q2|
+:MVP + Go-Live;
+note right: 35 features (paridade mobile)
 
-@0
-F is "MVP"
-FT is {hidden}
+|2026 Q3|
+:Evolucao v1.1;
+note right
+- Melhorias UX
+- Performance
+- Feedback users
+end note
 
-@1
-FT is "Login, Dashboard,\nExtrato, Transferencias"
+|2026 Q4|
+:Novas Features;
+note right
+- Features exclusivas web
+- Integracao Open Banking
+end note
 
-@4
-F is "Fase 2"
-FT is {hidden}
-
-@5
-FT is "Pagamentos,\nCartoes"
-
-@8
-F is "Fase 3"
-FT is {hidden}
-
-@9
-FT is "Investimentos,\nCredito"
-
-@12
-F is "Fase 4"
-FT is {hidden}
-
-@13
-FT is "Open Banking,\nPSD2"
+|2027+|
+:Expansao;
+note right
+- Novos canais
+- Personalizacao
+- AI/ML features
+end note
 
 @enduml
 ```
 
-| Fase | Funcionalidades Propostas | Status |
-|------|---------------------------|--------|
-| **MVP** | Login, Dashboard, Extrato, Transferencias | Necessita aprofundamento |
-| **Fase 2** | Pagamentos, Cartoes, Gestao de perfil | Necessita aprofundamento |
-| **Fase 3** | Investimentos, Credito, Notificacoes | Necessita aprofundamento |
-| **Fase 4** | Open Banking, PSD2 APIs | Necessita aprofundamento |
+#### Backlog de Features Pos-MVP
 
-#### Frequencia de Releases
+| Feature | Prioridade | Estimativa |
+|---------|------------|------------|
+| Dashboard personalizavel | P2 | M |
+| Notificacoes web push | P2 | S |
+| Modo escuro | P3 | S |
+| Exportacao de extratos PDF | P2 | M |
+| Comparador de produtos | P3 | L |
+| Chat com assistente | P3 | XL |
 
-| Aspecto | Status |
-|---------|--------|
-| Cadencia de releases | Necessita aprofundamento |
-| Calendario de releases | Necessita aprofundamento |
-| Release train | Necessita aprofundamento |
+#### Release Cadence
+
+| Tipo | Frequencia | Conteudo |
+|------|------------|----------|
+| **Major** | Trimestral | Novas features significativas |
+| **Minor** | Mensal | Melhorias e features pequenas |
+| **Patch** | Semanal (se necessario) | Bug fixes, seguranca |
 
 ### 15.4 Gestao de Divida Tecnica
-
-_A gestao de divida tecnica necessita aprofundamento._
-
-| Aspecto | Status |
-|---------|--------|
-| Identificacao | Necessita aprofundamento |
-| Priorizacao | Necessita aprofundamento |
-| % capacidade alocada | Necessita aprofundamento |
-| Responsavel | Necessita aprofundamento |
-
-#### Tipos de Divida Tecnica
-
-| Tipo | Descricao | Exemplos |
-|------|-----------|----------|
-| **Deliberada** | Decisao consciente para entrega rapida | Workarounds temporarios |
-| **Acidental** | Resultado de falta de conhecimento | Patterns incorretos |
-| **Bit rot** | Degradacao ao longo do tempo | Dependencias desatualizadas |
-
-#### Processo de Gestao (Proposta)
 
 ```plantuml
 @startuml
 skinparam backgroundColor white
 
-title Gestao de Divida Tecnica (Proposta)
+title Gestao de Divida Tecnica
 
+|Identificacao|
 start
+:Code Review;
+:Metricas (SonarQube);
+:Retrospectivas;
 
-:Identificar divida;
-note right: Code review, analise estatica
+|Classificacao|
+:Priorizar por impacto;
+note right
+Alto: Seguranca, Performance
+Medio: Maintainability
+Baixo: Codigo morto
+end note
 
-:Registar no backlog;
-note right: Tag: tech-debt
+|Alocacao|
+:Reservar 20% da capacidade;
+:Incluir no sprint planning;
 
-:Avaliar impacto;
+|Execucao|
+:Resolver divida tecnica;
+:Documentar melhoria;
 
-:Priorizar com PO;
-
-if (Impacto alto?) then (sim)
-  :Incluir em sprint;
-else (nao)
-  :Agendar para tech-debt sprint;
-endif
-
-:Resolver;
-:Validar;
-
+|Monitorizacao|
+:Atualizar metricas;
+:Reportar progresso;
 stop
 
 @enduml
 ```
 
-#### Metricas de Divida Tecnica (Proposta)
+#### Categorias de Divida Tecnica
 
-| Metrica | Ferramenta | Status |
+| Categoria | Exemplos | Prioridade |
+|-----------|----------|------------|
+| **Seguranca** | Vulnerabilidades, outdated dependencies | Critica |
+| **Performance** | Queries lentas, memory leaks | Alta |
+| **Arquitetura** | Code smells, tight coupling | Media |
+| **Codigo** | Duplicacao, complexidade ciclomatica | Media |
+| **Testes** | Baixa cobertura, testes frageis | Media |
+| **Documentacao** | APIs nao documentadas | Baixa |
+
+#### Alocacao de Capacidade
+
+| Sprint | Features | Divida Tecnica | Bugs |
+|--------|----------|----------------|------|
+| Normal | 70% | **20%** | 10% |
+| Pre-release | 50% | 30% | 20% |
+| Pos-release | 40% | 20% | 40% |
+
+#### Metricas de Divida Tecnica
+
+| Metrica | Ferramenta | Target |
 |---------|------------|--------|
-| Code coverage | SonarQube | Necessita aprofundamento |
-| Code smells | SonarQube | Necessita aprofundamento |
-| Complexity | SonarQube | Necessita aprofundamento |
-| Dependencies outdated | Dependabot | Necessita aprofundamento |
+| Code Coverage | Istanbul/Coverlet | >= 80% |
+| Cyclomatic Complexity | SonarQube | < 15 por metodo |
+| Duplicated Lines | SonarQube | < 3% |
+| Technical Debt Ratio | SonarQube | < 5% |
+| Outdated Dependencies | Dependabot | 0 critical |
 
 ### 15.5 Processo de Gestao de Mudanca
 
-_O processo de change management necessita aprofundamento._
+#### Change Advisory Board (CAB)
 
-| Aspecto | Status |
-|---------|--------|
-| Processo de change management | Necessita aprofundamento |
-| Aprovador de mudancas | Necessita aprofundamento |
-| Lead time minimo | Necessita aprofundamento |
-| CAB existente | Necessita aprofundamento |
+| Tipo de Mudanca | Aprovacao | Lead Time |
+|-----------------|-----------|-----------|
+| **Standard** | Automatica (CI/CD) | Imediato |
+| **Normal** | Tech Lead | 1 dia |
+| **Emergency** | On-call + Tech Lead | Imediato |
+| **Major** | CAB | 1 semana |
 
-#### Tipos de Mudanca (Proposta)
+#### Janelas de Mudanca
 
-| Tipo | Descricao | Aprovacao | Lead Time |
-|------|-----------|-----------|-----------|
-| **Standard** | Mudancas pre-aprovadas | Automatica | Imediato |
-| **Normal** | Mudancas regulares | Tech Lead | Necessita aprofundamento |
-| **Emergency** | Hotfixes criticos | On-call + retroativo | Imediato |
-
-#### Fluxo de Aprovacao (Proposta)
+| Ambiente | Janela | Restricoes |
+|----------|--------|------------|
+| dev | 24/7 | Nenhuma |
+| qa | 24/7 | Nenhuma |
+| prod (standard) | 9h-18h dias uteis | Evitar sextas |
+| prod (major) | Sabados 6h-10h | Comunicacao previa |
 
 ```plantuml
 @startuml
 skinparam backgroundColor white
 
-title Change Approval Flow (Proposta)
+title Processo de Change Management
 
 start
+:Request de Mudanca;
+:Classificar tipo;
 
-:Submeter Change Request;
+switch (Tipo?)
+case (Standard)
+    :Deploy automatico;
+case (Normal)
+    :Tech Lead review;
+    :Agendar deploy;
+case (Emergency)
+    :Aprovacao rapida;
+    :Deploy imediato;
+    :Post-mortem;
+case (Major)
+    :CAB meeting;
+    :Risk assessment;
+    :Agendar janela;
+endswitch
 
-if (Standard Change?) then (sim)
-  :Aprovacao automatica;
-else (nao)
-  if (Emergency?) then (sim)
-    :Aprovacao on-call;
-    :Post-approval retroativo;
-  else (nao)
-    :Revisao Tech Lead;
-    if (Alto risco?) then (sim)
-      :Aprovacao CAB;
-    else (nao)
-      :Aprovacao Tech Lead;
-    endif
-  endif
-endif
-
-:Agendar deploy;
 :Executar mudanca;
 :Validar;
-
+:Documentar;
 stop
 
 @enduml
@@ -353,158 +332,81 @@ stop
 
 ### 15.6 KPIs de Sucesso
 
-_Os KPIs de sucesso necessitam aprofundamento._
+#### KPIs Tecnicos (DORA Metrics)
 
-#### KPIs de Negocio (Proposta)
+| KPI | Metrica | Target |
+|-----|---------|--------|
+| **Disponibilidade** | Uptime % | 99.9% |
+| **Latencia** | Response time P95 | < 3s |
+| **Taxa de Erro** | Error rate | < 0.1% |
+| **MTTR** | Mean Time To Recover | < 30 min |
+| **Deploy Frequency** | Deploys/semana | >= 2 |
+| **Lead Time** | Commit to prod | < 1 dia |
+| **Change Failure Rate** | Deploys com rollback | < 5% |
 
-| KPI | Descricao | Target | Status |
-|-----|-----------|--------|--------|
-| Adocao | % utilizadores a usar web | Necessita aprofundamento | Pendente |
-| NPS | Net Promoter Score | Necessita aprofundamento | Pendente |
-| Transacoes/dia | Volume de transacoes | Necessita aprofundamento | Pendente |
-| Erro de utilizador | Taxa de erros em fluxos | Necessita aprofundamento | Pendente |
-| Tempo de tarefa | Tempo medio por operacao | Necessita aprofundamento | Pendente |
+#### KPIs de Produto
 
-#### KPIs Tecnicos (Proposta)
-
-| KPI | Descricao | Target | Status |
-|-----|-----------|--------|--------|
-| Disponibilidade | Uptime do servico | 99.9% (DEF-02) | Definido |
-| Latencia P95 | Tempo de resposta | < 3s (DEF-02) | Definido |
-| Error rate | Taxa de erros 5xx | < 1% | Necessita aprofundamento |
-| Deploy frequency | Frequencia de deploys | Necessita aprofundamento | Pendente |
-| Lead time | Tempo do commit ao deploy | Necessita aprofundamento | Pendente |
-| MTTR | Mean Time to Recovery | Necessita aprofundamento | Pendente |
-| Change failure rate | % deploys com rollback | Necessita aprofundamento | Pendente |
-
-#### Revisao de KPIs
-
-| Aspecto | Status |
-|---------|--------|
-| Frequencia de revisao | Necessita aprofundamento |
-| Responsavel | Necessita aprofundamento |
-| Dashboard de KPIs | Necessita aprofundamento |
+| KPI | Metrica | Target |
+|-----|---------|--------|
+| **Adocao** | Utilizadores ativos | +20% Q/Q |
+| **Engagement** | Sessoes/utilizador | >= 5/mes |
+| **Satisfacao** | NPS | >= 40 |
+| **Task Success** | Taxa de conclusao de fluxos | >= 95% |
+| **Time on Task** | Tempo medio por operacao | Baseline -10% |
 
 ### 15.7 Continuous Improvement
 
-_O processo de continuous improvement necessita aprofundamento._
+#### Cerimonias de Melhoria
 
-| Aspecto | Status |
-|---------|--------|
-| Retrospetivas | Necessita aprofundamento |
-| Implementacao de melhorias | Necessita aprofundamento |
-| Lessons learned | Necessita aprofundamento |
-| Maturidade do processo | Necessita aprofundamento |
+| Cerimonia | Frequencia | Participantes | Output |
+|-----------|------------|---------------|--------|
+| Sprint Retro | 2 semanas | Equipa | Action items |
+| Tech Retro | Mensal | Tech team | Tech improvements |
+| Post-mortem | Por incidente | Envolvidos | Lessons learned |
+| Architecture Review | Trimestral | Leads + Arquiteto | ADRs, Roadmap |
 
-#### Ciclo de Melhoria (Proposta)
+#### Feedback Loops
 
 ```plantuml
 @startuml
 skinparam backgroundColor white
 
-title Ciclo de Continuous Improvement
+title Ciclo de Melhoria Continua
 
-rectangle "Plan" as P #LightBlue
-rectangle "Do" as D #LightGreen
-rectangle "Check" as C #LightYellow
-rectangle "Act" as A #LightCoral
-
-P --> D
-D --> C
-C --> A
-A --> P
-
-note bottom of P
-  - Identificar oportunidades
-  - Priorizar melhorias
-  - Planear implementacao
+start
+:Coletar feedback;
+note right
+- Metricas
+- Retros
+- Incidents
+- User feedback
 end note
 
-note bottom of D
-  - Implementar mudanca
-  - Piloto controlado
-end note
-
-note bottom of C
-  - Medir resultados
-  - Comparar com baseline
-end note
-
-note bottom of A
-  - Standardizar se sucesso
-  - Ajustar se necessario
-end note
+:Analisar e priorizar;
+:Planear melhorias;
+:Implementar;
+:Medir impacto;
+:Documentar aprendizados;
+stop
 
 @enduml
 ```
 
-#### Mecanismos de Feedback
+#### Metricas de Maturidade
 
-| Mecanismo | Frequencia | Status |
-|-----------|------------|--------|
-| Sprint Retrospective | Por sprint | Necessita aprofundamento |
-| Release Retrospective | Por release | Necessita aprofundamento |
-| Incident Post-Mortem | Por incidente | Necessita aprofundamento |
-| Tech Debt Review | Mensal | Necessita aprofundamento |
-
-## Diagramas
-
-### Visao Geral de Governacao
-
-```plantuml
-@startuml
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
-
-LAYOUT_WITH_LEGEND()
-
-title Governance Overview - HomeBanking Web
-
-Person(steering, "Steering Committee", "Direcao estrategica")
-Person(po, "Product Owner", "Backlog e prioridades")
-Person(tech, "Tech Lead", "Decisoes tecnicas")
-Person(team, "Delivery Team", "Implementacao")
-
-System_Boundary(gov, "Artefactos de Governacao") {
-  Container(adr, "ADRs", "Markdown", "Decisoes arquiteturais")
-  Container(def, "Definitions", "Markdown", "Definicoes do projeto")
-  Container(sec, "Sections", "Markdown", "Documentacao final")
-  Container(backlog, "Backlog", "Azure DevOps", "Work items")
-}
-
-Rel(steering, po, "Direcao")
-Rel(po, backlog, "Prioriza")
-Rel(tech, adr, "Documenta")
-Rel(team, def, "Preenche")
-Rel(team, sec, "Escreve")
-
-@enduml
-```
-
-## Entregaveis
-
-- [ ] Modelo de governacao documentado
-- [ ] Roadmap de produto
-- [ ] Processo de gestao de divida tecnica
-- [ ] Processo de change management
-- [ ] Dashboard de KPIs
-- [ ] Processo de continuous improvement
-
-## Definicoes Utilizadas
-
-- [x] [DEF-15-governacao-roadmap.md](../definitions/DEF-15-governacao-roadmap.md) - Status: structure
+| Area | Nivel Atual | Target | Acoes |
+|------|-------------|--------|-------|
+| CI/CD | 3 | 4 | Automacao de testes |
+| Observability | 3 | 4 | Tracing distribuido |
+| Security | 3 | 4 | DAST automatizado |
+| Documentation | 2 | 3 | API docs automaticas |
 
 ## Decisoes Referenciadas
 
-- [x] [DEC-001](../decisions/DEC-001-estrategia-autenticacao-oidc.md) a [DEC-010](../decisions/DEC-010-stack-tecnologica-backend.md) - Status: accepted
+- All architectural decisions (DEC-001 to DEC-010)
 
-## Itens Pendentes
+## Definicoes Utilizadas
 
-| Item | Responsavel | Prioridade |
-|------|-------------|------------|
-| Definir modelo de governacao | PM + Cliente | Alta |
-| Definir roadmap de produto | PO + Cliente | Alta |
-| Definir processo de change management | Operacoes | Media |
-| Definir estrategia de divida tecnica | Tech Lead | Media |
-| Definir KPIs de sucesso | PM + PO | Media |
-| Configurar dashboard de KPIs | DevOps | Baixa |
-| Processo de continuous improvement | Scrum Master | Baixa |
+- [DEF-15-governacao-roadmap.md](../definitions/DEF-15-governacao-roadmap.md) - Detalhes completos
+- [DEF-10-arquitetura-operacional.md](../definitions/DEF-10-arquitetura-operacional.md) - CI/CD
+- [DEF-02-stakeholders.md](../definitions/DEF-02-stakeholders.md) - Stakeholders

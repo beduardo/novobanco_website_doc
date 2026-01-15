@@ -15,148 +15,133 @@ reviewed: true
 
 ## 1. Main Objectives
 
-Especificações arquiteturais de desenvolvimento de Página HomeBanking para banco digital com parte das features equivalentes da aplicação mobile nativa.
+Especificacoes arquiteturais de desenvolvimento de Pagina HomeBanking para banco digital com parte das features equivalentes da aplicacao mobile nativa.
 
 ## 2. Project Scope
 
 ### 2.1 In Scope
 
-- Desenvolvimento da aplicação web HomeBanking (React)
-- Integração com APIs existentes do Banco Best
-- Integração com infraestrutura mobile nativa existente
-- CMS para gestão de conteúdo (.NET)
-- Backoffice de administração
-- Conformidade regulatória (PSD2, RGPD, PCI-DSS, Banco de Portugal)
+- Desenvolvimento da aplicacao web HomeBanking (React)
+- Integracao com APIs existentes do Banco Best
+- Integracao com infraestrutura mobile nativa existente
+- CMS para gestao de conteudo (.NET)
+- Backoffice de administracao
+- Conformidade regulatoria (PSD2, RGPD, PCI-DSS, Banco de Portugal)
 
 ### 2.2 Out of Scope
 
 - Desenvolvimento de novas APIs no Core Banking
-- Modificações na aplicação mobile nativa existente
-- Infraestrutura física (apenas cloud/Azure)
+- Modificacoes na aplicacao mobile nativa existente
+- Infraestrutura fisica (apenas cloud/Azure)
 - [A DEFINIR COM CLIENTE]
 
 ## 3. General Information
 
-O documento deve ser um HLD com informações para o desenvolvimento do projeto, definindo todas as tecnologias e estruturas necessárias para isso. Ele deve ser completo para que uma equipa consiga preparar um plano de desenvolvimento envolvendo desde o Assessment inicial para a definição completa das histórias de usuário até a entrega do software.
+O documento deve ser um HLD com informacoes para o desenvolvimento do projeto, definindo todas as tecnologias e estruturas necessarias para isso. Ele deve ser completo para que uma equipa consiga preparar um plano de desenvolvimento envolvendo desde o Assessment inicial para a definicao completa das historias de usuario ate a entrega do software.
 
 ### 3.1 Deliverables do HLD
 
 - Diagramas arquiteturais (C4 Model)
-- Especificações de integração
+- Especificacoes de integracao
 - Modelo de deployment
-- Estratégia de monitorização
-- Plano de migração e implementação
+- Estrategia de monitorizacao
+- Plano de migracao e implementacao
 
-### 3.2 Pontos Técnicos Relevantes
+### 3.2 Pontos Tecnicos Relevantes
 
-- Definição da metodologia a utilizar na criação dos canais Best, no âmbito da atualização tecnológica
-- Identificação de perfis e características técnicas, nomeadamente:
-    - Programação React
-    - Programação nativa (iOS e Android)
-    - Integração React no nativo
-    - Integração do Gateway
-    - Ligação com APIs Banco Best
-    - Criação de business layer CMS (.NET, etc.)
-    - Modelos de segurança
-    - Tratamento de erros, diagnóstico, logs e monitorização
-    - Requisitos de resiliência, isolamento e escalabilidade
-    - Performance e utilização de cache
-    - Outros aspetos técnicos relevantes
-- Definição do modelo de arquitetura global dos canais e aplicações conexas (CMS, backoffice, etc.)
-- Identificação de componentes de infraestrutura em falta no desenho atual (ex.: cache, GitHub, DevOps, Azure)
-- Modelo de trabalho entre equipas, incluindo ambientes de desenvolvimento novobanco e ligação com equipas externas
+> **Detalhes:** Ver definicoes especificas de cada secao
 
-## 4. Premissas e Restrições
+- Metodologia de desenvolvimento dos canais Best
+- Perfis tecnicos necessarios (React, .NET, iOS, Android)
+- Modelo de arquitetura global (canais e aplicacoes conexas)
+- Componentes de infraestrutura (cache, GitHub, DevOps, Azure)
+- Modelo de trabalho entre equipas
+
+### 3.3 Informacoes Adicionais
+
+- A aplicacao utilizara infraestrutura e servicos criados para a aplicacao mobile nativa ja existente
+- O cliente ja possui um APP Mobile com features equivalentes que devem ser replicadas
+- Deve definir os requisitos funcionais e nao funcionais, atendendo os padroes internacionais
+- Um documento do Word deve ser gerado ao fim do trabalho
+- Documento auxiliar de perguntas pendentes para reunioes com cliente
+
+## 4. Premissas e Restricoes
 
 ### 4.1 Premissas
 
-- A infraestrutura Azure já está disponível e configurada
-- APIs do Core Banking estão documentadas e estáveis
-- Equipa de desenvolvimento tem experiência em React e .NET
+- A infraestrutura Azure ja esta disponivel e configurada
+- APIs do Core Banking estao documentadas e estaveis
+- Equipa de desenvolvimento tem experiencia em React e .NET
 - [A VALIDAR COM CLIENTE]
 
-### 4.2 Restrições
+### 4.2 Restricoes
 
-- Conformidade obrigatória com regulamentação bancária portuguesa
-- Integração com sistemas legados existentes
-- Utilização de infraestrutura Azure do NovoBanco
+- Conformidade obrigatoria com regulamentacao bancaria portuguesa
+- Integracao com sistemas legados existentes
+- Utilizacao de infraestrutura Azure do NovoBanco
 - [A VALIDAR COM CLIENTE]
 
-## 5. Dependências Externas
+## 5. Definicoes de Referencia
 
-| Sistema | Tipo | Proprietário | Criticidade |
-|---------|------|--------------|-------------|
-| Core Banking APIs | Integração | NovoBanco | Alta |
-| App Mobile Nativa | Referência | NovoBanco | Média |
-| Azure Infrastructure | Plataforma | NovoBanco | Alta |
-| Gateway de Pagamentos | Integração | [A DEFINIR] | Alta |
-| KYC/AML Provider | Integração | [A DEFINIR] | Alta |
+| Topico | Definicao | Descricao |
+|--------|-----------|-----------|
+| Stakeholders | [DEF-02-stakeholders.md](definitions/DEF-02-stakeholders.md) | Partes interessadas e papeis |
+| Requisitos Funcionais | [DEF-02-requisitos-funcionais.md](definitions/DEF-02-requisitos-funcionais.md) | Funcionalidades do sistema |
+| Requisitos Nao Funcionais | [DEF-02-requisitos-nao-funcionais.md](definitions/DEF-02-requisitos-nao-funcionais.md) | Quality attributes e metricas |
+| Dependencias Externas | [DEF-09-integracao-interfaces.md](definitions/DEF-09-integracao-interfaces.md) | Sistemas externos e integracoes |
 
-## 6. Informações Adicionais
-
-- A aplicação utilizará infraestrutura e serviços criados para a aplicação mobile nativa já existente.
-- O cliente já possui um APP Mobile com features equivalente que devem ser replicadas.
-- Deve definir os requisitos funcionais e não funcionais, atendendo os padrões internacionais.
-- Um documento do Word deve ser gerado ao fim do trabalho. As seções precisam ser escritas de forma a facilitar que o conteúdo seja copiado para o editor Word.
-- Devemos ter também um documento auxiliar com uma lista de perguntas pendentes para resposta. Este documento será utilizado em reuniões com o cliente para agilizar a captura de informações e deve ser atualizado com frequência. Estas questões devem ser baseadas nas questões existentes nos documentos de definição.
-
-## 7. Quality Attributes (NFRs Targets)
-
-| Atributo | Métrica | Target | Prioridade |
-|----------|---------|--------|------------|
-| Performance | Tempo resposta P95 | < 2s | Alta |
-| Disponibilidade | Uptime anual | 99.9% | Alta |
-| Escalabilidade | Usuários concorrentes | [A DEFINIR] | Alta |
-| Segurança | Conformidade OWASP | Top 10 | Alta |
-| Acessibilidade | WCAG | 2.1 AA | Média |
-
-## 8. List of Sections
+## 6. List of Sections
 
 | Section | Title | Description |
 |---------|-------|-------------|
-| 1 | Sumário Executivo | Descrever os objetivos deste documento e visão geral da arquitetura. |
-| 2 | Contexto de Negócio & Requisitos | Descreve o contexto da solução e seus requisitos, informando as partes interessadas, requisitos funcionais e não funcionais e suas restrições |
-| 3 | Visão Geral da Solução | Princípios de Arquitetura, Diagrama Conceptual, Casos de Uso |
-| 4 | Experiência do Utilizador & Arquitetura Frontend | Arquitetura de Informação, Diretrizes UI/UX, Jornadas do Utilizador, Multi-idioma, PWA & Offline, Stack Frontend, Design System, Responsividade, Segurança, Performance Frontend |
-| 5 | Arquitetura Backend & Serviços | Decomposição de Serviços, Arquitetura API, Comunicação, Modelo de Domínio, Rate Limiting, Resiliência, Versionamento API, Especificação API, Dependências, Padrões de Design |
-| 6 | Arquitetura de Dados | Modelo de Dados, Armazenamento, Encriptação, Retenção, Backup & Restore, RGPD - Data Subject Rights, Classificação de Dados, Particionamento, Migração de Dados, Anonimização/Pseudonimização |
-| 7 | Autenticação & Autorização | Autenticação, Autorização, Estratégia de Tokens, Gestão de Sessões, Políticas de Password, MFA Obrigatório, Single Sign-On (SSO), Fluxos de Autenticação, Revogação, Anti-automation |
-| 8 | Segurança & Conformidade | Modelo de Ameaças, Controlos de Segurança, OWASP Top 10, Conformidade PSD2, Conformidade RGPD, PCI-DSS, Banco de Portugal, Registo de Auditoria, Resposta a Incidentes, Gestão de Vulnerabilidades, Segregação de Ambientes |
-| 9 | Integração & Interfaces Externas | Integração Core Banking, Terceiros - KYC/AML, Terceiros - Notificações, Terceiros - Cartões, Open Banking PSD2, Gestão de Consentimentos, Message Broker, Tratamento de Erros, SLAs de Integração, Catálogo de Integrações, API Management |
-| 10 | Arquitetura Operacional | Infraestrutura, Ambientes, Segregação, CI/CD Pipelines, Estratégia de Deploy, Infraestrutura como Código, Secrets Management, Container Registry, Disaster Recovery, Backup Strategy, Runbooks |
-| 11 | Observabilidade & Operações | Stack de Observabilidade, Golden Signals, Métricas de Aplicação, Métricas de Negócio, Distributed Tracing, Logging Centralizado, SLIs (Service Level Indicators), SLOs (Service Level Objectives), SLAs (Service Level Agreements), Alertas, Dashboards Operacionais, Runbooks |
-| 12 | Desempenho & Fiabilidade | Objetivos de Carga, Targets de Performance, Caching Strategy, Otimização Frontend, Otimização Backend, Auto-scaling, Capacity Planning, Failover, Resiliência, Load Testing |
-| 13 | Estratégia de Testes | Testes Unitários, Testes de Integração, Testes de Contrato, Testes E2E, Testes de Performance, Testes de Segurança, Testes de Acessibilidade, Test Data Management, Testes de Regressão, Testes de Aceitação, Matriz de Responsabilidades |
-| 14 | Plano de Migração & Implementação | Roadmap de Implementação, Estratégia de Cutover, Coexistência com Legado, Migração de Dados, Critérios Go/No-Go, Procedimentos de Rollback, Plano de Comunicação, Formação, Pilot/Beta Testing, Hypercare Period |
-| 15 | Governação & Roadmap | Modelo de Governação, Gestão de Decisões, Roadmap de Produto, Gestão de Dívida Técnica, Processo de Gestão de Mudança, KPIs de Sucesso, Continuous Improvement |
+| 1 | Sumario Executivo | Objetivos do documento e visao geral da arquitetura |
+| 2 | Contexto de Negocio & Requisitos | Contexto da solucao, stakeholders, requisitos funcionais e nao funcionais, restricoes |
+| 3 | Visao Geral da Solucao | Principios de Arquitetura, Diagrama Conceptual, Casos de Uso |
+| 4 | Experiencia do Utilizador & Arquitetura Frontend | Arquitetura de Informacao, UI/UX, Jornadas, Multi-idioma, PWA, Stack Frontend, Design System |
+| 5 | Arquitetura Backend & Servicos | Decomposicao de Servicos, API, Comunicacao, Modelo de Dominio, Resiliencia, Padroes |
+| 6 | Arquitetura de Dados | Modelo de Dados, Armazenamento, Encriptacao, Retencao, Backup, RGPD, Classificacao |
+| 7 | Autenticacao & Autorizacao | Autenticacao, Autorizacao, Tokens, Sessoes, MFA, SSO, Fluxos, Revogacao |
+| 8 | Seguranca & Conformidade | Modelo de Ameacas, OWASP, PSD2, RGPD, PCI-DSS, Auditoria, Incidentes |
+| 9 | Integracao & Interfaces Externas | Core Banking, KYC/AML, Notificacoes, Cartoes, Open Banking, Message Broker |
+| 10 | Arquitetura Operacional | Infraestrutura, Ambientes, CI/CD, Deploy, IaC, Secrets, DR, Backup |
+| 11 | Observabilidade & Operacoes | Observabilidade, Metricas, Tracing, Logging, SLIs, SLOs, SLAs, Alertas |
+| 12 | Desempenho & Fiabilidade | Carga, Performance, Caching, Otimizacao, Auto-scaling, Failover |
+| 13 | Estrategia de Testes | Unitarios, Integracao, E2E, Performance, Seguranca, Acessibilidade |
+| 14 | Plano de Migracao & Implementacao | Roadmap, Cutover, Legado, Migracao, Rollback, Formacao, Hypercare |
+| 15 | Governacao & Roadmap | Governacao, Decisoes, Roadmap, Divida Tecnica, KPIs |
 
-## 9. Glossário
+## 7. Glossario
 
-| Termo | Definição |
+| Termo | Definicao |
 |-------|-----------|
-| HLD | High-Level Design - Documento de arquitetura de alto nível |
-| HomeBanking | Portal web de serviços bancários para clientes |
-| Core Banking | Sistema central de operações bancárias |
-| PSD2 | Payment Services Directive 2 - Diretiva europeia de serviços de pagamento |
-| RGPD | Regulamento Geral de Proteção de Dados |
+| HLD | High-Level Design - Documento de arquitetura de alto nivel |
+| HomeBanking | Portal web de servicos bancarios para clientes |
+| Core Banking | Sistema central de operacoes bancarias |
+| PSD2 | Payment Services Directive 2 - Diretiva europeia de servicos de pagamento |
+| RGPD | Regulamento Geral de Protecao de Dados |
 | PCI-DSS | Payment Card Industry Data Security Standard |
-| SLA | Service Level Agreement - Acordo de nível de serviço |
-| SLO | Service Level Objective - Objetivo de nível de serviço |
-| SLI | Service Level Indicator - Indicador de nível de serviço |
-| MFA | Multi-Factor Authentication - Autenticação multifator |
-| SSO | Single Sign-On - Autenticação única |
-| KYC | Know Your Customer - Processo de identificação de clientes |
-| AML | Anti-Money Laundering - Prevenção de lavagem de dinheiro |
+| SLA | Service Level Agreement - Acordo de nivel de servico |
+| SLO | Service Level Objective - Objetivo de nivel de servico |
+| SLI | Service Level Indicator - Indicador de nivel de servico |
+| MFA | Multi-Factor Authentication - Autenticacao multifator |
+| SSO | Single Sign-On - Autenticacao unica |
+| KYC | Know Your Customer - Processo de identificacao de clientes |
+| AML | Anti-Money Laundering - Prevencao de lavagem de dinheiro |
 | API | Application Programming Interface |
-| CMS | Content Management System - Sistema de gestão de conteúdo |
+| CMS | Content Management System - Sistema de gestao de conteudo |
 | CI/CD | Continuous Integration / Continuous Deployment |
 | PWA | Progressive Web App |
 | WCAG | Web Content Accessibility Guidelines |
 | OWASP | Open Web Application Security Project |
+| BFF | Backend for Frontend - Camada de backend especifica para o frontend |
 
-## 10. Document Control
+## 8. Document Control
 
-| Versão | Data | Autor | Alterações |
+| Versao | Data | Autor | Alteracoes |
 |--------|------|-------|------------|
-| 0.1 | 2026-01-01 | NextReality | Versão inicial |
-| 0.2 | 2026-01-13 | NextReality | Adição de escopo, premissas, restrições, dependências, quality attributes e glossário |
+| 0.1 | 2026-01-01 | NextReality | Versao inicial |
+| 0.2 | 2026-01-13 | NextReality | Adicao de escopo, premissas, restricoes, quality attributes e glossario |
+| 0.3 | 2026-01-13 | NextReality | Simplificacao - conteudos detalhados movidos para definicoes |
+
+## 9. TO DO
+- Criar o documento completo com as informações que temos até o momento. Ele será a unificação  de todas as seções. Faça uma cópia do conteúdo sem frontmatter e marcadores.

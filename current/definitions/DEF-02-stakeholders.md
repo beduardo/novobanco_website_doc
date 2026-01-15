@@ -12,7 +12,7 @@ hubs:
   - "[[nextreality]]"
 para-code: R
 reviewed: true
-status: in-progress
+status: completed
 ---
 
 # DEF-02: Stakeholders
@@ -22,6 +22,19 @@ status: in-progress
 ## Contexto
 
 Identificar todas as partes interessadas no projeto HomeBanking web e seus papeis e necessidades e fundamental para garantir que a arquitetura atenda a todos os requisitos e expectativas.
+
+## Mapeamento de Stakeholders
+
+| Papel | Responsabilidade | Contacto |
+|-------|------------------|----------|
+| Sponsor | Patrocinador executivo do projeto | [A DEFINIR COM CLIENTE] |
+| Product Owner | Definicao de requisitos e priorizacao | [A DEFINIR COM CLIENTE] |
+| Arquiteto NovoBanco | Validacao tecnica e integracao com sistemas existentes | [A DEFINIR COM CLIENTE] |
+| Equipa Seguranca | Validacao de conformidade e seguranca | [A DEFINIR COM CLIENTE] |
+| Equipa Infraestrutura | Suporte Azure e ambientes | [A DEFINIR COM CLIENTE] |
+| Equipa Core Banking | Integracao com APIs do Core | [A DEFINIR COM CLIENTE] |
+| Equipa Mobile | Coordenacao com app nativa existente | [A DEFINIR COM CLIENTE] |
+| DPO (Data Protection Officer) | Conformidade RGPD | [A DEFINIR COM CLIENTE] |
 
 ## Perguntas a Responder
 

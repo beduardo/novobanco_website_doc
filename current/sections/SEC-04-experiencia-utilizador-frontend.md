@@ -271,10 +271,11 @@ stop
 
 #### 4.9.1 Seguranca UX
 
-| Aspecto | Status |
-|---------|--------|
+| Aspecto | Decisao |
+|---------|---------|
 | Comunicacao de seguranca ao utilizador | _A definir_ |
-| Timeout de sessao com aviso previo | _A definir_ |
+| Timeout de sessao por inatividade | 10 minutos |
+| Aviso previo de expiracao | Popup com temporizador antes de expirar |
 
 ### 4.10 Performance Frontend
 
@@ -377,7 +378,7 @@ end note
 | Item | Documento | Responsavel |
 |------|-----------|-------------|
 | PWA/Offline requirements | DEF-04-ux-guidelines | Arquitetura |
-| Seguranca UX (comunicacao, timeout) | DEF-04-ux-guidelines | UX + Seguranca |
+| Comunicacao de seguranca ao utilizador | DEF-04-ux-guidelines | UX + Seguranca |
 | WCAG level | DEF-04-design-system | UX |
 | Bundle size limits | DEF-04-stack-frontend | Performance |
 | Pontos de dor app mobile | DEF-04-ux-guidelines | UX |

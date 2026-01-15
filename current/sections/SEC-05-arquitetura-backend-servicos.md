@@ -54,7 +54,7 @@ package "Componentes Existentes" #LightGreen {
 
 package "Infraestrutura" {
     [ELK Stack] as ELK
-    database "Cache\n(Sessao)" as CACHE
+    database "Redis Cluster\n(Sessao)" as CACHE
 }
 
 FE --> BFF : HTTPS/REST

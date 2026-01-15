@@ -4,22 +4,35 @@ aliases:
   - Novo Banco Autenticacao OAuth
 tags:
   - nextreality-novobanco-website-definitions
+  - definitions
 approved: true
 created: 2025-12-22
 hubs:
   - "[[nextreality]]"
 para-code: R
 reviewed: true
+status: completed
 ---
-# DEF-07: Autenticacao e OAuth
+# DEF-05: Autenticacao e OAuth
 
-> **Status:** em-progresso
-> **Secao relacionada:** 07 - Autenticacao & Autorizacao
-> **Ultima atualizacao:** 2025-12-22
+> **Secao relacionada:** [SEC-07 - Autenticacao & Autorizacao](../sections/SEC-07-autenticacao-autorizacao.md)
 
 ## Contexto
 
 Este documento define os fluxos de autenticacao, mecanismos OAuth, gestao de tokens e integracao com a App Mobile para autorizacao na plataforma de Homebanking do Novo Banco.
+
+## Resumo dos Metodos de Autenticacao
+
+A plataforma suporta **4 metodos de autenticacao**, ordenados por preferencia:
+
+| Caso | Metodo | Descricao | Recomendacao |
+|------|--------|-----------|--------------|
+| 1 | QR Code Especifico de Sessao | QR dinamico por sessao, vinculacao automatica via App | **Principal** - Melhor UX e seguranca |
+| 2 | QR Code Generico | QR fixo, utilizador recebe codigo para introduzir manualmente | Alternativo - Simplicidade |
+| 3 | User + Pass + OTP SMS | Login tradicional com codigo OTP enviado por SMS | Fallback - Compatibilidade |
+| 4 | User + Pass + Push App | Login tradicional com aprovacao via notificacao na App | Fallback - Sem SMS |
+
+> **Nota:** Os casos 1 e 2 (QR Code) dispensam CAPTCHA por requererem dispositivo fisico autorizado com biometria.
 
 ---
 

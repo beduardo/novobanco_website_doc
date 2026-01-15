@@ -14,14 +14,16 @@ hubs:
   - "[[nextreality]]"
 para-code: R
 reviewed: true
-status: in-progress
+status: completed
 ---
 
 # 10. Arquitetura Operacional
 
+> **Definicao:** [DEF-10-arquitetura-operacional.md](../definitions/DEF-10-arquitetura-operacional.md)
+
 ## Proposito
 
-Definir a arquitetura operacional do HomeBanking Web, incluindo infraestrutura de containers, ambientes, pipelines CI/CD, estrategia de deploy e gestao de secrets.
+Definir a arquitetura operacional do HomeBanking Web, incluindo infraestrutura de containers, ambientes, pipelines CI/CD, estrategia de deploy, gestao de secrets e disaster recovery.
 
 ## Conteudo
 
@@ -44,13 +46,19 @@ package "DMZ" {
 
 package "Azure" {
   package "AKS Cluster" {
-    [Frontend\n(Nginx + React)] as FE
-    [BFF\n(.NET 8)] as BFF
+    package "Namespace: prod" {
+      [Frontend\n(Nginx + React)] as FE
+      [BFF\n(.NET 8)] as BFF
+    }
   }
 
   [Redis Cache] as REDIS
   [Key Vault] as KV
   [Container Registry] as ACR
+}
+
+package "Observabilidade" {
+  [ELK Stack] as ELK
 }
 
 package "Backend" {
@@ -64,6 +72,8 @@ FE --> BFF
 BFF --> REDIS
 BFF --> GW
 GW --> API
+FE --> ELK : logs
+BFF --> ELK : logs
 
 @enduml
 ```
@@ -73,17 +83,37 @@ GW --> API
 | **Plataforma atual** | Azure Kubernetes Service (AKS) |
 | **Plataforma futura** | OpenShift (em homologacao) |
 | **Load Balancer** | F5 BIG-IP |
+| **Ingress Controller** | NGINX Ingress / OpenShift Routes |
 | **Container Registry** | Azure Container Registry (ACR) |
+
+#### Requisitos de Imagens Container (OpenShift-Compliant)
+
+| Requisito | Descricao |
+|-----------|-----------|
+| Usuario nao-root | Container executa como usuario arbitrario (UID > 1000) |
+| Filesystem read-only | Volumes temporarios montados explicitamente |
+| Portas > 1024 | Nao utilizar portas privilegiadas |
+| Base image | Red Hat UBI (Universal Base Image) recomendado |
+| Health checks | Liveness e Readiness probes obrigatorios |
 
 ### 10.2 Ambientes
 
 A aplicacao utiliza tres ambientes, segregados por **namespaces** no cluster AKS.
 
-| Ambiente | Proposito | Acesso |
-|----------|-----------|--------|
-| **Development** | Desenvolvimento e testes iniciais | Developers |
-| **QA** | Testes de integracao e aceitacao | QA Team |
-| **Production** | Ambiente de producao | Restrito |
+| Ambiente | Proposito | Namespace | Promocao |
+|----------|-----------|-----------|----------|
+| **dev** | Desenvolvimento e integracao | `homebanking-dev` | Automatica (CI) |
+| **qa** | Testes integrados e UAT | `homebanking-qa` | Automatica (apos dev OK) |
+| **prod** | Producao | `homebanking-prod` | Manual (aprovacao) |
+
+#### Segregacao de Ambientes
+
+| Tipo | Mecanismo |
+|------|-----------|
+| Logica | Namespaces Kubernetes separados |
+| Rede | Network Policies por namespace |
+| Secrets | Key Vault com politicas por ambiente |
+| RBAC | Service accounts distintos por ambiente |
 
 ### 10.3 CI/CD Pipeline
 
@@ -91,10 +121,22 @@ A aplicacao utiliza tres ambientes, segregados por **namespaces** no cluster AKS
 
 | Componente | Ferramenta |
 |------------|------------|
-| **CI/CD Platform** | Azure DevOps |
-| **Repositorio** | Azure Repos |
+| **Repositorio** | Azure Repos (Git) |
+| **CI/CD Platform** | Azure Pipelines |
+| **Container Registry** | Azure Container Registry (ACR) |
+| **Secrets** | Azure Key Vault |
+| **IaC** | Helm Charts + Terraform |
 | **Branching** | GitFlow |
-| **Artefactos** | Azure Container Registry |
+
+#### Estrategia de Branching (GitFlow)
+
+| Branch | Proposito | Deploy Automatico |
+|--------|-----------|-------------------|
+| `feature/*` | Desenvolvimento de features | Nao |
+| `develop` | Integracao continua | DEV |
+| `release/*` | Preparacao de release | QA |
+| `main` | Producao | PROD (c/ aprovacao) |
+| `hotfix/*` | Correcoes urgentes | PROD (c/ aprovacao) |
 
 #### Pipeline Overview
 
@@ -108,16 +150,19 @@ rectangle "Build" as B #LightBlue {
   rectangle "Compile"
   rectangle "Unit Tests"
   rectangle "SAST Scan"
+  rectangle "Coverage"
 }
 
 rectangle "Test" as T #LightGreen {
   rectangle "Integration Tests"
+  rectangle "Deploy DEV"
   rectangle "Deploy QA"
 }
 
 rectangle "Release" as R #LightYellow {
   rectangle "Approval"
   rectangle "Deploy Prod"
+  rectangle "Smoke Tests"
 }
 
 B --> T : Quality Gate
@@ -126,11 +171,15 @@ T --> R : Approval Gate
 @enduml
 ```
 
-| Stage | Actividades | Bloqueante |
-|-------|-------------|------------|
-| **Build** | Compile, Unit Tests, SAST | Sim |
-| **Test** | Integration Tests, Deploy QA | Sim |
-| **Release** | Aprovacao manual, Deploy Prod | Sim |
+#### Quality Gates
+
+| Gate | Ferramenta | Threshold | Bloqueante |
+|------|------------|-----------|------------|
+| Unit Tests | Vitest / xUnit | 100% pass | Sim |
+| Code Coverage | Istanbul / Coverlet | >= 80% | Sim |
+| SAST | SonarQube / Checkmarx | 0 Critical, 0 High | Sim |
+| Lint | ESLint / .NET Analyzers | 0 errors | Sim |
+| Build | Azure Pipelines | Success | Sim |
 
 ### 10.4 Estrategia de Deploy
 
@@ -138,20 +187,36 @@ T --> R : Approval Gate
 |---------|---------------|
 | **Estrategia** | Rolling Update |
 | **Zero downtime** | Sim |
+| **maxSurge** | 25% |
+| **maxUnavailable** | 0 |
+| **Replicas minimas** | 2 |
 | **Health checks** | Readiness + Liveness probes |
 | **Rollback** | Automatico via Kubernetes |
+
+#### Aprovacoes por Ambiente
+
+| Ambiente | Aprovacao | Aprovadores |
+|----------|-----------|-------------|
+| DEV | Automatica | - |
+| QA | Automatica | - |
+| PROD | Manual | Tech Lead + PO |
 
 ### 10.5 Secrets Management
 
 | Aspecto | Especificacao |
 |---------|---------------|
 | **Ferramenta** | Azure Key Vault |
-| **Injeccao** | Secret Store CSI Driver |
+| **Injecao** | Secret Store CSI Driver |
+| **Acesso** | Managed Identity por namespace |
+| **Rotacao** | Suportada (CSI driver faz refresh) |
 | **Secrets geridos** | Connection strings, API keys, certificados |
 
 ```plantuml
 @startuml
 skinparam componentStyle rectangle
+skinparam backgroundColor white
+
+title Injecao de Secrets via CSI Driver
 
 [Azure Key Vault] as KV
 [Secret Store CSI Driver] as CSI
@@ -163,36 +228,72 @@ CSI --> BFF : Mount as volume
 @enduml
 ```
 
-### 10.6 Disaster Recovery
+#### Politica de Rotacao
 
-| Aspecto | Status |
-|---------|--------|
-| **Site de DR** | Nao disponivel atualmente |
-| **RTO/RPO** | A definir com cliente |
-| **Estrategia** | A definir |
+| Tipo de Secret | Frequencia | Responsavel |
+|----------------|------------|-------------|
+| API Keys | 90 dias | Automatico |
+| Certificados TLS | Anual | Infra |
+| DB Credentials | 180 dias | DBA |
 
-### 10.7 Backup
+### 10.6 Container Registry
+
+| Aspecto | Configuracao |
+|---------|--------------|
+| Registry | Azure Container Registry (ACR) |
+| Autenticacao | Managed Identity |
+| Scanning | Microsoft Defender for Containers |
+| Retencao | 90 dias para tags nao-latest |
+| Naming | `acr.azurecr.io/homebanking/{component}:{version}` |
+
+#### Tagging Strategy
+
+| Tag | Uso |
+|-----|-----|
+| `{semver}` | Versao semantica (ex: `1.2.3`) |
+| `{branch}-{sha}` | Feature branches (ex: `develop-abc1234`) |
+| `latest` | Ultima versao de producao |
+
+### 10.7 Disaster Recovery
+
+| Aspecto | Configuracao |
+|---------|--------------|
+| **Tipo** | Cluster replica (standby passivo) |
+| **RTO** | 30 minutos |
+| **RPO** | 5 minutos |
+| **Failover** | Manual (decisao de negocio) |
+
+> **Nota:** Canal web e stateless. Dados estao no backend existente com DR proprio. DR do canal web foca na disponibilidade da aplicacao.
+
+### 10.8 Backup
 
 O canal web **nao requer backup dedicado**:
 
-| Componente | Justificacao |
-|------------|--------------|
-| **Codigo fonte** | Versionado em Git |
-| **Container images** | ACR com retencao |
-| **Secrets** | Azure Key Vault (managed) |
-| **Dados de negocio** | Sistemas backend (fora de escopo) |
-| **Sessoes** | Transitorias em Redis |
+| Componente | Backup | Frequencia | Retencao |
+|------------|--------|------------|----------|
+| **Codigo fonte** | Git | Cada commit | Infinito |
+| **Container images** | ACR | Cada build | 90 dias |
+| **Secrets** | Azure Key Vault (managed) | Automatico | 90 dias |
+| **Dados de negocio** | Backend existente | N/A | N/A |
+| **Sessoes** | Redis (transitorio) | N/A | N/A |
 
-## Itens Pendentes
+### 10.9 Runbooks
 
-| Item | Responsavel | Prioridade |
-|------|-------------|------------|
-| Definir ferramenta IaC (Helm/Terraform) | Arquitetura | Alta |
-| Definir quality gate thresholds | QA / Arquitetura | Alta |
-| Definir estrategia de DR | Infraestrutura / Cliente | Media |
-| Definir janela de deploy | Operacoes | Media |
+| Runbook | Trigger | Responsavel |
+|---------|---------|-------------|
+| Deploy para Producao | Release aprovada | DevOps |
+| Rollback de Emergencia | Incidente P1 | DevOps |
+| Escalacao de Pods | Alerta de carga | DevOps / Auto |
+| Rotacao de Secrets | Schedule / Incidente | SecOps |
+| Failover DR | Indisponibilidade > RTO | Infra |
 
 ## Decisoes Referenciadas
 
 - [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Containers OpenShift-compliant
+- [DEC-008-stack-observabilidade-elk.md](../decisions/DEC-008-stack-observabilidade-elk.md) - Stack de observabilidade
 - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack Backend
+
+## Definicoes Utilizadas
+
+- [DEF-10-arquitetura-operacional.md](../definitions/DEF-10-arquitetura-operacional.md) - Detalhes completos
+- [DEF-02-requisitos-nao-funcionais.md](../definitions/DEF-02-requisitos-nao-funcionais.md) - RTO/RPO
