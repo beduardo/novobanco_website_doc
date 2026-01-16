@@ -1,0 +1,23 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+
+title Controlos XSS - Por Camada
+
+rectangle "SSR/BFF" #LightGreen {
+    [Escape de saída HTML]
+    [Validação de entrada]
+    [Sanitização de entrada]
+}
+
+rectangle "Frontend React" #LightBlue {
+    [React auto-escape]
+    [innerHTML proibido]
+    [eval proibido]
+}
+
+rectangle "Ferramentas" #Yellow {
+    [ESLint rules]
+    [SonarQube]
+}
+
+@enduml

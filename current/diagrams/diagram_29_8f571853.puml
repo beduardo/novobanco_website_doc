@@ -1,0 +1,28 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Diagrama de Contexto - Integrações HomeBanking Web
+
+Person(user, "Utilizador", "Cliente do banco")
+
+System(web, "HomeBanking Web", "Canal web para homebanking")
+
+System_Ext(mobile, "App Mobile", "Aplicação mobile existente")
+System_Ext(backend, "Backend API", "Facade para Core Banking")
+System_Ext(core, "Core Banking", "Sistemas bancários core")
+System_Ext(notif, "Serviços Notificação", "SMS, Push, Email")
+System_Ext(cards, "Provider Cartões", "Emissão e processamento")
+
+Rel(user, web, "Utiliza", "HTTPS")
+Rel(user, mobile, "Utiliza", "HTTPS")
+
+Rel(web, backend, "Integra via BFF", "REST/HTTPS")
+Rel(mobile, backend, "Integra", "REST/HTTPS")
+
+Rel(backend, core, "Acede", "Interno")
+Rel(backend, notif, "Aciona", "REST")
+Rel(backend, cards, "Integra", "REST")
+
+@enduml

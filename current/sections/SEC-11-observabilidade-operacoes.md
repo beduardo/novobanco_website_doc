@@ -1,7 +1,7 @@
 ---
 id: SEC-11-observabilidade-operacoes
 aliases:
-  - Observabilidade e Operacoes
+  - Observabilidade e Operações
 tags:
   - nextreality-novobanco-website-sections
   - sections
@@ -17,27 +17,27 @@ reviewed: true
 status: completed
 ---
 
-# 11. Observabilidade & Operacoes
+# 11. Observabilidade & Operações
 
-> **Definicao:** [DEF-11-observabilidade-operacoes.md](../definitions/DEF-11-observabilidade-operacoes.md)
+> **Definição:** [DEF-11-observabilidade-operacoes.md](../definitions/DEF-11-observabilidade-operacoes.md)
 
-## Proposito
+## Propósito
 
-Definir a estrategia de observabilidade do HomeBanking Web, incluindo stack tecnologica, metricas chave (golden signals), tracing distribuido e abordagem de SLIs/SLOs.
+Definir a estratégia de observabilidade do HomeBanking Web, incluindo stack tecnológica, métricas chave (golden signals), tracing distribuído e abordagem de SLIs/SLOs.
 
-## Conteudo
+## Conteúdo
 
-### 11.1 Os Tres Pilares
+### 11.1 Os Três Pilares
 
-| Pilar | Proposito | Ferramenta |
+| Pilar | Propósito | Ferramenta |
 |-------|-----------|------------|
 | **Logs** | Eventos e debugging | ELK (Elasticsearch, Logstash, Kibana) |
-| **Metricas** | Performance e saude | Prometheus + Grafana (complemento) |
+| **Métricas** | Performance e saúde | Prometheus + Grafana (complemento) |
 | **Traces** | Fluxo de requests | Elastic APM |
 
 ### 11.2 Stack de Observabilidade
 
-A stack de observabilidade sera baseada no **ELK Stack** (Elasticsearch, Logstash, Kibana), reutilizando a infraestrutura existente.
+A stack de observabilidade será baseada no **ELK Stack** (Elasticsearch, Logstash, Kibana), reutilizando a infraestrutura existente.
 
 ```plantuml
 @startuml
@@ -46,7 +46,7 @@ skinparam backgroundColor white
 
 title Stack de Observabilidade
 
-package "Aplicacao" {
+package "Aplicação" {
   [Frontend SPA] as FE
   [BFF .NET 8] as BFF
 }
@@ -76,20 +76,20 @@ ES --> ALERT
 @enduml
 ```
 
-| Componente | Funcao | Tecnologia |
+| Componente | Função | Tecnologia |
 |------------|--------|------------|
 | **Logging** | Logs estruturados JSON | Serilog (.NET), Filebeat |
 | **Tracing** | Distributed tracing | Elastic APM |
-| **Ingestao** | Coleta e transformacao | Logstash |
-| **Armazenamento** | Indexacao e busca | Elasticsearch |
-| **Visualizacao** | Dashboards | Kibana |
-| **Alerting** | Notificacoes | ElastAlert |
+| **Ingestão** | Coleta e transformação | Logstash |
+| **Armazenamento** | Indexação e busca | Elasticsearch |
+| **Visualização** | Dashboards | Kibana |
+| **Alerting** | Notificações | ElastAlert |
 
 ### 11.3 Golden Signals
 
-Os quatro golden signals serao monitorizados conforme melhores praticas SRE:
+Os quatro golden signals serão monitorizados conforme melhores práticas SRE:
 
-| Signal | Metrica | Target | Alerta |
+| Signal | Métrica | Target | Alerta |
 |--------|---------|--------|--------|
 | **Latency** | P95 response time | < 3s | > 5s |
 | **Traffic** | Requests per second | Baseline | > 2x baseline |
@@ -98,17 +98,17 @@ Os quatro golden signals serao monitorizados conforme melhores praticas SRE:
 
 ### 11.4 Logging
 
-Todos os logs serao estruturados em formato JSON com campos padronizados:
+Todos os logs serão estruturados em formato JSON com campos padronizados:
 
-#### Campos Obrigatorios
+#### Campos Obrigatórios
 
-| Campo | Tipo | Descricao |
+| Campo | Tipo | Descrição |
 |-------|------|-----------|
 | `timestamp` | ISO8601 | Data/hora UTC do evento |
 | `level` | string | DEBUG, INFO, WARN, ERROR, FATAL |
 | `service` | string | Nome do componente (frontend-web, bff-web) |
-| `correlation_id` | UUID | ID para correlacao entre servicos |
-| `message` | string | Descricao do evento |
+| `correlation_id` | UUID | ID para correlação entre serviços |
+| `message` | string | Descrição do evento |
 | `environment` | string | dev, qa, prod |
 
 #### Campos Opcionais
@@ -116,12 +116,12 @@ Todos os logs serao estruturados em formato JSON com campos padronizados:
 | Campo | Tipo | Uso |
 |-------|------|-----|
 | `user_id` | string | Identificador do utilizador (masked) |
-| `session_id` | string | ID da sessao |
-| `operation` | string | Tipo de operacao |
-| `duration_ms` | number | Duracao da operacao |
-| `error_code` | string | Codigo de erro |
+| `session_id` | string | ID da sessão |
+| `operation` | string | Tipo de operação |
+| `duration_ms` | number | Duração da operação |
+| `error_code` | string | Código de erro |
 
-#### Mascaramento de Dados Sensiveis
+#### Mascaramento de Dados Sensíveis
 
 | Tipo de Dado | Tratamento |
 |--------------|------------|
@@ -132,42 +132,42 @@ Todos os logs serao estruturados em formato JSON com campos padronizados:
 | NIF | Mascarar |
 | Tokens | Nunca logar |
 
-#### Retencao de Logs
+#### Retenção de Logs
 
-| Tipo de Log | Retencao | Requisito |
+| Tipo de Log | Retenção | Requisito |
 |-------------|----------|-----------|
-| Logs de autenticacao | 7 anos | Compliance bancario |
-| Logs de transacoes | 7 anos | Compliance bancario |
+| Logs de autenticação | 7 anos | Compliance bancário |
+| Logs de transações | 7 anos | Compliance bancário |
 | Logs de erro | 1 ano | Operacional |
 | Logs gerais | 90 dias | Operacional |
 
-### 11.5 Tracing Distribuido
+### 11.5 Tracing Distribuído
 
-| Header | Proposito | Gerado por |
+| Header | Propósito | Gerado por |
 |--------|-----------|------------|
-| `X-Correlation-ID` | Correlacao de logs | Frontend (UUID) |
-| `X-Request-ID` | ID unico do request | BFF |
+| `X-Correlation-ID` | Correlação de logs | Frontend (UUID) |
+| `X-Request-ID` | ID único do request | BFF |
 | `traceparent` | W3C Trace Context | APM Agent |
 
-| Componente | Instrumentacao |
+| Componente | Instrumentação |
 |------------|----------------|
 | Frontend | RUM (Real User Monitoring) JS Agent |
 | BFF .NET | Elastic APM .NET Agent |
 
 ### 11.6 SLIs / SLOs / SLAs
 
-| Conceito | Definicao | Responsavel |
+| Conceito | Definição | Responsável |
 |----------|-----------|-------------|
-| **SLI** (Indicator) | Metrica que mede o nivel de servico | Engenharia |
+| **SLI** (Indicator) | Métrica que mede o nível de serviço | Engenharia |
 | **SLO** (Objective) | Target interno para o SLI | Engenharia |
-| **SLA** (Agreement) | Compromisso contratual externo | Negocio |
+| **SLA** (Agreement) | Compromisso contratual externo | Negócio |
 
 #### SLOs do Canal Web
 
-| SLI | SLO Target | Janela | Calculo |
+| SLI | SLO Target | Janela | Cálculo |
 |-----|------------|--------|---------|
 | Disponibilidade | 99.9% | Mensal | Uptime / Tempo total |
-| Latencia P95 | < 3s | Mensal | Percentil 95 dos requests |
+| Latência P95 | < 3s | Mensal | Percentil 95 dos requests |
 | Taxa de Erro | < 0.1% | Mensal | Erros 5xx / Total requests |
 | TTFB | < 800ms | Mensal | Time to First Byte P95 |
 
@@ -181,20 +181,20 @@ Todos os logs serao estruturados em formato JSON com campos padronizados:
 
 ### 11.7 Alertas
 
-| Severidade | Criterio | Tempo Resposta | Notificacao |
+| Severidade | Critério | Tempo Resposta | Notificação |
 |------------|----------|----------------|-------------|
-| **P1 - Critical** | Servico indisponivel, impacto total | < 15 min | On-call + SMS |
-| **P2 - High** | Degradacao significativa | < 30 min | Email + Teams |
-| **P3 - Medium** | Degradacao parcial | < 4 horas | Email |
-| **P4 - Low** | Anomalia sem impacto | Proximo dia util | Ticket |
+| **P1 - Critical** | Serviço indisponível, impacto total | < 15 min | On-call + SMS |
+| **P2 - High** | Degradação significativa | < 30 min | Email + Teams |
+| **P3 - Medium** | Degradação parcial | < 4 horas | Email |
+| **P4 - Low** | Anomalia sem impacto | Próximo dia útil | Ticket |
 
 #### Alertas Configurados
 
-| Alerta | Condicao | Severidade |
+| Alerta | Condição | Severidade |
 |--------|----------|------------|
-| Servico DOWN | Health check falha > 2 min | P1 |
+| Serviço DOWN | Health check falha > 2 min | P1 |
 | Error Rate Alto | > 5% erros 5xx | P1 |
-| Latencia Degradada | P95 > 5s por 5 min | P2 |
+| Latência Degradada | P95 > 5s por 5 min | P2 |
 | CPU Saturado | > 90% por 10 min | P2 |
 | Memory Alto | > 85% por 10 min | P2 |
 | Auth Failures Spike | > 10x baseline | P2 |
@@ -203,29 +203,29 @@ Todos os logs serao estruturados em formato JSON com campos padronizados:
 
 ### 11.8 Dashboards
 
-| Dashboard | Audiencia | Conteudo |
+| Dashboard | Audiência | Conteúdo |
 |-----------|-----------|----------|
 | **Health Overview** | NOC / On-call | Status geral, alertas ativos, SLO status |
-| **Performance** | Engenharia | Latencia, throughput, errors por endpoint |
-| **Business** | Produto | Logins, transacoes, conversion rates |
+| **Performance** | Engenharia | Latência, throughput, errors por endpoint |
+| **Business** | Produto | Logins, transações, conversion rates |
 | **Security** | SecOps | Auth failures, suspicious activity |
 | **Infrastructure** | DevOps | CPU, memory, pods, network |
 
-### 11.9 Metricas de Negocio
+### 11.9 Métricas de Negócio
 
-| Metrica | Descricao | Dashboard |
+| Métrica | Descrição | Dashboard |
 |---------|-----------|-----------|
-| Logins/hora | Taxa de autenticacoes | Business |
-| Transacoes/tipo | Transferencias, pagamentos | Business |
-| Taxa abandono login | % que nao completa login | Business |
-| Erros auth | Falhas de autenticacao | Security |
-| Sessoes ativas | Utilizadores online | Operations |
+| Logins/hora | Taxa de autenticações | Business |
+| Transações/tipo | Transferências, pagamentos | Business |
+| Taxa abandono login | % que não completa login | Business |
+| Erros auth | Falhas de autenticação | Security |
+| Sessões ativas | Utilizadores online | Operations |
 
-## Decisoes Referenciadas
+## Decisões Referenciadas
 
 - [DEC-008-stack-observabilidade-elk.md](../decisions/DEC-008-stack-observabilidade-elk.md) - ELK Stack
 
-## Definicoes Utilizadas
+## Definições Utilizadas
 
 - [DEF-11-observabilidade-operacoes.md](../definitions/DEF-11-observabilidade-operacoes.md) - Detalhes completos
 - [DEF-02-requisitos-nao-funcionais.md](../definitions/DEF-02-requisitos-nao-funcionais.md) - SLAs

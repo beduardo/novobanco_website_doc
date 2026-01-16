@@ -1,0 +1,30 @@
+@startuml
+skinparam componentStyle rectangle
+
+package "API Management" {
+  [Azure API Gateway] as GW
+
+  package "Policies" {
+    [Rate Limiting] as RL
+    [Authentication] as AUTH
+    [Logging] as LOG
+    [Transformation] as TRANS
+  }
+}
+
+[BFF] --> GW
+GW --> [Backend API]
+
+GW --> RL
+GW --> AUTH
+GW --> LOG
+GW --> TRANS
+
+note right of GW
+  - Centralização de tráfego
+  - Aplicação de policies
+  - Monitoring
+  - Versionamento
+end note
+
+@enduml

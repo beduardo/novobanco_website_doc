@@ -1,0 +1,28 @@
+@startuml
+skinparam backgroundColor white
+
+title Pipeline CI/CD
+
+rectangle "Build" as B #LightBlue {
+  rectangle "Compile"
+  rectangle "Unit Tests"
+  rectangle "SAST Scan"
+  rectangle "Coverage"
+}
+
+rectangle "Test" as T #LightGreen {
+  rectangle "Integration Tests"
+  rectangle "Deploy DEV"
+  rectangle "Deploy QA"
+}
+
+rectangle "Release" as R #LightYellow {
+  rectangle "Approval"
+  rectangle "Deploy Prod"
+  rectangle "Smoke Tests"
+}
+
+B --> T : Quality Gate
+T --> R : Approval Gate
+
+@enduml

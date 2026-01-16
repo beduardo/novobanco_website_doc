@@ -1,0 +1,30 @@
+@startuml
+skinparam backgroundColor white
+
+title Camadas de Cache
+
+actor User
+participant "Browser" as browser
+participant "CDN" as cdn
+participant "BFF" as bff
+database "Redis" as redis
+participant "Backend" as api
+
+User -> browser : Request
+browser -> browser : Local Storage\n(sessão, prefs)
+browser -> cdn : Static assets\n(js, css, images)
+cdn --> browser : Cache hit
+
+browser -> bff : API Request
+bff -> redis : Cache lookup
+alt Cache HIT
+    redis --> bff : Cached data
+    bff --> browser : Response (fast)
+else Cache MISS
+    bff -> api : Backend call
+    api --> bff : Data
+    bff -> redis : Cache store
+    bff --> browser : Response
+end
+
+@enduml

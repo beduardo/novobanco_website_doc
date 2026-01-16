@@ -1,0 +1,34 @@
+@startuml
+skinparam componentStyle rectangle
+skinparam backgroundColor white
+
+title Stack de Observabilidade
+
+package "Aplicação" {
+  [Frontend SPA] as FE
+  [BFF .NET 8] as BFF
+}
+
+package "Coleta" {
+  [Filebeat] as FB
+  [APM Agent] as APM
+}
+
+package "ELK Stack" {
+  [Logstash] as LS
+  [Elasticsearch] as ES
+  [Kibana] as KB
+}
+
+[ElastAlert] as ALERT
+
+FE --> FB : Logs
+BFF --> FB : Logs (Serilog)
+BFF --> APM : Traces/Metrics
+FB --> LS
+APM --> ES
+LS --> ES
+ES --> KB
+ES --> ALERT
+
+@enduml

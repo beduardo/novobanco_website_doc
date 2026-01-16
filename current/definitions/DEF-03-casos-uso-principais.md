@@ -17,58 +17,58 @@ status: completed
 
 # DEF-03: Casos de Uso Principais
 
-> **Secao relacionada:** [3 - Visao Geral da Solucao](../sections/SEC-03-visao-geral-solucao.md)
+> **Secção relacionada:** [3 - Visão Geral da Solução](../sections/SEC-03-visao-geral-solucao.md)
 
 ## Contexto
 
-Os casos de uso principais definem as interacoes mais importantes entre os utilizadores e o sistema HomeBanking web. Estes casos de uso serao a base para a definicao da arquitetura e priorizacao do desenvolvimento.
+Os casos de uso principais definem as interações mais importantes entre os utilizadores e o sistema HomeBanking web. Estes casos de uso serão a base para a definição da arquitetura e priorização do desenvolvimento.
 
 ## Perguntas a Responder
 
-> **Nota:** Requisitos de PWA/Offline estao definidos em [DEF-04-ux-guidelines.md](DEF-04-ux-guidelines.md)
-> **Nota:** Detalhes de SCA estao definidos em [DEF-07-autenticacao-autorizacao.md](DEF-07-autenticacao-autorizacao.md)
+> **Nota:** Requisitos de PWA/Offline estão definidos em [DEF-04-ux-guidelines.md](DEF-04-ux-guidelines.md)
+> **Nota:** Detalhes de SCA estão definidos em [DEF-07-autenticacao-autorizacao.md](DEF-07-autenticacao-autorizacao.md)
 
-1. Quais casos de uso sao criticos para o negocio?
-    Login, Transferencias
+1. Quais casos de uso são críticos para o negócio?
+    Login, Transferências
 
-2. Quais sao os atores principais (cliente individual, cliente empresarial, etc.)?
+2. Quais são os atores principais (cliente individual, cliente empresarial, etc.)?
     Cliente individual
 
-3. Existem casos de uso que envolvem integracao com terceiros?
-    Necessita aprofundamento - verificar integracoes KYC/AML, Pagamentos
+3. Existem casos de uso que envolvem integração com terceiros?
+    Necessita aprofundamento - verificar integrações KYC/AML, Pagamentos
 
-4. Quais casos de uso requerem autenticacao forte (SCA)?
-    Todo o acesso a aplicacao (areas restritas)
+4. Quais casos de uso requerem autenticação forte (SCA)?
+    Todo o acesso à aplicação (áreas restritas)
 
-## Decisoes
+## Decisões
 
 ### Atores do Sistema
-- **Decisao:** Cliente Individual como ator principal
-- **Justificacao:** Foco inicial no segmento de clientes particulares do banco
-- **Alternativas consideradas:** Cliente Empresarial (pode ser incluido em fases futuras)
+- **Decisão:** Cliente Individual como ator principal
+- **Justificação:** Foco inicial no segmento de clientes particulares do banco
+- **Alternativas consideradas:** Cliente Empresarial (pode ser incluído em fases futuras)
 
-### Casos de Uso Criticos
-- **Decisao:** Login e Transferencias identificados como criticos para o negocio
-- **Justificacao:**
-  - Login: Ponto de entrada obrigatorio, impacta toda a experiencia
-  - Transferencias: Operacao financeira core, alto valor de negocio
+### Casos de Uso Críticos
+- **Decisão:** Login e Transferências identificados como críticos para o negócio
+- **Justificação:**
+  - Login: Ponto de entrada obrigatório, impacta toda a experiência
+  - Transferências: Operação financeira core, alto valor de negócio
 
 ### Casos de Uso com SCA
-- **Decisao:** Todo o acesso a aplicacao requer autenticacao forte (SCA)
-- **Justificacao:** Conformidade com PSD2 e politica de seguranca do banco
-- **Nota:** Detalhes de implementacao em [DEF-07-autenticacao-autorizacao.md](DEF-07-autenticacao-autorizacao.md)
+- **Decisão:** Todo o acesso à aplicação requer autenticação forte (SCA)
+- **Justificação:** Conformidade com PSD2 e política de segurança do banco
+- **Nota:** Detalhes de implementação em [DEF-07-autenticacao-autorizacao.md](DEF-07-autenticacao-autorizacao.md)
 
 ### PWA e Offline
-- **Decisao:** Ver [DEF-04-ux-guidelines.md](DEF-04-ux-guidelines.md)
-- **Justificacao:** Consolidacao em documento de UX
+- **Decisão:** Ver [DEF-04-ux-guidelines.md](DEF-04-ux-guidelines.md)
+- **Justificação:** Consolidação em documento de UX
 
-## Restricoes Conhecidas
+## Restrições Conhecidas
 
 - Alinhamento com casos de uso da app mobile existente
-- Conformidade com PSD2 para operacoes de pagamento
+- Conformidade com PSD2 para operações de pagamento
 
-## Referencias
+## Referências
 
 - [CONTEXT.md](../CONTEXT.md) - Contexto geral do projeto
-- Documentacao de casos de uso da app mobile (a fornecer)
+- Documentação de casos de uso da app mobile (a fornecer)
 - Requisitos PSD2 para SCA (a fornecer)

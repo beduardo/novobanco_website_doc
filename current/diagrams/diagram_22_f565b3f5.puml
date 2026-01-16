@@ -1,0 +1,33 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+
+title Camadas de Segurança - HomeBanking Web
+
+rectangle "Segurança em Camadas" {
+    rectangle "Frontend" #LightBlue {
+        [Security Headers]
+        [XSS Protection]
+        [SRI]
+    }
+
+    rectangle "BFF" #LightGreen {
+        [CSRF Tokens]
+        [Input Validation]
+        [Session Management]
+    }
+
+    rectangle "Infraestrutura" #Yellow {
+        [WAF]
+        [TLS]
+        [Rate Limiting]
+    }
+
+    rectangle "Conformidade" #LightCoral {
+        [PSD2]
+        [RGPD]
+        [PCI-DSS]
+        [BdP]
+    }
+}
+
+@enduml

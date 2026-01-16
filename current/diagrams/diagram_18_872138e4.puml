@@ -1,0 +1,28 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+
+actor "Utilizador" as USER
+participant "Browser" as FE
+participant "BFF" as BFF
+participant "Auth Service" as AUTH
+participant "App Mobile" as APP
+
+USER -> FE : Acede ao HomeBanking
+FE -> BFF : Solicita QR Code
+BFF -> AUTH : Gera QR Code + Session Token
+AUTH --> BFF : QR Code data
+BFF --> FE : Apresenta QR Code
+
+USER -> APP : Abre app mobile
+USER -> APP : Escaneia QR Code
+APP -> APP : Solicita biometria
+USER -> APP : Confirma biometria
+APP -> AUTH : Valida + vincula sessão
+AUTH --> APP : Sessão aprovada
+
+AUTH --> BFF : Notifica aprovação
+BFF -> BFF : Cria sessão web
+BFF --> FE : Set-Cookie: SessionID\n(HttpOnly, Secure, SameSite=Strict)
+FE --> USER : Acesso concedido
+
+@enduml

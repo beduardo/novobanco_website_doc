@@ -19,59 +19,59 @@ status: completed
 
 # DEF-06: Arquitetura de Dados
 
-> **Secao relacionada:** [6 - Arquitetura de Dados](../sections/SEC-06-arquitetura-dados.md)
+> **Secção relacionada:** [6 - Arquitetura de Dados](../sections/SEC-06-arquitetura-dados.md)
 
 ## Contexto
 
-Definir a arquitetura de dados do HomeBanking Web, incluindo modelo de dados, armazenamento, encriptacao, retencao e conformidade RGPD. Nota: O canal web reutiliza os servicos backend existentes, logo a maioria dos dados e armazenada nos sistemas existentes.
+Definir a arquitetura de dados do HomeBanking Web, incluindo modelo de dados, armazenamento, encriptação, retenção e conformidade RGPD. Nota: O canal web reutiliza os serviços backend existentes, logo a maioria dos dados é armazenada nos sistemas existentes.
 
 ## Perguntas a Responder
 
 ### Modelo de Dados
-1. O frontend web tera persistencia local de dados (IndexedDB, localStorage)?
+1. O frontend web terá persistência local de dados (IndexedDB, localStorage)?
     Sim, localStorage.
 
 2. Quais dados podem ser armazenados temporariamente no browser?
-    No momento somente os dados básicos do utilizador. Necessário mais aprofundamento com UI para avaliar se há necessidade de algo a mais. Vamos utilizar uma estratégia de cache para dados públicos, notícias e também para informações muito utilizadas na construção das páginas. As informações sigilosas do usuário ficarão em cache no BFF.
+    No momento somente os dados básicos do utilizador. Necessário mais aprofundamento com UI para avaliar se há necessidade de algo a mais. Vamos utilizar uma estratégia de cache para dados públicos, notícias e também para informações muito utilizadas na construção das páginas. As informações sigilosas do utilizador ficarão em cache no BFF.
 
-3. Ha dados especificos do canal web que nao existem na app mobile?
+3. Há dados específicos do canal web que não existem na app mobile?
     Não
 
 ### Armazenamento no BFF
-4. O BFF tera base de dados propria ou apenas cache?
+4. O BFF terá base de dados própria ou apenas cache?
     Apenas cache
 
 5. Se houver base de dados, qual tecnologia (SQL Server, PostgreSQL, Redis)?
     Não há
 
-6. Quais dados serao armazenados no BFF (alem de sessoes)?
+6. Quais dados serão armazenados no BFF (além de sessões)?
     No momento somente a sessão. Caso o Frontend utilize SSR e SGA por completo, as informações mais utilizadas estarão disponíveis em cache no BFF.
 
-### Encriptacao
-7. Quais dados devem ser encriptados em transito (TLS versao)?
+### Encriptação
+7. Quais dados devem ser encriptados em trânsito (TLS versão)?
     Ainda não definidos
 
-8. Ha requisitos de encriptacao em repouso para dados no BFF/cache?
+8. Há requisitos de encriptação em repouso para dados no BFF/cache?
     Não há requisitos
 
-9. Como serao geridas as chaves de encriptacao?
+9. Como serão geridas as chaves de encriptação?
     No momento somente SSL está em consideração.
 
-### Retencao de Dados
-10. Qual a politica de retencao para logs de acesso web?
+### Retenção de Dados
+10. Qual a política de retenção para logs de acesso web?
     Necessita aprofundamento
 
-11. Qual a politica de retencao para dados de sessao?
+11. Qual a política de retenção para dados de sessão?
     Necessita aprofundamento
 
-12. Ha requisitos especificos de retencao para auditoria?
+12. Há requisitos específicos de retenção para auditoria?
     Necessita aprofundamento
 
 ### Backup & Restore
 13. Quais componentes do canal web requerem backup?
     Necessita aprofundamento
 
-14. Qual a frequencia de backup?
+14. Qual a frequência de backup?
     Necessita aprofundamento
 
 15. Qual o RTO/RPO para restauro de dados?
@@ -82,68 +82,68 @@ Definir a arquitetura de dados do HomeBanking Web, incluindo modelo de dados, ar
 
 > **Nota:** Detalhes de conformidade RGPD em [DEF-08-seguranca-conformidade.md](DEF-08-seguranca-conformidade.md)
 
-16. Ha dados especificos do canal web sujeitos a RGPD?
-    Logs de sessao, preferencias de utilizador. Dados transacionais sao do Core Banking.
+16. Há dados específicos do canal web sujeitos a RGPD?
+    Logs de sessão, preferências de utilizador. Dados transacionais são do Core Banking.
 
-17. Quais dados do canal web sao considerados PII?
-    Session ID, IP, User-Agent, preferencias. Dados bancarios sao do backend.
+17. Quais dados do canal web são considerados PII?
+    Session ID, IP, User-Agent, preferências. Dados bancários são do backend.
 
 ### Cache Strategy (Consolidado)
 
-18. Quais dados serao cacheados no BFF?
-    - Tokens de sessao (chave: session cookie)
-    - Dados publicos (noticias, taxas)
+18. Quais dados serão cacheados no BFF?
+    - Tokens de sessão (chave: session cookie)
+    - Dados públicos (notícias, taxas)
     - Dados frequentes do utilizador (com TTL curto)
 
 19. Qual a estrutura de chaves do cache Redis?
-    Necessita aprofundamento. Sugestao: `session:{id}`, `user:{id}:data`, `public:{type}`
+    Necessita aprofundamento. Sugestão: `session:{id}`, `user:{id}:data`, `public:{type}`
 
 20. Qual o TTL para diferentes tipos de cache?
-    Necessita aprofundamento. Sugestao: sessao 30min, publico 1h, utilizador 5min
+    Necessita aprofundamento. Sugestão: sessão 30min, público 1h, utilizador 5min
 
-21. Como sera invalidado o cache?
-    Necessita aprofundamento. Considerar: TTL expiry, invalidacao explicita em logout
+21. Como será invalidado o cache?
+    Necessita aprofundamento. Considerar: TTL expiry, invalidação explícita em logout
 
-## Decisoes
+## Decisões
 
-### Persistencia Local Frontend
-- **Decisao:** _A preencher_
-- **Justificacao:**
+### Persistência Local Frontend
+- **Decisão:** _A preencher_
+- **Justificação:**
 - **Alternativas consideradas:**
 
 ### Armazenamento BFF
-- **Decisao:** _A preencher_
-- **Justificacao:**
+- **Decisão:** _A preencher_
+- **Justificação:**
 - **Alternativas consideradas:**
 
-### Encriptacao
-- **Decisao:** _A preencher_
-- **Justificacao:**
+### Encriptação
+- **Decisão:** _A preencher_
+- **Justificação:**
 - **Alternativas consideradas:**
 
-### Retencao
-- **Decisao:** _A preencher_
-- **Justificacao:**
+### Retenção
+- **Decisão:** _A preencher_
+- **Justificação:**
 - **Alternativas consideradas:**
 
 ### RGPD
-- **Decisao:** _A preencher_
-- **Justificacao:**
+- **Decisão:** _A preencher_
+- **Justificação:**
 - **Alternativas consideradas:**
 
-## Restricoes Conhecidas
+## Restrições Conhecidas
 
 - Dados transacionais residem nos backend services existentes
-- Conformidade RGPD obrigatoria
-- Dados bancarios classificados como sensiveis
+- Conformidade RGPD obrigatória
+- Dados bancários classificados como sensíveis
 - Requisitos de auditoria do Banco de Portugal
 
-## Decisoes Relacionadas
+## Decisões Relacionadas
 
 - [DEC-005-armazenamento-dados-canal-web.md](../decisions/DEC-005-armazenamento-dados-canal-web.md) - Armazenamento de dados no canal web
 
-## Referencias
+## Referências
 
 - [DEF-02-requisitos-nao-funcionais.md](DEF-02-requisitos-nao-funcionais.md) - RTO/RPO
 - [DEF-08-seguranca-conformidade.md](DEF-08-seguranca-conformidade.md) - Requisitos RGPD
-- RGPD - Regulamento Geral de Protecao de Dados
+- RGPD - Regulamento Geral de Proteção de Dados

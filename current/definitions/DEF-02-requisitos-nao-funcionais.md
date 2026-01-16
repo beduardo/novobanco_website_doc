@@ -1,7 +1,7 @@
 ---
 id: DEF-02-requisitos-nao-funcionais
 aliases:
-  - Requisitos Nao Funcionais
+  - Requisitos Não Funcionais
 tags:
   - nextreality-novobanco-website-definitions
   - definitions
@@ -16,117 +16,117 @@ reviewed: true
 status: completed
 ---
 
-# DEF-02: Requisitos Nao Funcionais
+# DEF-02: Requisitos Não Funcionais
 
-> **Secao relacionada:** [2 - Contexto de Negocio & Requisitos](../sections/SEC-02-contexto-negocio-requisitos.md)
+> **Secção relacionada:** [2 - Contexto de Negócio & Requisitos](../sections/SEC-02-contexto-negocio-requisitos.md)
 
 ## Contexto
 
-Os requisitos nao funcionais definem os atributos de qualidade da solucao HomeBanking web, incluindo performance, seguranca, disponibilidade e escalabilidade. Estes requisitos sao criticos para um sistema bancario.
+Os requisitos não funcionais definem os atributos de qualidade da solução HomeBanking web, incluindo performance, segurança, disponibilidade e escalabilidade. Estes requisitos são críticos para um sistema bancário.
 
 ## Perguntas a Responder
 
 ### Performance
-1. Qual e o tempo de resposta maximo aceitavel para operacoes criticas?
+1. Qual é o tempo de resposta máximo aceitável para operações críticas?
     3 segs
-2. Qual e o throughput esperado (transacoes por segundo)?
+2. Qual é o throughput esperado (transações por segundo)?
     10
-3. Qual e o tempo maximo de carregamento da pagina inicial?
+3. Qual é o tempo máximo de carregamento da página inicial?
     10 segs
 
 ### Disponibilidade
-4. Qual e o SLA de disponibilidade esperado (ex: 99.9%)?
+4. Qual é o SLA de disponibilidade esperado (ex: 99.9%)?
     99.9%
-5. Ha janelas de manutencao programadas?
+5. Há janelas de manutenção programadas?
     sim
-6. Qual e o RTO (Recovery Time Objective)?
+6. Qual é o RTO (Recovery Time Objective)?
     30min
-7. Qual e o RPO (Recovery Point Objective)?
+7. Qual é o RPO (Recovery Point Objective)?
     5 min
 
 ### Escalabilidade
-8. Qual e o numero esperado de utilizadores concorrentes?
+8. Qual é o número esperado de utilizadores concorrentes?
     400
-9. Qual e a projecao de crescimento para os proximos 3 anos?
+9. Qual é a projeção de crescimento para os próximos 3 anos?
     5%
-10. Ha picos de utilizacao previstos (ex: fim do mes)?
+10. Há picos de utilização previstos (ex: fim do mês)?
     Sim
 
-### Seguranca
-11. Quais certificacoes de seguranca sao requeridas?
+### Segurança
+11. Quais certificações de segurança são requeridas?
     Falta aprofundamento
-12. Ha requisitos especificos de encriptacao?
+12. Há requisitos específicos de encriptação?
     Falta aprofundamento
-13. Qual e a politica de retencao de logs?
+13. Qual é a política de retenção de logs?
     Falta aprofundamento
 
 ### Compatibilidade
 14. Quais browsers devem ser suportados?
     Chrome, Edge e Safari
-15. Quais resolucoes de ecra devem ser suportadas?
+15. Quais resoluções de ecrã devem ser suportadas?
     Deve ser responsivo
-16. Ha requisitos de suporte a dispositivos moveis (responsive)?
+16. Há requisitos de suporte a dispositivos móveis (responsive)?
     Sim
 
-## Decisoes
+## Decisões
 
 ### Performance - Tempos de Resposta
-- **Decisao:**
-  - Operacoes criticas: max 3 segundos
-  - Throughput: 10 transacoes por segundo
-  - Carregamento pagina inicial: max 10 segundos
-- **Justificacao:** Valores alinhados com expectativas de utilizadores de servicos bancarios online
-- **Alternativas consideradas:** Tempos mais agressivos (descartados por viabilidade tecnica)
+- **Decisão:**
+  - Operações críticas: máx 3 segundos
+  - Throughput: 10 transações por segundo
+  - Carregamento página inicial: máx 10 segundos
+- **Justificação:** Valores alinhados com expectativas de utilizadores de serviços bancários online
+- **Alternativas consideradas:** Tempos mais agressivos (descartados por viabilidade técnica)
 
 ### Disponibilidade - SLAs
-- **Decisao:**
+- **Decisão:**
   - SLA de disponibilidade: 99.9%
   - RTO (Recovery Time Objective): 30 minutos
   - RPO (Recovery Point Objective): 5 minutos
-  - Janelas de manutencao: Sim (programadas)
-- **Justificacao:** SLAs alinhados com padroes de industria bancaria
-- **Alternativas consideradas:** 99.99% (descartado por custo vs beneficio)
+  - Janelas de manutenção: Sim (programadas)
+- **Justificação:** SLAs alinhados com padrões de indústria bancária
+- **Alternativas consideradas:** 99.99% (descartado por custo vs benefício)
 
 ### Escalabilidade - Capacidade
-- **Decisao:**
+- **Decisão:**
   - Utilizadores concorrentes: 400
-  - Projecao de crescimento: 5% ao ano (3 anos)
-  - Picos de utilizacao: Sim (considerar fim de mes, periodos fiscais)
-- **Justificacao:** Baseado em projecoes de utilizacao do canal web
+  - Projeção de crescimento: 5% ao ano (3 anos)
+  - Picos de utilização: Sim (considerar fim de mês, períodos fiscais)
+- **Justificação:** Baseado em projeções de utilização do canal web
 - **Alternativas consideradas:** Capacidade superior (pode ser revista conforme demanda)
 
-### Seguranca - Certificacoes
-- **Decisao:** _A definir_ - Requer aprofundamento
-- **Justificacao:** Necessidade de levantar requisitos especificos junto a area de seguranca
-- **Alternativas consideradas:** ISO 27001, PCI-DSS (referencias a considerar)
+### Segurança - Certificações
+- **Decisão:** _A definir_ - Requer aprofundamento
+- **Justificação:** Necessidade de levantar requisitos específicos junto à área de segurança
+- **Alternativas consideradas:** ISO 27001, PCI-DSS (referências a considerar)
 
-### Seguranca - Encriptacao
-- **Decisao:** _A definir_ - Requer aprofundamento
-- **Justificacao:** Necessidade de alinhar com politicas de seguranca do banco
-- **Alternativas consideradas:** TLS 1.3, AES-256 (referencias de industria)
+### Segurança - Encriptação
+- **Decisão:** _A definir_ - Requer aprofundamento
+- **Justificação:** Necessidade de alinhar com políticas de segurança do banco
+- **Alternativas consideradas:** TLS 1.3, AES-256 (referências de indústria)
 
-### Seguranca - Retencao de Logs
-- **Decisao:** _A definir_ - Requer aprofundamento
-- **Justificacao:** Necessidade de alinhar com requisitos regulatorios e politicas internas
-- **Alternativas consideradas:** 7 anos (requisito tipico bancario a validar)
+### Segurança - Retenção de Logs
+- **Decisão:** _A definir_ - Requer aprofundamento
+- **Justificação:** Necessidade de alinhar com requisitos regulatórios e políticas internas
+- **Alternativas consideradas:** 7 anos (requisito típico bancário a validar)
 
 ### Compatibilidade - Browsers
-- **Decisao:** Suporte a Chrome, Edge e Safari (versoes atuais e 2 anteriores)
-- **Justificacao:** Cobertura dos browsers mais utilizados no mercado portugues
-- **Alternativas consideradas:** Firefox (pode ser adicionado se necessario)
+- **Decisão:** Suporte a Chrome, Edge e Safari (versões atuais e 2 anteriores)
+- **Justificação:** Cobertura dos browsers mais utilizados no mercado português
+- **Alternativas consideradas:** Firefox (pode ser adicionado se necessário)
 
 ### Compatibilidade - Responsividade
-- **Decisao:** Design responsivo com suporte a dispositivos moveis
-- **Justificacao:** Garantir experiencia consistente em diferentes dispositivos e resolucoes
-- **Alternativas consideradas:** Versao mobile separada (descartado por custo de manutencao)
+- **Decisão:** Design responsivo com suporte a dispositivos móveis
+- **Justificação:** Garantir experiência consistente em diferentes dispositivos e resoluções
+- **Alternativas consideradas:** Versão mobile separada (descartado por custo de manutenção)
 
-## Restricoes Conhecidas
+## Restrições Conhecidas
 
 - Alinhamento com SLAs da infraestrutura existente da app mobile
-- Requisitos regulatorios de seguranca bancaria
+- Requisitos regulatórios de segurança bancária
 
-## Referencias
+## Referências
 
 - [CONTEXT.md](../CONTEXT.md) - Contexto geral do projeto
 - SLAs da infraestrutura atual (a fornecer)
-- Politicas de seguranca do Novo Banco (a fornecer)
+- Políticas de segurança do Novo Banco (a fornecer)

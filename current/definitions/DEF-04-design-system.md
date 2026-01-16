@@ -18,11 +18,11 @@ status: completed
 
 # DEF-04: Design System
 
-> **Secao relacionada:** [4 - Experiencia do Utilizador & Arquitetura Frontend](../sections/SEC-04-experiencia-utilizador-frontend.md)
+> **Secção relacionada:** [4 - Experiência do Utilizador & Arquitetura Frontend](../sections/SEC-04-experiencia-utilizador-frontend.md)
 
 ## Contexto
 
-Definir o design system a ser utilizado no HomeBanking Web, garantindo consistencia visual e de experiencia com a marca do Novo Banco e a app mobile existente.
+Definir o design system a ser utilizado no HomeBanking Web, garantindo consistência visual e de experiência com a marca do Novo Banco e a app mobile existente.
 
 ## Perguntas a Responder
 
@@ -31,88 +31,88 @@ Definir o design system a ser utilizado no HomeBanking Web, garantindo consisten
     Não. O Design será criado para a aplicação nas primeiras sprints após a criação deste documento.
 2. A app mobile tem um design system documentado?
     Não
-3. Ha um style guide ou brand guidelines a seguir?
+3. Há um style guide ou brand guidelines a seguir?
     Será criado na execução deste projeto.
 
 ### Componentes
-4. Sera utilizada uma biblioteca de componentes existente (Material UI, Ant Design, etc.) ou sera desenvolvida internamente?
+4. Será utilizada uma biblioteca de componentes existente (Material UI, Ant Design, etc.) ou será desenvolvida internamente?
     Serão avaliadas bibliotecas existentes e caso se adequem serão usadas. Caso contrário, será desenvolvida.
 
-5. Ha componentes especificos do sector bancario a considerar?
+5. Há componentes específicos do setor bancário a considerar?
     Necessário aprofundamento.
 
 ### Tokens de Design
-6. Ha definicao de cores, tipografia e espacamentos corporativos?
+6. Há definição de cores, tipografia e espaçamentos corporativos?
     Serão definidos no início do desenvolvimento do projeto.
 
-7. Sera necessario suporte a temas (ex: modo escuro)?
+7. Será necessário suporte a temas (ex: modo escuro)?
     Sim
 
-### Documentacao
-8. Como sera documentado o design system (Storybook, outro)?
-    Figma + Storykbook
+### Documentação
+8. Como será documentado o design system (Storybook, outro)?
+    Figma + Storybook
 
 ### Acessibilidade (Consolidado)
 
-> **Nota:** Esta e a definicao principal para requisitos de acessibilidade do projeto.
+> **Nota:** Esta é a definição principal para requisitos de acessibilidade do projeto.
 
-9. Quais niveis de WCAG devem ser atingidos?
-    Necessita aprofundamento. Referencia de industria: WCAG 2.1 AA
+9. Quais níveis de WCAG devem ser atingidos?
+    Necessita aprofundamento. Referência de indústria: WCAG 2.1 AA
 
-10. Ha requisitos especificos de contraste ou tamanho de fonte?
-    Ainda nao definidos - seguir WCAG 2.1 AA como baseline
+10. Há requisitos específicos de contraste ou tamanho de fonte?
+    Ainda não definidos - seguir WCAG 2.1 AA como baseline
 
-11. Sera utilizada ferramenta automatizada de verificacao de acessibilidade?
+11. Será utilizada ferramenta automatizada de verificação de acessibilidade?
     Necessita aprofundamento (ex: axe-core, Lighthouse)
 
-## Decisoes
+## Decisões
 
 ### Base do Design System
-- **Decisao:** Design System criado de raiz para o projeto (primeiras sprints)
-- **Justificacao:** Nao existe design system corporativo nem da app mobile documentado
-- **Alternativas consideradas:** Adaptar design system existente (nao disponivel)
+- **Decisão:** Design System criado de raiz para o projeto (primeiras sprints)
+- **Justificação:** Não existe design system corporativo nem da app mobile documentado
+- **Alternativas consideradas:** Adaptar design system existente (não disponível)
 
 ### Biblioteca de Componentes
-- **Decisao:** Avaliacao de bibliotecas existentes (Material UI, Ant Design, etc.) com fallback para desenvolvimento interno
-- **Justificacao:** Pragmatismo - usar existente se adequado, desenvolver se necessario
-- **Alternativas consideradas:** 100% custom (descartado por tempo), 100% biblioteca (descartado por limitacoes)
+- **Decisão:** Avaliação de bibliotecas existentes (Material UI, Ant Design, etc.) com fallback para desenvolvimento interno
+- **Justificação:** Pragmatismo - usar existente se adequado, desenvolver se necessário
+- **Alternativas consideradas:** 100% custom (descartado por tempo), 100% biblioteca (descartado por limitações)
 
-### Componentes Bancarios
-- **Decisao:** _A definir_ - Necessita aprofundamento
-- **Justificacao:** Identificar componentes especificos do sector bancario
+### Componentes Bancários
+- **Decisão:** _A definir_ - Necessita aprofundamento
+- **Justificação:** Identificar componentes específicos do setor bancário
 - **Alternativas consideradas:** N/A
 
 ### Tokens de Design
-- **Decisao:** Cores, tipografia e espacamentos definidos no inicio do desenvolvimento
-- **Justificacao:** Style guide sera criado durante execucao do projeto
+- **Decisão:** Cores, tipografia e espaçamentos definidos no início do desenvolvimento
+- **Justificação:** Style guide será criado durante execução do projeto
 - **Alternativas consideradas:** N/A
 
 ### Suporte a Temas
-- **Decisao:** Sim, incluindo modo escuro
-- **Justificacao:** Requisito de acessibilidade e preferencia do utilizador
-- **Alternativas consideradas:** Tema unico (descartado)
+- **Decisão:** Sim, incluindo modo escuro
+- **Justificação:** Requisito de acessibilidade e preferência do utilizador
+- **Alternativas consideradas:** Tema único (descartado)
 
-### Documentacao
-- **Decisao:** Figma (design) + Storybook (componentes)
-- **Justificacao:** Figma para designers, Storybook para developers, ambos integrados
+### Documentação
+- **Decisão:** Figma (design) + Storybook (componentes)
+- **Justificação:** Figma para designers, Storybook para developers, ambos integrados
 - **Alternativas consideradas:** Apenas Figma, apenas Storybook
 
 ### Acessibilidade
-- **Decisao:** _A definir_ - Nivel WCAG a determinar
-- **Justificacao:** Necessita aprofundamento com stakeholders
-- **Alternativas consideradas:** WCAG 2.1 AA (referencia de industria)
+- **Decisão:** _A definir_ - Nível WCAG a determinar
+- **Justificação:** Necessita aprofundamento com stakeholders
+- **Alternativas consideradas:** WCAG 2.1 AA (referência de indústria)
 
-## Restricoes Conhecidas
+## Restrições Conhecidas
 
 - Alinhamento com identidade visual do Novo Banco
-- Consistencia com experiencia da app mobile
+- Consistência com experiência da app mobile
 - Requisitos de acessibilidade a definir
 
-## Decisoes Relacionadas
+## Decisões Relacionadas
 
-- [DEC-009-stack-tecnologica-frontend.md](../decisions/DEC-009-stack-tecnologica-frontend.md) - Stack tecnologica frontend
+- [DEC-009-stack-tecnologica-frontend.md](../decisions/DEC-009-stack-tecnologica-frontend.md) - Stack tecnológica frontend
 
-## Referencias
+## Referências
 
 - Brand guidelines do Novo Banco (a fornecer)
 - Design system da app mobile (a fornecer)

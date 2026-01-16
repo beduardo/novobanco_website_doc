@@ -1,0 +1,39 @@
+@startuml
+skinparam backgroundColor white
+
+title Pirâmide de Testes - HomeBanking Web
+
+rectangle "E2E Tests" as e2e #lightcoral {
+    card "10%"
+    card "Playwright"
+    card "Critical flows"
+}
+
+rectangle "Integration Tests" as int #lightyellow {
+    card "20%"
+    card "Contract tests"
+    card "API integration"
+}
+
+rectangle "Unit Tests" as unit #lightgreen {
+    card "70%"
+    card "Vitest / xUnit"
+    card "Component logic"
+}
+
+unit -[hidden]-> int
+int -[hidden]-> e2e
+
+note right of e2e
+Mais lentos
+Mais custos
+Mais frágeis
+end note
+
+note right of unit
+Mais rápidos
+Mais baratos
+Mais estáveis
+end note
+
+@enduml

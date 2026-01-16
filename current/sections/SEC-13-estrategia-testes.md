@@ -1,7 +1,7 @@
 ---
 id: SEC-13-estrategia-testes
 aliases:
-  - Estrategia de Testes
+  - Estratégia de Testes
 tags:
   - nextreality-novobanco-website-sections
   - sections
@@ -16,25 +16,25 @@ reviewed: true
 status: completed
 ---
 
-# 13. Estrategia de Testes
+# 13. Estratégia de Testes
 
-> **Definicao:** [DEF-13-estrategia-testes.md](../definitions/DEF-13-estrategia-testes.md)
+> **Definição:** [DEF-13-estrategia-testes.md](../definitions/DEF-13-estrategia-testes.md)
 
-## Proposito
+## Propósito
 
-Definir a estrategia de testes do HomeBanking Web a nivel arquitetural, estabelecendo os tipos de testes, frameworks, quality gates e integracao com o pipeline CI/CD.
+Definir a estratégia de testes do HomeBanking Web a nível arquitetural, estabelecendo os tipos de testes, frameworks, quality gates e integração com o pipeline CI/CD.
 
-## Conteudo
+## Conteúdo
 
-### 13.1 Piramide de Testes
+### 13.1 Pirâmide de Testes
 
-A estrategia de testes segue o modelo da **piramide de testes**, priorizando testes automatizados nos niveis inferiores.
+A estratégia de testes segue o modelo da **pirâmide de testes**, priorizando testes automatizados nos níveis inferiores.
 
 ```plantuml
 @startuml
 skinparam backgroundColor white
 
-title Piramide de Testes - HomeBanking Web
+title Pirâmide de Testes - HomeBanking Web
 
 rectangle "E2E Tests" as e2e #lightcoral {
     card "10%"
@@ -60,39 +60,39 @@ int -[hidden]-> e2e
 note right of e2e
 Mais lentos
 Mais custos
-Mais frageis
+Mais frágeis
 end note
 
 note right of unit
-Mais rapidos
+Mais rápidos
 Mais baratos
-Mais estaveis
+Mais estáveis
 end note
 
 @enduml
 ```
 
-| Nivel | Distribuicao | Frameworks | Escopo |
+| Nível | Distribuição | Frameworks | Escopo |
 |-------|--------------|------------|--------|
-| **Unit Tests** | 70% | Vitest (FE), xUnit (BFF) | Funcoes, componentes isolados |
-| **Integration** | 20% | WireMock, TestContainers | APIs, servicos, contratos |
-| **E2E** | 10% | Playwright | Fluxos criticos de utilizador |
+| **Unit Tests** | 70% | Vitest (FE), xUnit (BFF) | Funções, componentes isolados |
+| **Integration** | 20% | WireMock, TestContainers | APIs, serviços, contratos |
+| **E2E** | 10% | Playwright | Fluxos críticos de utilizador |
 
-### 13.2 Cobertura de Codigo
+### 13.2 Cobertura de Código
 
-| Tipo de Codigo | Cobertura Target |
+| Tipo de Código | Cobertura Target |
 |----------------|------------------|
-| Componentes criticos | >= 90% |
+| Componentes críticos | >= 90% |
 | Hooks customizados | >= 90% |
 | Utils/helpers | >= 80% |
-| Servicos | >= 80% |
-| **Codigo geral** | **>= 80%** |
+| Serviços | >= 80% |
+| **Código geral** | **>= 80%** |
 
 ### 13.3 Frameworks de Teste
 
 #### Frontend (React + TypeScript)
 
-| Aspecto | Especificacao |
+| Aspeto | Especificação |
 |---------|---------------|
 | Framework | Vitest |
 | Assertions | Vitest expect |
@@ -102,7 +102,7 @@ end note
 
 #### BFF (.NET 8)
 
-| Aspecto | Especificacao |
+| Aspeto | Especificação |
 |---------|---------------|
 | Framework | xUnit |
 | Assertions | FluentAssertions |
@@ -111,7 +111,7 @@ end note
 
 #### E2E
 
-| Aspecto | Especificacao |
+| Aspeto | Especificação |
 |---------|---------------|
 | Framework | Playwright |
 | Browsers | Chromium, Firefox, WebKit |
@@ -120,42 +120,42 @@ end note
 
 ### 13.4 Tipos de Testes
 
-| Tipo | Objetivo | Responsabilidade | Frequencia |
+| Tipo | Objetivo | Responsabilidade | Frequência |
 |------|----------|------------------|------------|
-| **Unitarios** | Validar logica isolada | Desenvolvimento | Cada commit |
-| **Integracao** | Validar comunicacao entre componentes | Desenvolvimento | Cada commit |
+| **Unitários** | Validar lógica isolada | Desenvolvimento | Cada commit |
+| **Integração** | Validar comunicação entre componentes | Desenvolvimento | Cada commit |
 | **Contrato** | Validar API contracts (Pact) | Desenvolvimento | Cada commit |
-| **E2E** | Validar fluxos criticos de negocio | QA + Dev | Cada PR |
+| **E2E** | Validar fluxos críticos de negócio | QA + Dev | Cada PR |
 | **Performance** | Validar NFRs de carga | QA | Pre-release |
-| **Seguranca (SAST)** | Analise estatica de codigo | Pipeline | Cada commit |
-| **Seguranca (DAST)** | Analise dinamica | SecOps | Pre-release |
+| **Segurança (SAST)** | Análise estática de código | Pipeline | Cada commit |
+| **Segurança (DAST)** | Análise dinâmica | SecOps | Pre-release |
 | **Acessibilidade** | Validar conformidade WCAG 2.1 AA | QA | Cada PR |
-| **Penetration Test** | Testes manuais de intrusao | Externo | Antes go-live |
+| **Penetration Test** | Testes manuais de intrusão | Externo | Antes go-live |
 
-### 13.5 Cenarios E2E Criticos
+### 13.5 Cenários E2E Críticos
 
 | Fluxo | Prioridade | Criticidade |
 |-------|------------|-------------|
-| Login via QR Code | Alta | Critico |
-| Login tradicional (fallback) | Alta | Critico |
-| Consulta de saldos | Alta | Critico |
-| Transferencia nacional | Alta | Critico |
-| Pagamento de servicos | Alta | Critico |
-| Logout | Media | Alto |
-| Alteracao de dados | Media | Alto |
+| Login via QR Code | Alta | Crítico |
+| Login tradicional (fallback) | Alta | Crítico |
+| Consulta de saldos | Alta | Crítico |
+| Transferência nacional | Alta | Crítico |
+| Pagamento de serviços | Alta | Crítico |
+| Logout | Média | Alto |
+| Alteração de dados | Média | Alto |
 
-### 13.6 Testes de Seguranca
+### 13.6 Testes de Segurança
 
 | Tipo | Ferramenta | Quando |
 |------|------------|--------|
 | SAST | SonarQube / Checkmarx | Cada commit |
 | DAST | OWASP ZAP | Pre-release |
-| Dependency Scan | Snyk / Dependabot | Diario |
+| Dependency Scan | Snyk / Dependabot | Diário |
 | Penetration Test | Manual (externo) | Antes go-live |
 
 ### 13.7 Testes de Acessibilidade
 
-| Aspecto | Especificacao |
+| Aspeto | Especificação |
 |---------|---------------|
 | Standard | WCAG 2.1 AA |
 | Tool | axe-core |
@@ -182,19 +182,19 @@ if (Pass?) then (sim)
             :E2E Tests;
             if (Critical pass?) then (sim)
                 :Deploy to DEV;
-            else (nao)
+            else (não)
                 :BLOCK;
                 stop
             endif
-        else (nao)
+        else (não)
             :BLOCK;
             stop
         endif
-    else (nao)
+    else (não)
         :BLOCK;
         stop
     endif
-else (nao)
+else (não)
     :BLOCK;
     stop
 endif
@@ -211,16 +211,16 @@ stop
 | SAST | 0 Critical, 0 High | Sim |
 | Lint | 0 errors | Sim |
 | E2E Critical | 100% pass | Sim |
-| E2E Non-critical | >= 95% pass | Nao |
+| E2E Non-critical | >= 95% pass | Não |
 | Accessibility | 0 Critical | Sim |
 
 ### 13.9 Test Data Management
 
 | Ambiente | Dados | Fonte |
 |----------|-------|-------|
-| **dev** | Dados sinteticos (fixtures) | Gerados |
-| **qa** | Dados anonimizados de producao | DB anonimizado |
-| **prod** | N/A (nao testar em prod) | - |
+| **dev** | Dados sintéticos (fixtures) | Gerados |
+| **qa** | Dados anonimizados de produção | DB anonimizado |
+| **prod** | N/A (não testar em prod) | - |
 
 ### 13.10 Matriz de Responsabilidades
 
@@ -236,13 +236,13 @@ stop
 | Accessibility | QA | CI Pipeline | Cada PR |
 | UAT | QA + PO | Manual | Pre-release |
 
-## Decisoes Referenciadas
+## Decisões Referenciadas
 
 - [DEC-009-stack-tecnologica-frontend.md](../decisions/DEC-009-stack-tecnologica-frontend.md) - Stack Frontend (Vitest)
 - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack Backend (xUnit)
 
-## Definicoes Utilizadas
+## Definições Utilizadas
 
 - [DEF-13-estrategia-testes.md](../definitions/DEF-13-estrategia-testes.md) - Detalhes completos
-- [DEF-08-seguranca-conformidade.md](../definitions/DEF-08-seguranca-conformidade.md) - Requisitos de seguranca
+- [DEF-08-seguranca-conformidade.md](../definitions/DEF-08-seguranca-conformidade.md) - Requisitos de segurança
 - [DEF-04-design-system.md](../definitions/DEF-04-design-system.md) - WCAG requirements

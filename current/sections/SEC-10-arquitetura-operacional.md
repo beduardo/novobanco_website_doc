@@ -19,17 +19,17 @@ status: completed
 
 # 10. Arquitetura Operacional
 
-> **Definicao:** [DEF-10-arquitetura-operacional.md](../definitions/DEF-10-arquitetura-operacional.md)
+> **Definição:** [DEF-10-arquitetura-operacional.md](../definitions/DEF-10-arquitetura-operacional.md)
 
-## Proposito
+## Propósito
 
-Definir a arquitetura operacional do HomeBanking Web, incluindo infraestrutura de containers, ambientes, pipelines CI/CD, estrategia de deploy, gestao de secrets e disaster recovery.
+Definir a arquitetura operacional do HomeBanking Web, incluindo infraestrutura de containers, ambientes, pipelines CI/CD, estratégia de deploy, gestão de secrets e disaster recovery.
 
-## Conteudo
+## Conteúdo
 
 ### 10.1 Infraestrutura
 
-A aplicacao sera deployada em ambiente containerizado, com imagens **compliant com OpenShift** para futura migracao.
+A aplicação será deployada em ambiente containerizado, com imagens **compliant com OpenShift** para futura migração.
 
 ```plantuml
 @startuml
@@ -78,41 +78,41 @@ BFF --> ELK : logs
 @enduml
 ```
 
-| Aspecto | Especificacao |
+| Aspeto | Especificação |
 |---------|---------------|
 | **Plataforma atual** | Azure Kubernetes Service (AKS) |
-| **Plataforma futura** | OpenShift (em homologacao) |
+| **Plataforma futura** | OpenShift (em homologação) |
 | **Load Balancer** | F5 BIG-IP |
 | **Ingress Controller** | NGINX Ingress / OpenShift Routes |
 | **Container Registry** | Azure Container Registry (ACR) |
 
 #### Requisitos de Imagens Container (OpenShift-Compliant)
 
-| Requisito | Descricao |
+| Requisito | Descrição |
 |-----------|-----------|
-| Usuario nao-root | Container executa como usuario arbitrario (UID > 1000) |
-| Filesystem read-only | Volumes temporarios montados explicitamente |
-| Portas > 1024 | Nao utilizar portas privilegiadas |
+| Utilizador não-root | Container executa como utilizador arbitrário (UID > 1000) |
+| Filesystem read-only | Volumes temporários montados explicitamente |
+| Portas > 1024 | Não utilizar portas privilegiadas |
 | Base image | Red Hat UBI (Universal Base Image) recomendado |
-| Health checks | Liveness e Readiness probes obrigatorios |
+| Health checks | Liveness e Readiness probes obrigatórios |
 
 ### 10.2 Ambientes
 
-A aplicacao utiliza tres ambientes, segregados por **namespaces** no cluster AKS.
+A aplicação utiliza três ambientes, segregados por **namespaces** no cluster AKS.
 
-| Ambiente | Proposito | Namespace | Promocao |
+| Ambiente | Propósito | Namespace | Promoção |
 |----------|-----------|-----------|----------|
-| **dev** | Desenvolvimento e integracao | `homebanking-dev` | Automatica (CI) |
-| **qa** | Testes integrados e UAT | `homebanking-qa` | Automatica (apos dev OK) |
-| **prod** | Producao | `homebanking-prod` | Manual (aprovacao) |
+| **dev** | Desenvolvimento e integração | `homebanking-dev` | Automática (CI) |
+| **qa** | Testes integrados e UAT | `homebanking-qa` | Automática (após dev OK) |
+| **prod** | Produção | `homebanking-prod` | Manual (aprovação) |
 
-#### Segregacao de Ambientes
+#### Segregação de Ambientes
 
 | Tipo | Mecanismo |
 |------|-----------|
-| Logica | Namespaces Kubernetes separados |
+| Lógica | Namespaces Kubernetes separados |
 | Rede | Network Policies por namespace |
-| Secrets | Key Vault com politicas por ambiente |
+| Secrets | Key Vault com políticas por ambiente |
 | RBAC | Service accounts distintos por ambiente |
 
 ### 10.3 CI/CD Pipeline
@@ -121,22 +121,22 @@ A aplicacao utiliza tres ambientes, segregados por **namespaces** no cluster AKS
 
 | Componente | Ferramenta |
 |------------|------------|
-| **Repositorio** | Azure Repos (Git) |
+| **Repositório** | Azure Repos (Git) |
 | **CI/CD Platform** | Azure Pipelines |
 | **Container Registry** | Azure Container Registry (ACR) |
 | **Secrets** | Azure Key Vault |
 | **IaC** | Helm Charts + Terraform |
 | **Branching** | GitFlow |
 
-#### Estrategia de Branching (GitFlow)
+#### Estratégia de Branching (GitFlow)
 
-| Branch | Proposito | Deploy Automatico |
+| Branch | Propósito | Deploy Automático |
 |--------|-----------|-------------------|
-| `feature/*` | Desenvolvimento de features | Nao |
-| `develop` | Integracao continua | DEV |
-| `release/*` | Preparacao de release | QA |
-| `main` | Producao | PROD (c/ aprovacao) |
-| `hotfix/*` | Correcoes urgentes | PROD (c/ aprovacao) |
+| `feature/*` | Desenvolvimento de features | Não |
+| `develop` | Integração contínua | DEV |
+| `release/*` | Preparação de release | QA |
+| `main` | Produção | PROD (c/ aprovação) |
+| `hotfix/*` | Correções urgentes | PROD (c/ aprovação) |
 
 #### Pipeline Overview
 
@@ -181,34 +181,34 @@ T --> R : Approval Gate
 | Lint | ESLint / .NET Analyzers | 0 errors | Sim |
 | Build | Azure Pipelines | Success | Sim |
 
-### 10.4 Estrategia de Deploy
+### 10.4 Estratégia de Deploy
 
-| Aspecto | Especificacao |
+| Aspeto | Especificação |
 |---------|---------------|
-| **Estrategia** | Rolling Update |
+| **Estratégia** | Rolling Update |
 | **Zero downtime** | Sim |
 | **maxSurge** | 25% |
 | **maxUnavailable** | 0 |
-| **Replicas minimas** | 2 |
+| **Réplicas mínimas** | 2 |
 | **Health checks** | Readiness + Liveness probes |
-| **Rollback** | Automatico via Kubernetes |
+| **Rollback** | Automático via Kubernetes |
 
-#### Aprovacoes por Ambiente
+#### Aprovações por Ambiente
 
-| Ambiente | Aprovacao | Aprovadores |
+| Ambiente | Aprovação | Aprovadores |
 |----------|-----------|-------------|
-| DEV | Automatica | - |
-| QA | Automatica | - |
+| DEV | Automática | - |
+| QA | Automática | - |
 | PROD | Manual | Tech Lead + PO |
 
 ### 10.5 Secrets Management
 
-| Aspecto | Especificacao |
+| Aspeto | Especificação |
 |---------|---------------|
 | **Ferramenta** | Azure Key Vault |
-| **Injecao** | Secret Store CSI Driver |
+| **Injeção** | Secret Store CSI Driver |
 | **Acesso** | Managed Identity por namespace |
-| **Rotacao** | Suportada (CSI driver faz refresh) |
+| **Rotação** | Suportada (CSI driver faz refresh) |
 | **Secrets geridos** | Connection strings, API keys, certificados |
 
 ```plantuml
@@ -216,7 +216,7 @@ T --> R : Approval Gate
 skinparam componentStyle rectangle
 skinparam backgroundColor white
 
-title Injecao de Secrets via CSI Driver
+title Injeção de Secrets via CSI Driver
 
 [Azure Key Vault] as KV
 [Secret Store CSI Driver] as CSI
@@ -228,72 +228,72 @@ CSI --> BFF : Mount as volume
 @enduml
 ```
 
-#### Politica de Rotacao
+#### Política de Rotação
 
-| Tipo de Secret | Frequencia | Responsavel |
+| Tipo de Secret | Frequência | Responsável |
 |----------------|------------|-------------|
-| API Keys | 90 dias | Automatico |
+| API Keys | 90 dias | Automático |
 | Certificados TLS | Anual | Infra |
 | DB Credentials | 180 dias | DBA |
 
 ### 10.6 Container Registry
 
-| Aspecto | Configuracao |
+| Aspeto | Configuração |
 |---------|--------------|
 | Registry | Azure Container Registry (ACR) |
-| Autenticacao | Managed Identity |
+| Autenticação | Managed Identity |
 | Scanning | Microsoft Defender for Containers |
-| Retencao | 90 dias para tags nao-latest |
+| Retenção | 90 dias para tags não-latest |
 | Naming | `acr.azurecr.io/homebanking/{component}:{version}` |
 
 #### Tagging Strategy
 
 | Tag | Uso |
 |-----|-----|
-| `{semver}` | Versao semantica (ex: `1.2.3`) |
+| `{semver}` | Versão semântica (ex: `1.2.3`) |
 | `{branch}-{sha}` | Feature branches (ex: `develop-abc1234`) |
-| `latest` | Ultima versao de producao |
+| `latest` | Última versão de produção |
 
 ### 10.7 Disaster Recovery
 
-| Aspecto | Configuracao |
+| Aspeto | Configuração |
 |---------|--------------|
-| **Tipo** | Cluster replica (standby passivo) |
+| **Tipo** | Cluster réplica (standby passivo) |
 | **RTO** | 30 minutos |
 | **RPO** | 5 minutos |
-| **Failover** | Manual (decisao de negocio) |
+| **Failover** | Manual (decisão de negócio) |
 
-> **Nota:** Canal web e stateless. Dados estao no backend existente com DR proprio. DR do canal web foca na disponibilidade da aplicacao.
+> **Nota:** Canal web é stateless. Dados estão no backend existente com DR próprio. DR do canal web foca na disponibilidade da aplicação.
 
 ### 10.8 Backup
 
-O canal web **nao requer backup dedicado**:
+O canal web **não requer backup dedicado**:
 
-| Componente | Backup | Frequencia | Retencao |
+| Componente | Backup | Frequência | Retenção |
 |------------|--------|------------|----------|
-| **Codigo fonte** | Git | Cada commit | Infinito |
+| **Código fonte** | Git | Cada commit | Infinito |
 | **Container images** | ACR | Cada build | 90 dias |
-| **Secrets** | Azure Key Vault (managed) | Automatico | 90 dias |
-| **Dados de negocio** | Backend existente | N/A | N/A |
-| **Sessoes** | Redis (transitorio) | N/A | N/A |
+| **Secrets** | Azure Key Vault (managed) | Automático | 90 dias |
+| **Dados de negócio** | Backend existente | N/A | N/A |
+| **Sessões** | Redis (transitório) | N/A | N/A |
 
 ### 10.9 Runbooks
 
-| Runbook | Trigger | Responsavel |
+| Runbook | Trigger | Responsável |
 |---------|---------|-------------|
-| Deploy para Producao | Release aprovada | DevOps |
-| Rollback de Emergencia | Incidente P1 | DevOps |
-| Escalacao de Pods | Alerta de carga | DevOps / Auto |
-| Rotacao de Secrets | Schedule / Incidente | SecOps |
+| Deploy para Produção | Release aprovada | DevOps |
+| Rollback de Emergência | Incidente P1 | DevOps |
+| Escalação de Pods | Alerta de carga | DevOps / Auto |
+| Rotação de Secrets | Schedule / Incidente | SecOps |
 | Failover DR | Indisponibilidade > RTO | Infra |
 
-## Decisoes Referenciadas
+## Decisões Referenciadas
 
 - [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Containers OpenShift-compliant
 - [DEC-008-stack-observabilidade-elk.md](../decisions/DEC-008-stack-observabilidade-elk.md) - Stack de observabilidade
 - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack Backend
 
-## Definicoes Utilizadas
+## Definições Utilizadas
 
 - [DEF-10-arquitetura-operacional.md](../definitions/DEF-10-arquitetura-operacional.md) - Detalhes completos
 - [DEF-02-requisitos-nao-funcionais.md](../definitions/DEF-02-requisitos-nao-funcionais.md) - RTO/RPO

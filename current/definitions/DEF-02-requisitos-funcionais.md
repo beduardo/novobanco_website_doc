@@ -17,55 +17,55 @@ status: completed
 
 # DEF-02: Requisitos Funcionais
 
-> **Secao relacionada:** [2 - Contexto de Negocio & Requisitos](../sections/SEC-02-contexto-negocio-requisitos.md)
+> **Secção relacionada:** [2 - Contexto de Negócio & Requisitos](../sections/SEC-02-contexto-negocio-requisitos.md)
 
 ## Contexto
 
-Definir os requisitos funcionais do HomeBanking web, considerando que parte das features serao equivalentes a aplicacao mobile nativa existente. E necessario identificar quais funcionalidades serao incluidas e sua priorizacao.
+Definir os requisitos funcionais do HomeBanking web, considerando que parte das features serão equivalentes à aplicação mobile nativa existente. É necessário identificar quais funcionalidades serão incluídas e a sua priorização.
 
 ## Perguntas a Responder
 
-> **Nota:** Funcionalidades in-scope/out-of-scope estao definidas em [DEF-01-objetivos-documento.md](DEF-01-objetivos-documento.md)
-> **Nota:** Requisitos de acessibilidade (WCAG) estao definidos em [DEF-04-design-system.md](DEF-04-design-system.md)
-> **Nota:** Requisitos de PWA/Offline estao definidos em [DEF-04-ux-guidelines.md](DEF-04-ux-guidelines.md)
+> **Nota:** Funcionalidades in-scope/out-of-scope estão definidas em [DEF-01-objetivos-documento.md](DEF-01-objetivos-documento.md)
+> **Nota:** Requisitos de acessibilidade (WCAG) estão definidos em [DEF-04-design-system.md](DEF-04-design-system.md)
+> **Nota:** Requisitos de PWA/Offline estão definidos em [DEF-04-ux-guidelines.md](DEF-04-ux-guidelines.md)
 
-1. Qual e o criterio de priorizacao (MoSCoW, valor de negocio)?
-    Por dependencia entre funcionalidades
+1. Qual é o critério de priorização (MoSCoW, valor de negócio)?
+    Por dependência entre funcionalidades
 
-2. Quais funcionalidades sao obrigatorias para o MVP?
+2. Quais funcionalidades são obrigatórias para o MVP?
     Todas as 35 funcionalidades fazem parte do MVP.
 
 3. Quais idiomas devem ser suportados?
-    Portugues, Ingles, Espanhol
+    Português, Inglês, Espanhol
 
-4. Ha requisitos de integracao com outros sistemas alem dos existentes?
-    Nao. Todas as integracoes necessarias ja existem no App Mobile.
+4. Há requisitos de integração com outros sistemas além dos existentes?
+    Não. Todas as integrações necessárias já existem no App Mobile.
 
-## Decisoes
+## Decisões
 
 ### Funcionalidades e Escopo
-- **Decisao:** Ver [DEF-01-objetivos-documento.md](DEF-01-objetivos-documento.md) para lista completa de funcionalidades in-scope e out-of-scope
-- **Justificacao:** Consolidacao em documento unico para evitar duplicacao
+- **Decisão:** Ver [DEF-01-objetivos-documento.md](DEF-01-objetivos-documento.md) para lista completa de funcionalidades in-scope e out-of-scope
+- **Justificação:** Consolidação em documento único para evitar duplicação
 
-### Priorizacao de Desenvolvimento
-- **Decisao:** Priorizacao por dependencia entre funcionalidades
-- **Justificacao:** Abordagem tecnica que respeita dependencias arquiteturais
+### Priorização de Desenvolvimento
+- **Decisão:** Priorização por dependência entre funcionalidades
+- **Justificação:** Abordagem técnica que respeita dependências arquiteturais
 
 ### Suporte Multi-idioma
-- **Decisao:** Suporte a 3 idiomas: Portugues, Ingles e Espanhol
-- **Justificacao:** Alinhamento com mercados-alvo do banco
+- **Decisão:** Suporte a 3 idiomas: Português, Inglês e Espanhol
+- **Justificação:** Alinhamento com mercados-alvo do banco
 
 ### Acessibilidade
-- **Decisao:** Ver [DEF-04-design-system.md](DEF-04-design-system.md)
-- **Justificacao:** Consolidacao em documento de design system
+- **Decisão:** Ver [DEF-04-design-system.md](DEF-04-design-system.md)
+- **Justificação:** Consolidação em documento de design system
 
-## Restricoes Conhecidas
+## Restrições Conhecidas
 
-- Reutilizacao de APIs e servicos da app mobile existente
-- Conformidade com regulamentacoes bancarias (PSD2, etc.)
+- Reutilização de APIs e serviços da app mobile existente
+- Conformidade com regulamentações bancárias (PSD2, etc.)
 
-## Referencias
+## Referências
 
 - [CONTEXT.md](../CONTEXT.md) - Contexto geral do projeto
-- Documentacao funcional da app mobile (a fornecer)
-- Requisitos regulatorios aplicaveis (a fornecer)
+- Documentação funcional da app mobile (a fornecer)
+- Requisitos regulatórios aplicáveis (a fornecer)

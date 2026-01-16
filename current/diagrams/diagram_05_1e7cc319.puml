@@ -1,0 +1,34 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+
+package "Novo (HomeBanking Web)" #LightBlue {
+    [Frontend Web] as FE
+    [BFF Web] as BFF
+}
+
+package "Existente (App Mobile)" #LightGreen {
+    [API Gateway] as APIGW
+    [Backend Services] as BE
+    [Core Banking] as CORE
+    [Integrações Terceiros] as THIRD
+    database "Base de Dados" as DB
+}
+
+FE --> BFF : Novo
+BFF --> APIGW : Reutiliza
+APIGW --> BE : Existente
+BE --> CORE : Existente
+BE --> THIRD : Existente
+BE --> DB : Existente
+
+note bottom of FE
+  Componentes novos
+  a desenvolver
+end note
+
+note bottom of APIGW
+  Componentes existentes
+  reutilizados
+end note
+
+@enduml

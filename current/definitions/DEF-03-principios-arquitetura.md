@@ -1,7 +1,7 @@
 ---
 id: DEF-03-principios-arquitetura
 aliases:
-  - Principios de Arquitetura
+  - Princípios de Arquitetura
 tags:
   - nextreality-novobanco-website-definitions
   - definitions
@@ -15,100 +15,100 @@ reviewed: true
 status: completed
 ---
 
-# DEF-03: Principios de Arquitetura
+# DEF-03: Princípios de Arquitetura
 
-> **Secao relacionada:** [3 - Visao Geral da Solucao](../sections/SEC-03-visao-geral-solucao.md)
+> **Secção relacionada:** [3 - Visão Geral da Solução](../sections/SEC-03-visao-geral-solucao.md)
 
 ## Contexto
 
-Os principios de arquitetura sao diretrizes fundamentais que guiam todas as decisoes tecnicas do projeto. Para o HomeBanking web, estes principios devem considerar a reutilizacao da infraestrutura existente e as melhores praticas para aplicacoes bancarias.
+Os princípios de arquitetura são diretrizes fundamentais que guiam todas as decisões técnicas do projeto. Para o HomeBanking web, estes princípios devem considerar a reutilização da infraestrutura existente e as melhores práticas para aplicações bancárias.
 
 ## Perguntas a Responder
 
-1. A arquitetura deve seguir principios cloud-native?
-    A aplicação deve ser orientada a containers complaint com OpenShift
+1. A arquitetura deve seguir princípios cloud-native?
+    A aplicação deve ser orientada a containers compliant com OpenShift
 
-2. Qual e a estrategia de API (API-first, BFF)?
+2. Qual é a estratégia de API (API-first, BFF)?
     BFF
-    
+
 3. Deve-se priorizar build vs buy para componentes?
     Haverá uma avaliação inicial para alguns componentes, mas o cliente pretende construir caso seja muito caro ou não atenda totalmente
 
-4. Qual e o nivel de acoplamento aceitavel com sistemas legados?
+4. Qual é o nível de acoplamento aceitável com sistemas legados?
     Somente via BFF
 
-5. Ha principios de seguranca especificos a adotar (zero trust, defense in depth)?
+5. Há princípios de segurança específicos a adotar (zero trust, defense in depth)?
     Podemos avaliar Zero Trust e Defense in Depth. Necessário mais informações.
 
-6. Qual e a estrategia de observabilidade?
+6. Qual é a estratégia de observabilidade?
     Logs de aplicação e captura de métricas na stack ELK
 
-7. Como sera tratada a resiliencia e tolerancia a falhas?
+7. Como será tratada a resiliência e tolerância a falhas?
     Necessário aprofundamento.
 
-8. Ha requisitos de portabilidade entre clouds/ambientes?
+8. Há requisitos de portabilidade entre clouds/ambientes?
     Necessário aprofundamento.
 
-## Decisoes
+## Decisões
 
 ### Cloud Strategy
-- **Decisao:** Arquitetura orientada a containers, compliant com OpenShift
-- **Justificacao:** Alinhamento com infraestrutura existente e capacidade de orquestracao enterprise
+- **Decisão:** Arquitetura orientada a containers, compliant com OpenShift
+- **Justificação:** Alinhamento com infraestrutura existente e capacidade de orquestração enterprise
 - **Alternativas consideradas:** VMs tradicionais (descartado por falta de flexibilidade), Kubernetes vanilla (OpenShift oferece mais features enterprise)
 
 ### API Strategy
-- **Decisao:** Backend for Frontend (BFF) como padrao de integracao
-- **Justificacao:**
-  - Desacoplamento entre frontend web e servicos backend
-  - Camada de agregacao e transformacao especifica para o canal web
+- **Decisão:** Backend for Frontend (BFF) como padrão de integração
+- **Justificação:**
+  - Desacoplamento entre frontend web e serviços backend
+  - Camada de agregação e transformação específica para o canal web
   - Isolamento de sistemas legados
 - **Alternativas consideradas:** API-first direto (descartado por expor complexidade do backend ao frontend)
 
 ### Build vs Buy
-- **Decisao:** Avaliacao caso a caso com preferencia por Build
-- **Justificacao:** Cliente pretende construir componentes quando:
-  - Solucoes de mercado forem muito caras
-  - Solucoes existentes nao atenderem totalmente aos requisitos
-- **Alternativas consideradas:** Buy-first (descartado por potencial custo e limitacoes)
+- **Decisão:** Avaliação caso a caso com preferência por Build
+- **Justificação:** Cliente pretende construir componentes quando:
+  - Soluções de mercado forem muito caras
+  - Soluções existentes não atenderem totalmente aos requisitos
+- **Alternativas consideradas:** Buy-first (descartado por potencial custo e limitações)
 
 ### Acoplamento com Legados
-- **Decisao:** Acoplamento exclusivamente via BFF
-- **Justificacao:** Isolamento do frontend de complexidades e mudancas nos sistemas legados
-- **Alternativas consideradas:** Integracao direta (descartado por criar dependencias frageis)
+- **Decisão:** Acoplamento exclusivamente via BFF
+- **Justificação:** Isolamento do frontend de complexidades e mudanças nos sistemas legados
+- **Alternativas consideradas:** Integração direta (descartado por criar dependências frágeis)
 
 ### Security Principles
-- **Decisao:** _A definir_ - Avaliar Zero Trust e Defense in Depth
-- **Justificacao:** Necessidade de mais informacoes sobre requisitos especificos de seguranca
-- **Alternativas consideradas:** Zero Trust, Defense in Depth (ambos em avaliacao)
+- **Decisão:** _A definir_ - Avaliar Zero Trust e Defense in Depth
+- **Justificação:** Necessidade de mais informações sobre requisitos específicos de segurança
+- **Alternativas consideradas:** Zero Trust, Defense in Depth (ambos em avaliação)
 
 ### Resilience Strategy
-- **Decisao:** _A definir_ - Necessita aprofundamento
-- **Justificacao:** Dependente de definicao de SLAs e requisitos de disponibilidade
+- **Decisão:** _A definir_ - Necessita aprofundamento
+- **Justificação:** Dependente de definição de SLAs e requisitos de disponibilidade
 - **Alternativas consideradas:** Circuit breaker, Retry patterns, Bulkhead (a avaliar)
 
 ### Portability Strategy
-- **Decisao:** _A definir_ - Necessita aprofundamento
-- **Justificacao:** Verificar se ha requisitos de multi-cloud ou migracao futura
+- **Decisão:** _A definir_ - Necessita aprofundamento
+- **Justificação:** Verificar se há requisitos de multi-cloud ou migração futura
 - **Alternativas consideradas:** Container-based portability via OpenShift (baseline)
 
 ### Observability Strategy
-- **Decisao:** Stack ELK para logs de aplicacao e captura de metricas
-- **Justificacao:** Centralizacao de logs e metricas para monitorizacao e troubleshooting
-- **Alternativas consideradas:** Prometheus/Grafana (pode complementar ELK para metricas)
+- **Decisão:** Stack ELK para logs de aplicação e captura de métricas
+- **Justificação:** Centralização de logs e métricas para monitorização e troubleshooting
+- **Alternativas consideradas:** Prometheus/Grafana (pode complementar ELK para métricas)
 
-## Restricoes Conhecidas
+## Restrições Conhecidas
 
-- Reutilizacao da infraestrutura e servicos da app mobile nativa
+- Reutilização da infraestrutura e serviços da app mobile nativa
 - Alinhamento com standards de arquitetura do Novo Banco (se existirem)
 
-## Decisoes Relacionadas
+## Decisões Relacionadas
 
-- [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Estrategia de containers
-- [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - Padrao BFF
+- [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Estratégia de containers
+- [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - Padrão BFF
 - [DEC-008-stack-observabilidade-elk.md](../decisions/DEC-008-stack-observabilidade-elk.md) - Stack de observabilidade
 
-## Referencias
+## Referências
 
 - [CONTEXT.md](../CONTEXT.md) - Contexto geral do projeto
 - Standards de arquitetura institucional (a fornecer)
-- TOGAF, C4 Model, 12-Factor App (referencias de industria)
+- TOGAF, C4 Model, 12-Factor App (referências de indústria)

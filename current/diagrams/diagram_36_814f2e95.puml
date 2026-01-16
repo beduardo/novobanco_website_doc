@@ -1,0 +1,22 @@
+@startuml
+skinparam backgroundColor white
+
+title Pattern: Async Processing
+
+participant "BFF" as bff
+participant "Backend API" as api1
+participant "Backend API 2" as api2
+participant "Backend API 3" as api3
+
+bff -> api1 : Request 1 (async)
+bff -> api2 : Request 2 (async)
+bff -> api3 : Request 3 (async)
+
+api1 --> bff : Response 1
+api2 --> bff : Response 2
+api3 --> bff : Response 3
+
+bff -> bff : Aggregate results
+note right: Task.WhenAll() em .NET
+
+@enduml

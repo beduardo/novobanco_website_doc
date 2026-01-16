@@ -1,0 +1,53 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+
+left to right direction
+
+actor "Cliente Individual" as USER
+
+rectangle "HomeBanking Web" {
+    package "Autenticação" {
+        usecase "Login" as UC_LOGIN
+        usecase "Registo" as UC_REG
+        usecase "Recuperação Acessos" as UC_REC
+    }
+
+    package "Consultas" {
+        usecase "Dashboard" as UC_DASH
+        usecase "Saldos e Movimentos" as UC_SALDOS
+        usecase "Património" as UC_PAT
+    }
+
+    package "Operações" {
+        usecase "Transferências" as UC_TRANSF
+        usecase "Pagamentos" as UC_PAG
+    }
+
+    package "Investimentos" {
+        usecase "Ações/ETF/Fundos" as UC_INV
+        usecase "Robot Advisor" as UC_ROBOT
+    }
+}
+
+USER --> UC_LOGIN
+USER --> UC_REG
+USER --> UC_REC
+USER --> UC_DASH
+USER --> UC_SALDOS
+USER --> UC_PAT
+USER --> UC_TRANSF
+USER --> UC_PAG
+USER --> UC_INV
+USER --> UC_ROBOT
+
+note right of UC_LOGIN
+  **Crítico**
+  SCA obrigatório
+end note
+
+note right of UC_TRANSF
+  **Crítico**
+  SCA obrigatório
+end note
+
+@enduml

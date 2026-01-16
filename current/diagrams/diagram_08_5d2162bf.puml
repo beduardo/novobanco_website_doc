@@ -1,0 +1,18 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+
+start
+:Avaliar bibliotecas existentes\n(Material UI, Ant Design, etc.);
+
+if (Biblioteca adequada?) then (sim)
+  :Utilizar biblioteca existente;
+  :Customizar conforme design system;
+else (não)
+  :Desenvolver componentes internamente;
+endif
+
+:Documentar em Storybook;
+:Sincronizar com Figma;
+
+stop
+@enduml

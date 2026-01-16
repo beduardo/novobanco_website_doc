@@ -1,0 +1,33 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+
+actor "Utilizador" as USER
+participant "Browser" as FE
+participant "BFF" as BFF
+participant "Auth Service" as AUTH
+
+USER -> FE : Indica falha no QR Code
+FE --> USER : Apresenta opções fallback
+
+USER -> FE : Insere Username/Password
+FE -> BFF : POST /auth/login (credentials)
+BFF -> AUTH : Valida credenciais
+AUTH --> BFF : Requer 2FA
+
+alt SMS OTP
+    BFF -> AUTH : Solicita envio OTP
+    AUTH --> USER : SMS com código
+    USER -> FE : Insere código OTP
+    FE -> BFF : POST /auth/verify-otp
+else App Push
+    BFF -> AUTH : Solicita push notification
+    AUTH -> APP : Envia push
+    USER -> APP : Aprova notificação
+end
+
+AUTH --> BFF : 2FA validado
+BFF -> BFF : Cria sessão web
+BFF --> FE : Set-Cookie: SessionID
+FE --> USER : Acesso concedido
+
+@enduml

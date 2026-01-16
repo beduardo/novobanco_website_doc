@@ -1,0 +1,33 @@
+@startuml
+skinparam backgroundColor white
+
+title Gestão de Dívida Técnica
+
+|Identificação|
+start
+:Code Review;
+:Métricas (SonarQube);
+:Retrospectivas;
+
+|Classificação|
+:Priorizar por impacto;
+note right
+Alto: Segurança, Performance
+Médio: Maintainability
+Baixo: Código morto
+end note
+
+|Alocação|
+:Reservar 20% da capacidade;
+:Incluir no sprint planning;
+
+|Execução|
+:Resolver dívida técnica;
+:Documentar melhoria;
+
+|Monitorização|
+:Atualizar métricas;
+:Reportar progresso;
+stop
+
+@enduml

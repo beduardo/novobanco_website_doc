@@ -1,6 +1,6 @@
 ---
 aliases:
-  - Seguranca e Conformidade
+  - Segurança e Conformidade
 tags:
   - nextreality-novobanco-website-sections
   - sections
@@ -17,29 +17,29 @@ reviewed: true
 status: in-progress
 ---
 
-# 8. Seguranca & Conformidade
+# 8. Segurança & Conformidade
 
-> **Definicoes requeridas:**
+> **Definições requeridas:**
 > - [DEF-08-seguranca-conformidade.md](../definitions/DEF-08-seguranca-conformidade.md) - Status: completed
 >
-> **Decisoes relacionadas:**
+> **Decisões relacionadas:**
 > - [DEC-004-controlos-seguranca-frontend.md](../decisions/DEC-004-controlos-seguranca-frontend.md) - Status: accepted
 
-## Proposito
+## Propósito
 
-Definir os requisitos de seguranca e conformidade regulatoria do HomeBanking Web, incluindo modelo de ameacas, controlos de seguranca, e conformidade com PSD2, RGPD, PCI-DSS e regulamentacao do Banco de Portugal.
+Definir os requisitos de segurança e conformidade regulatória do HomeBanking Web, incluindo modelo de ameaças, controlos de segurança, e conformidade com PSD2, RGPD, PCI-DSS e regulamentação do Banco de Portugal.
 
-## Conteudo
+## Conteúdo
 
-### 8.1 Visao Geral de Seguranca
+### 8.1 Visão Geral de Segurança
 
 ```plantuml
 @startuml
 skinparam backgroundColor #FEFEFE
 
-title Camadas de Seguranca - HomeBanking Web
+title Camadas de Segurança - HomeBanking Web
 
-rectangle "Seguranca em Camadas" {
+rectangle "Segurança em Camadas" {
     rectangle "Frontend" #LightBlue {
         [Security Headers]
         [XSS Protection]
@@ -69,34 +69,34 @@ rectangle "Seguranca em Camadas" {
 @enduml
 ```
 
-### 8.2 Modelo de Ameacas
+### 8.2 Modelo de Ameaças
 
-| Aspecto | Status |
+| Aspeto | Status |
 |---------|--------|
-| **Threat modeling realizado** | Nao (acao pendente) |
-| **Principais ameacas identificadas** | _A definir_ |
+| **Threat modeling realizado** | Não (ação pendente) |
+| **Principais ameaças identificadas** | _A definir_ |
 | **Metodologia** | _A definir_ (STRIDE ou PASTA) |
 
-### 8.3 Controlos de Seguranca
+### 8.3 Controlos de Segurança
 
 #### 8.3.1 Security Headers HTTP
 
-| Header | Valor | Justificacao |
+| Header | Valor | Justificação |
 |--------|-------|--------------|
-| **Content-Security-Policy** | `self` (inicial) | Prevencao XSS, expandir conforme necessario |
-| **X-Frame-Options** | `SAMEORIGIN` | Prevencao Clickjacking |
-| **X-Content-Type-Options** | `nosniff` | Prevencao MIME sniffing |
-| **Strict-Transport-Security** | `max-age` a definir | Forca HTTPS |
+| **Content-Security-Policy** | `self` (inicial) | Prevenção XSS, expandir conforme necessário |
+| **X-Frame-Options** | `SAMEORIGIN` | Prevenção Clickjacking |
+| **X-Content-Type-Options** | `nosniff` | Prevenção MIME sniffing |
+| **Strict-Transport-Security** | `max-age` a definir | Força HTTPS |
 
 #### 8.3.2 Subresource Integrity (SRI)
 
-| Aspecto | Decisao |
+| Aspeto | Decisão |
 |---------|---------|
-| **Estrategia** | Bibliotecas servidas localmente |
+| **Estratégia** | Bibliotecas servidas localmente |
 | **Atributos** | `integrity` e `crossorigin` em recursos externos |
-| **CDN** | Evitar; se necessario, atencao a atualizacoes de terceiros |
+| **CDN** | Evitar; se necessário, atenção a atualizações de terceiros |
 
-#### 8.3.3 Protecao XSS
+#### 8.3.3 Proteção XSS
 
 ```plantuml
 @startuml
@@ -105,9 +105,9 @@ skinparam backgroundColor #FEFEFE
 title Controlos XSS - Por Camada
 
 rectangle "SSR/BFF" #LightGreen {
-    [Escape de saida HTML]
-    [Validacao de entrada]
-    [Sanitizacao de entrada]
+    [Escape de saída HTML]
+    [Validação de entrada]
+    [Sanitização de entrada]
 }
 
 rectangle "Frontend React" #LightBlue {
@@ -126,22 +126,22 @@ rectangle "Ferramentas" #Yellow {
 
 | Camada | Controlo |
 |--------|----------|
-| **SSR/BFF** | Escape de saida HTML, validacao e sanitizacao de entrada |
-| **React** | Escape automatico em JSX |
+| **SSR/BFF** | Escape de saída HTML, validação e sanitização de entrada |
+| **React** | Escape automático em JSX |
 | **Lint/SAST** | `innerHTML` e `eval` proibidos via lint e SonarQube |
 
-#### 8.3.4 Protecao CSRF
+#### 8.3.4 Proteção CSRF
 
-| Controlo | Implementacao |
+| Controlo | Implementação |
 |----------|---------------|
 | **Tokens CSRF** | Rotacionados por request |
-| **Cookie de sessao** | `SameSite=Strict`, `Secure`, `HttpOnly` |
+| **Cookie de sessão** | `SameSite=Strict`, `Secure`, `HttpOnly` |
 | **CORS** | Configurado restritivamente |
-| **Metodos seguros** | GET somente idempotentes |
+| **Métodos seguros** | GET somente idempotentes |
 
 #### 8.3.5 Controlos Backend/BFF
 
-| Aspecto | Status |
+| Aspeto | Status |
 |---------|--------|
 | Input validation | Detalhes no assessment inicial |
 | WAF | _A definir_ com equipa de infraestrutura |
@@ -150,9 +150,9 @@ rectangle "Ferramentas" #Yellow {
 
 | Categoria | Status |
 |-----------|--------|
-| Controlos especificos | _A definir_ |
+| Controlos específicos | _A definir_ |
 | SAST/DAST no pipeline | _A definir_ |
-| Frequencia de scans | _A definir_ |
+| Frequência de scans | _A definir_ |
 
 ### 8.5 Conformidade PSD2
 
@@ -164,16 +164,16 @@ title Conformidade PSD2 - HomeBanking Web
 
 rectangle "Requisitos PSD2" {
     rectangle "SCA" #LightGreen {
-        [Todas as operacoes]
-        note bottom : Sem isencoes
+        [Todas as operações]
+        note bottom : Sem isenções
     }
 
     rectangle "Dynamic Linking" #Yellow {
-        [Valor + Beneficiario]
-        note bottom : Estrutura app\nja segue PSD2\n(a aprofundar)
+        [Valor + Beneficiário]
+        note bottom : Estrutura app\njá segue PSD2\n(a aprofundar)
     }
 
-    rectangle "Comunicacao Segura" #LightGreen {
+    rectangle "Comunicação Segura" #LightGreen {
         [TLS 1.2+]
     }
 }
@@ -181,16 +181,16 @@ rectangle "Requisitos PSD2" {
 @enduml
 ```
 
-| Requisito | Decisao |
+| Requisito | Decisão |
 |-----------|---------|
-| **SCA obrigatorio** | Sim, todas as operacoes |
-| **Isencoes SCA** | Nenhuma |
-| **Dynamic Linking** | Estrutura app ja segue PSD2 (a aprofundar) |
-| **TLS** | 1.2+ (versao especifica a definir) |
+| **SCA obrigatório** | Sim, todas as operações |
+| **Isenções SCA** | Nenhuma |
+| **Dynamic Linking** | Estrutura app já segue PSD2 (a aprofundar) |
+| **TLS** | 1.2+ (versão específica a definir) |
 
 ### 8.6 Conformidade RGPD
 
-| Aspecto | Status |
+| Aspeto | Status |
 |---------|--------|
 | Base legal para tratamento | _A definir_ |
 | Consentimento | _A definir_ |
@@ -199,91 +199,91 @@ rectangle "Requisitos PSD2" {
 
 ### 8.7 PCI-DSS
 
-| Aspecto | Status |
+| Aspeto | Status |
 |---------|--------|
 | Processamento de PAN | _A definir_ |
-| Nivel de conformidade | _A definir_ |
-| Tokenizacao de cartoes | _A definir_ |
+| Nível de conformidade | _A definir_ |
+| Tokenização de cartões | _A definir_ |
 
 ### 8.8 Banco de Portugal
 
-| Aspecto | Status |
+| Aspeto | Status |
 |---------|--------|
-| Requisitos regulatorios BdP | _A definir_ |
+| Requisitos regulatórios BdP | _A definir_ |
 | Requisitos de reporte | _A definir_ |
 
 ### 8.9 Registo de Auditoria
 
-| Aspecto | Status |
+| Aspeto | Status |
 |---------|--------|
 | Eventos a registar | _A definir_ |
 | Formato de logs | _A definir_ |
-| Periodo de retencao | _A definir_ |
+| Período de retenção | _A definir_ |
 | Imutabilidade | _A definir_ |
 
 ### 8.10 Resposta a Incidentes
 
-| Aspecto | Status |
+| Aspeto | Status |
 |---------|--------|
 | Plano de resposta | _A definir_ |
 | SLAs de resposta | _A definir_ |
 | CSIRT | _A definir_ |
 
-### 8.11 Gestao de Vulnerabilidades
+### 8.11 Gestão de Vulnerabilidades
 
-| Aspecto | Status |
+| Aspeto | Status |
 |---------|--------|
-| Processo de gestao | _A definir_ |
-| SLAs de correcao | _A definir_ |
+| Processo de gestão | _A definir_ |
+| SLAs de correção | _A definir_ |
 | Bug bounty | _A definir_ |
 
-### 8.12 Segregacao de Ambientes
+### 8.12 Segregação de Ambientes
 
-| Aspecto | Status |
+| Aspeto | Status |
 |---------|--------|
-| Segregacao (dev/staging/prod) | _A definir_ |
-| Segregacao de dados | _A definir_ |
+| Segregação (dev/staging/prod) | _A definir_ |
+| Segregação de dados | _A definir_ |
 
-## Entregaveis
+## Entregáveis
 
-- [ ] Modelo de ameacas documentado - Pendente
-- [x] Matriz de controlos de seguranca - Parcial
+- [ ] Modelo de ameaças documentado - Pendente
+- [x] Matriz de controlos de segurança - Parcial
 - [ ] Checklist OWASP Top 10 - Pendente
 - [x] Matriz de conformidade PSD2 - Parcial
 - [ ] Matriz de conformidade RGPD - Pendente
-- [ ] Avaliacao PCI-DSS - Pendente
+- [ ] Avaliação PCI-DSS - Pendente
 - [ ] Requisitos Banco de Portugal - Pendente
-- [ ] Especificacao de audit logging - Pendente
+- [ ] Especificação de audit logging - Pendente
 - [ ] Plano de resposta a incidentes - Pendente
-- [ ] Processo de gestao de vulnerabilidades - Pendente
+- [ ] Processo de gestão de vulnerabilidades - Pendente
 
-## Definicoes Utilizadas
+## Definições Utilizadas
 
 - [x] [DEF-08-seguranca-conformidade.md](../definitions/DEF-08-seguranca-conformidade.md) - Status: completed
 
-## Decisoes Referenciadas
+## Decisões Referenciadas
 
 - [x] [DEC-004-controlos-seguranca-frontend.md](../decisions/DEC-004-controlos-seguranca-frontend.md) - Status: accepted
 
 ## Itens Pendentes
 
-| Item | Documento | Responsavel |
+| Item | Documento | Responsável |
 |------|-----------|-------------|
-| Threat modeling | DEF-08-seguranca-conformidade | Seguranca |
-| Metodologia threat modeling | DEF-08-seguranca-conformidade | Seguranca |
-| max-age HSTS | DEF-08-seguranca-conformidade | Seguranca |
-| WAF (definicao) | DEF-08-seguranca-conformidade | Infraestrutura |
-| Controlos OWASP Top 10 | DEF-08-seguranca-conformidade | Seguranca |
+| Threat modeling | DEF-08-seguranca-conformidade | Segurança |
+| Metodologia threat modeling | DEF-08-seguranca-conformidade | Segurança |
+| max-age HSTS | DEF-08-seguranca-conformidade | Segurança |
+| WAF (definição) | DEF-08-seguranca-conformidade | Infraestrutura |
+| Controlos OWASP Top 10 | DEF-08-seguranca-conformidade | Segurança |
 | SAST/DAST no pipeline | DEF-08-seguranca-conformidade | DevOps |
-| Frequencia de scans | DEF-08-seguranca-conformidade | Seguranca |
+| Frequência de scans | DEF-08-seguranca-conformidade | Segurança |
 | Dynamic Linking (aprofundar) | DEF-08-seguranca-conformidade | Arquitetura |
 | Base legal RGPD | DEF-08-seguranca-conformidade | DPO |
 | Consentimento RGPD | DEF-08-seguranca-conformidade | DPO |
 | DPO designado | DEF-08-seguranca-conformidade | Legal |
 | ROPA | DEF-08-seguranca-conformidade | DPO |
-| PCI-DSS avaliacao | DEF-08-seguranca-conformidade | Compliance |
+| PCI-DSS avaliação | DEF-08-seguranca-conformidade | Compliance |
 | Requisitos BdP | DEF-08-seguranca-conformidade | Compliance |
 | Audit logging | DEF-08-seguranca-conformidade | Arquitetura |
-| Resposta a incidentes | DEF-08-seguranca-conformidade | Seguranca |
-| Gestao de vulnerabilidades | DEF-08-seguranca-conformidade | Seguranca |
-| Segregacao de ambientes | DEF-08-seguranca-conformidade | Infraestrutura |
+| Resposta a incidentes | DEF-08-seguranca-conformidade | Segurança |
+| Gestão de vulnerabilidades | DEF-08-seguranca-conformidade | Segurança |
+| Segregação de ambientes | DEF-08-seguranca-conformidade | Infraestrutura |

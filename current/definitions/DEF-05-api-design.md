@@ -18,136 +18,136 @@ status: completed
 
 # DEF-05: API Design
 
-> **Secao relacionada:** [5 - Arquitetura Backend & Servicos](../sections/SEC-05-arquitetura-backend-servicos.md)
+> **Secção relacionada:** [5 - Arquitetura Backend & Serviços](../sections/SEC-05-arquitetura-backend-servicos.md)
 
 ## Contexto
 
-Definir os padroes de design de API para o HomeBanking Web, incluindo estilo de API, versionamento, documentacao e padroes de request/response.
+Definir os padrões de design de API para o HomeBanking Web, incluindo estilo de API, versionamento, documentação e padrões de request/response.
 
 ## Perguntas a Responder
 
 ### Estilo de API
-1. As APIs serao REST, GraphQL ou hibrido?
+1. As APIs serão REST, GraphQL ou híbrido?
     REST
 
-2. Ha padroes de API existentes no banco a seguir?
+2. Há padrões de API existentes no banco a seguir?
     Sim. Já existem contratos a serem seguidos pelas APIs
 
 ### Versionamento
-3. Qual estrategia de versionamento (URL path, header, query param)?
+3. Qual estratégia de versionamento (URL path, header, query param)?
     Versionamento via URL path (ex: /api/v1/resource)
 
-4. Qual sera a politica de deprecacao de versoes?
-    Necessita aprofundamento. Sugestao: 6 meses de suporte apos nova versao
+4. Qual será a política de deprecação de versões?
+    Necessita aprofundamento. Sugestão: 6 meses de suporte após nova versão
 
-5. Qual a estrategia para breaking changes nos contratos API?
-    Necessita aprofundamento. Considerar: feature flags, versoes paralelas
+5. Qual a estratégia para breaking changes nos contratos API?
+    Necessita aprofundamento. Considerar: feature flags, versões paralelas
 
-### Documentacao
-6. Qual formato de especificacao (OpenAPI 3.0, AsyncAPI)?
+### Documentação
+6. Qual formato de especificação (OpenAPI 3.0, AsyncAPI)?
     OpenAPI 3.0
 
-7. Como sera gerada e mantida a documentacao?
+7. Como será gerada e mantida a documentação?
     Ferramenta automatizada via Pipeline (Swagger/NSwag)
 
-### Padroes de Request/Response
+### Padrões de Request/Response
 8. Qual formato de dados (JSON, outro)?
     JSON
 
-9. Ha padroes de paginacao a seguir?
-    Sim. Os componentes de lista dependem de um padrao definido
+9. Há padrões de paginação a seguir?
+    Sim. Os componentes de lista dependem de um padrão definido
 
-10. Qual padrao de tratamento de erros?
+10. Qual padrão de tratamento de erros?
     Necessita aprofundamento. Considerar: RFC 7807 (Problem Details)
 
-### Seguranca
-11. Qual mecanismo de autenticacao (OAuth 2.0, JWT)?
-    OAuth 2.0 com servico de autenticacao existente do banco
+### Segurança
+11. Qual mecanismo de autenticação (OAuth 2.0, JWT)?
+    OAuth 2.0 com serviço de autenticação existente do banco
 
-12. Ha requisitos de assinatura de requests?
-    Nao
+12. Há requisitos de assinatura de requests?
+    Não
 
 ### Performance
-13. Quais headers de cache serao utilizados?
+13. Quais headers de cache serão utilizados?
     Necessita aprofundamento. Considerar: Cache-Control, ETag
 
-14. Ha requisitos de compressao (gzip, brotli)?
+14. Há requisitos de compressão (gzip, brotli)?
     gzip
 
-## Decisoes
+## Decisões
 
 ### Estilo de API
-- **Decisao:** REST
-- **Justificacao:** Alinhamento com APIs existentes e contratos ja definidos do banco
+- **Decisão:** REST
+- **Justificação:** Alinhamento com APIs existentes e contratos já definidos do banco
 - **Alternativas consideradas:** GraphQL (descartado por compatibilidade)
 
-### Padroes Existentes
-- **Decisao:** Seguir contratos de API existentes no banco
-- **Justificacao:** Consistencia com APIs da app mobile
-- **Alternativas consideradas:** Novos contratos (descartado por reutilizacao)
+### Padrões Existentes
+- **Decisão:** Seguir contratos de API existentes no banco
+- **Justificação:** Consistência com APIs da app mobile
+- **Alternativas consideradas:** Novos contratos (descartado por reutilização)
 
 ### Versionamento
-- **Decisao:** Versionamento via URL path (ex: /api/v1/resource)
-- **Justificacao:** Simplicidade, visibilidade, pratica comum
+- **Decisão:** Versionamento via URL path (ex: /api/v1/resource)
+- **Justificação:** Simplicidade, visibilidade, prática comum
 - **Alternativas consideradas:** Header versioning, Query param
 
-### Politica de Deprecacao
-- **Decisao:** _A definir_ - Necessita aprofundamento
-- **Justificacao:** Definir tempo de suporte a versoes antigas
+### Política de Deprecação
+- **Decisão:** _A definir_ - Necessita aprofundamento
+- **Justificação:** Definir tempo de suporte a versões antigas
 - **Alternativas consideradas:** N/A
 
-### Especificacao e Documentacao
-- **Decisao:** OpenAPI 3.0 com geracao automatizada via Pipeline
-- **Justificacao:** Standard de industria, integracao com ferramentas
+### Especificação e Documentação
+- **Decisão:** OpenAPI 3.0 com geração automatizada via Pipeline
+- **Justificação:** Standard de indústria, integração com ferramentas
 - **Alternativas consideradas:** AsyncAPI (para eventos), Swagger 2.0
 
 ### Formato de Dados
-- **Decisao:** JSON
-- **Justificacao:** Standard para APIs REST, boa integracao com frontend
+- **Decisão:** JSON
+- **Justificação:** Standard para APIs REST, boa integração com frontend
 - **Alternativas consideradas:** XML (descartado por verbosidade)
 
-### Paginacao
-- **Decisao:** Padrao definido para componentes de lista
-- **Justificacao:** Consistencia entre endpoints, suporte a UI components
+### Paginação
+- **Decisão:** Padrão definido para componentes de lista
+- **Justificação:** Consistência entre endpoints, suporte a UI components
 - **Alternativas consideradas:** Cursor-based, Offset-based (a definir em detalhe)
 
 ### Tratamento de Erros
-- **Decisao:** _A definir_ - Necessita aprofundamento
-- **Justificacao:** Definir estrutura de erro padrao (RFC 7807 Problem Details?)
+- **Decisão:** _A definir_ - Necessita aprofundamento
+- **Justificação:** Definir estrutura de erro padrão (RFC 7807 Problem Details?)
 - **Alternativas consideradas:** RFC 7807, Custom error format
 
-### Autenticacao API
-- **Decisao:** OAuth 2.0 com implementacao mista com servico de autenticacao existente do banco
-- **Justificacao:** Reutilizacao de infraestrutura de autenticacao existente
+### Autenticação API
+- **Decisão:** OAuth 2.0 com implementação mista com serviço de autenticação existente do banco
+- **Justificação:** Reutilização de infraestrutura de autenticação existente
 - **Alternativas consideradas:** JWT puro, SAML (descartados)
 
 ### Assinatura de Requests
-- **Decisao:** Nao requerida
-- **Justificacao:** Autenticacao OAuth suficiente para requisitos atuais
-- **Alternativas consideradas:** HMAC signing (pode ser adicionado se necessario)
+- **Decisão:** Não requerida
+- **Justificação:** Autenticação OAuth suficiente para requisitos atuais
+- **Alternativas consideradas:** HMAC signing (pode ser adicionado se necessário)
 
 ### Cache Headers
-- **Decisao:** _A definir_ - Necessita aprofundamento
-- **Justificacao:** Definir politica de cache HTTP
+- **Decisão:** _A definir_ - Necessita aprofundamento
+- **Justificação:** Definir política de cache HTTP
 - **Alternativas consideradas:** Cache-Control, ETag, Last-Modified
 
-### Compressao
-- **Decisao:** gzip
-- **Justificacao:** Suporte universal, boa taxa de compressao
+### Compressão
+- **Decisão:** gzip
+- **Justificação:** Suporte universal, boa taxa de compressão
 - **Alternativas consideradas:** Brotli (pode ser adicionado)
 
-## Restricoes Conhecidas
+## Restrições Conhecidas
 
-- Integracao com APIs existentes da app mobile
-- Conformidade PSD2 para operacoes financeiras
+- Integração com APIs existentes da app mobile
+- Conformidade PSD2 para operações financeiras
 - Requisitos de auditoria
 
-## Decisoes Relacionadas
+## Decisões Relacionadas
 
-- [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - Padrao BFF
-- [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack tecnologica backend
+- [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - Padrão BFF
+- [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack tecnológica backend
 
-## Referencias
+## Referências
 
 - APIs existentes da app mobile (a fornecer)
 - OpenAPI Specification 3.0

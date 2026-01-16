@@ -1,0 +1,33 @@
+@startuml
+skinparam backgroundColor white
+
+title Roadmap - Visão de Longo Prazo
+
+|2026 Q1-Q2|
+:MVP + Go-Live;
+note right: 35 features (paridade mobile)
+
+|2026 Q3|
+:Evolução v1.1;
+note right
+- Melhorias UX
+- Performance
+- Feedback users
+end note
+
+|2026 Q4|
+:Novas Features;
+note right
+- Features exclusivas web
+- Integração Open Banking
+end note
+
+|2027+|
+:Expansão;
+note right
+- Novos canais
+- Personalização
+- AI/ML features
+end note
+
+@enduml

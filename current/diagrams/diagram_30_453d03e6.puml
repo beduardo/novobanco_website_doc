@@ -1,0 +1,44 @@
+@startuml
+skinparam componentStyle rectangle
+skinparam backgroundColor white
+
+title Infraestrutura HomeBanking Web
+
+cloud "Internet" as NET
+
+package "DMZ" {
+  [F5 BIG-IP] as LB
+}
+
+package "Azure" {
+  package "AKS Cluster" {
+    package "Namespace: prod" {
+      [Frontend\n(Nginx + React)] as FE
+      [BFF\n(.NET 8)] as BFF
+    }
+  }
+
+  [Redis Cache] as REDIS
+  [Key Vault] as KV
+  [Container Registry] as ACR
+}
+
+package "Observabilidade" {
+  [ELK Stack] as ELK
+}
+
+package "Backend" {
+  [API Gateway] as GW
+  [Backend API] as API
+}
+
+NET --> LB
+LB --> FE
+FE --> BFF
+BFF --> REDIS
+BFF --> GW
+GW --> API
+FE --> ELK : logs
+BFF --> ELK : logs
+
+@enduml

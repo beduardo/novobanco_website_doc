@@ -18,19 +18,19 @@ status: in-progress
 
 # 6. Arquitetura de Dados
 
-> **Definicoes requeridas:**
+> **Definições requeridas:**
 > - [DEF-06-arquitetura-dados.md](../definitions/DEF-06-arquitetura-dados.md) - Status: completed
 >
-> **Decisoes relacionadas:**
+> **Decisões relacionadas:**
 > - [DEC-005-armazenamento-dados-canal-web.md](../decisions/DEC-005-armazenamento-dados-canal-web.md) - Status: accepted
 
-## Proposito
+## Propósito
 
-Definir a arquitetura de dados do HomeBanking Web, incluindo modelo de dados, armazenamento, encriptacao, retencao, conformidade RGPD e estrategias de cache. O canal web reutiliza os servicos backend existentes, logo a maioria dos dados transacionais reside nos sistemas existentes.
+Definir a arquitetura de dados do HomeBanking Web, incluindo modelo de dados, armazenamento, encriptação, retenção, conformidade RGPD e estratégias de cache. O canal web reutiliza os serviços backend existentes, logo a maioria dos dados transacionais reside nos sistemas existentes.
 
-## Conteudo
+## Conteúdo
 
-### 6.1 Visao Geral de Dados
+### 6.1 Visão Geral de Dados
 
 ```plantuml
 @startuml
@@ -40,7 +40,7 @@ title Fluxo de Dados - HomeBanking Web
 
 package "Browser" {
     [localStorage] as LS
-    note right of LS : Dados basicos\nDados publicos\nNoticias
+    note right of LS : Dados básicos\nDados públicos\nNotícias
 }
 
 package "BFF (.NET 8)" {
@@ -56,9 +56,9 @@ package "Backend Services" {
     database "Transaction Data" as TD
 }
 
-[Browser] --> LS : Dados nao sensiveis
+[Browser] --> LS : Dados não sensíveis
 [Browser] --> [BFF] : HTTPS/REST
-[BFF] --> SC : Sessao
+[BFF] --> SC : Sessão
 [BFF] --> TC : OAuth Tokens
 [BFF] --> [API Gateway] : REST
 [API Gateway] --> CB
@@ -70,8 +70,8 @@ package "Backend Services" {
 
 | Camada | Armazenamento | Dados |
 |--------|---------------|-------|
-| Frontend | localStorage | Dados basicos utilizador, dados publicos, noticias |
-| BFF | Cache (Redis) | Sessao, tokens OAuth |
+| Frontend | localStorage | Dados básicos utilizador, dados públicos, notícias |
+| BFF | Cache (Redis) | Sessão, tokens OAuth |
 | Backend | Existente | Dados transacionais, contas, movimentos |
 
 ### 6.2 Modelo de Dados
@@ -80,10 +80,10 @@ package "Backend Services" {
 
 | Tipo | Armazenamento | Exemplo |
 |------|---------------|---------|
-| Dados basicos utilizador | localStorage | Nome, preferencias UI |
-| Dados publicos | localStorage | Taxas de cambio, indices |
-| Noticias | localStorage | Comunicacoes, alertas |
-| **Dados sensiveis** | **PROIBIDO** | Saldos, transacoes, tokens |
+| Dados básicos utilizador | localStorage | Nome, preferências UI |
+| Dados públicos | localStorage | Taxas de câmbio, índices |
+| Notícias | localStorage | Comunicações, alertas |
+| **Dados sensíveis** | **PROIBIDO** | Saldos, transações, tokens |
 
 #### 6.2.2 Dados no BFF
 
@@ -94,10 +94,10 @@ package "Backend Services" {
 | Refresh Token | Cache | 7 dias |
 | Dados SSR/SSG | Cache | _A definir_ |
 
-#### 6.2.3 Dados Especificos do Canal Web
+#### 6.2.3 Dados Específicos do Canal Web
 
-- **Nao ha dados especificos** do canal web que nao existam na app mobile
-- Canal web consome os mesmos backend services e modelo de dominio
+- **Não há dados específicos** do canal web que não existam na app mobile
+- Canal web consome os mesmos backend services e modelo de domínio
 
 ### 6.3 Armazenamento
 
@@ -108,12 +108,12 @@ skinparam backgroundColor #FEFEFE
 rectangle "Armazenamento por Camada" {
     rectangle "Frontend" #LightBlue {
         [localStorage] #LightGreen
-        note bottom : Dados nao sensiveis apenas
+        note bottom : Dados não sensíveis apenas
     }
 
     rectangle "BFF" #LightBlue {
-        [Cache Distribuido] #LightGreen
-        note bottom : Sessoes e tokens\nSem base de dados propria
+        [Cache Distribuído] #LightGreen
+        note bottom : Sessões e tokens\nSem base de dados própria
     }
 
     rectangle "Backend" #LightGreen {
@@ -125,38 +125,38 @@ rectangle "Armazenamento por Camada" {
 @enduml
 ```
 
-| Decisao | Valor |
+| Decisão | Valor |
 |---------|-------|
-| **Frontend - Persistencia** | localStorage |
-| **BFF - Base de dados** | Nao (apenas cache) |
+| **Frontend - Persistência** | localStorage |
+| **BFF - Base de dados** | Não (apenas cache) |
 | **BFF - Tecnologia cache** | _A definir_ (Redis recomendado) |
 | **Backend** | Reutiliza infraestrutura existente |
 
-### 6.4 Encriptacao
+### 6.4 Encriptação
 
-| Aspecto | Decisao |
+| Aspeto | Decisão |
 |---------|---------|
-| **Em transito** | TLS (versao a definir) |
-| **Em repouso (BFF/cache)** | Sem requisitos especificos |
-| **Gestao de chaves** | SSL apenas (no momento) |
+| **Em trânsito** | TLS (versão a definir) |
+| **Em repouso (BFF/cache)** | Sem requisitos específicos |
+| **Gestão de chaves** | SSL apenas (no momento) |
 
-### 6.5 Retencao de Dados
+### 6.5 Retenção de Dados
 
-| Tipo | Politica | Status |
+| Tipo | Política | Status |
 |------|----------|--------|
 | Logs de acesso web | _A definir_ | Pendente |
-| Dados de sessao | _A definir_ | Pendente |
+| Dados de sessão | _A definir_ | Pendente |
 | Requisitos de auditoria | _A definir_ | Pendente |
 
 ### 6.6 Backup & Restore
 
-| Aspecto | Status |
+| Aspeto | Status |
 |---------|--------|
 | Componentes que requerem backup | _A definir_ |
-| Frequencia de backup | _A definir_ |
+| Frequência de backup | _A definir_ |
 | RTO/RPO para restauro | _A definir_ |
 
-**Nota:** A maioria dos dados reside nos backend services existentes, que ja possuem politicas de backup definidas.
+**Nota:** A maioria dos dados reside nos backend services existentes, que já possuem políticas de backup definidas.
 
 ### 6.7 RGPD - Data Subject Rights
 
@@ -164,32 +164,32 @@ rectangle "Armazenamento por Camada" {
 |-----------|--------|
 | Subject Access Requests (SAR) | _A definir_ |
 | Direito ao esquecimento | _A definir_ |
-| Dados web nas exportacoes | _A definir_ |
+| Dados web nas exportações | _A definir_ |
 
 **Nota:** Processos RGPD existentes da app mobile devem ser estendidos ao canal web.
 
-### 6.8 Classificacao de Dados
+### 6.8 Classificação de Dados
 
-| Aspecto | Status |
+| Aspeto | Status |
 |---------|--------|
-| Esquema de classificacao | _A definir_ |
-| Dados sensiveis/PII | _A definir_ |
+| Esquema de classificação | _A definir_ |
+| Dados sensíveis/PII | _A definir_ |
 
-### 6.9 Estrategia de Cache
+### 6.9 Estratégia de Cache
 
 ```plantuml
 @startuml
 skinparam backgroundColor #FEFEFE
 
-rectangle "Estrategia de Cache" {
+rectangle "Estratégia de Cache" {
     rectangle "Browser Cache" #LightBlue {
-        [Dados Publicos]
-        [Preferencias UI]
-        [Noticias]
+        [Dados Públicos]
+        [Preferências UI]
+        [Notícias]
     }
 
     rectangle "BFF Cache" #LightGreen {
-        [Sessoes]
+        [Sessões]
         [Tokens OAuth]
         [Dados SSR] #Yellow
     }
@@ -203,39 +203,39 @@ rectangle "Estrategia de Cache" {
 @enduml
 ```
 
-| Aspecto | Status |
+| Aspeto | Status |
 |---------|--------|
-| Dados cacheados no BFF | Sessao, tokens; mais se SSR completo |
+| Dados cacheados no BFF | Sessão, tokens; mais se SSR completo |
 | TTL por tipo | _A definir_ |
-| Invalidacao de cache | _A definir_ |
+| Invalidação de cache | _A definir_ |
 
-## Entregaveis
+## Entregáveis
 
 - [x] Diagrama de fluxo de dados
-- [x] Modelo de dados documentado (alto nivel)
-- [ ] Politica de encriptacao - Parcial
-- [ ] Politica de retencao - Pendente
+- [x] Modelo de dados documentado (alto nível)
+- [ ] Política de encriptação - Parcial
+- [ ] Política de retenção - Pendente
 - [ ] Procedimentos RGPD - Pendente
-- [ ] Classificacao de dados - Pendente
-- [ ] Estrategia de cache detalhada - Pendente
+- [ ] Classificação de dados - Pendente
+- [ ] Estratégia de cache detalhada - Pendente
 
-## Definicoes Utilizadas
+## Definições Utilizadas
 
 - [x] [DEF-06-arquitetura-dados.md](../definitions/DEF-06-arquitetura-dados.md) - Status: completed
 
-## Decisoes Referenciadas
+## Decisões Referenciadas
 
 - [x] [DEC-005-armazenamento-dados-canal-web.md](../decisions/DEC-005-armazenamento-dados-canal-web.md) - Status: accepted
 
 ## Itens Pendentes
 
-| Item | Documento | Responsavel |
+| Item | Documento | Responsável |
 |------|-----------|-------------|
-| Politica de retencao logs | DEF-06-arquitetura-dados | Operacoes |
-| Politica de retencao sessao | DEF-06-arquitetura-dados | Arquitetura |
+| Política de retenção logs | DEF-06-arquitetura-dados | Operações |
+| Política de retenção sessão | DEF-06-arquitetura-dados | Arquitetura |
 | Requisitos de auditoria | DEF-06-arquitetura-dados | Compliance |
 | Procedimentos RGPD | DEF-06-arquitetura-dados | DPO |
-| Classificacao de dados | DEF-06-arquitetura-dados | Seguranca |
-| TTL e invalidacao cache | DEF-06-arquitetura-dados | Arquitetura |
-| Componentes para backup | DEF-06-arquitetura-dados | Operacoes |
-| Versao TLS | DEF-06-arquitetura-dados | Seguranca |
+| Classificação de dados | DEF-06-arquitetura-dados | Segurança |
+| TTL e invalidação cache | DEF-06-arquitetura-dados | Arquitetura |
+| Componentes para backup | DEF-06-arquitetura-dados | Operações |
+| Versão TLS | DEF-06-arquitetura-dados | Segurança |

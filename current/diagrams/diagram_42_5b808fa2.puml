@@ -1,0 +1,32 @@
+@startuml
+skinparam backgroundColor white
+
+title Procedimento de Rollback
+
+start
+:Incidente detectado;
+:Avaliar severidade;
+
+if (Severidade P1?) then (sim)
+    :Decisão de rollback (Tech Lead);
+    :Comunicar stakeholders;
+
+    if (Feature flag disponível?) then (sim)
+        :Desativar feature flag;
+        note right: Rollback instantâneo
+    else (não)
+        :kubectl rollout undo;
+        note right: Rollback de deployment
+    endif
+
+    :Validar serviço restaurado;
+    :Abrir post-mortem;
+else (não)
+    :Investigar root cause;
+    :Planear hotfix;
+    :Agendar deploy corretivo;
+endif
+
+stop
+
+@enduml

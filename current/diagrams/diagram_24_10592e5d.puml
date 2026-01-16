@@ -1,0 +1,22 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+
+title Conformidade PSD2 - HomeBanking Web
+
+rectangle "Requisitos PSD2" {
+    rectangle "SCA" #LightGreen {
+        [Todas as operações]
+        note bottom : Sem isenções
+    }
+
+    rectangle "Dynamic Linking" #Yellow {
+        [Valor + Beneficiário]
+        note bottom : Estrutura app\njá segue PSD2\n(a aprofundar)
+    }
+
+    rectangle "Comunicação Segura" #LightGreen {
+        [TLS 1.2+]
+    }
+}
+
+@enduml

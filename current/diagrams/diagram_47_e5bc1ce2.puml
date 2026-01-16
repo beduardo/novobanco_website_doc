@@ -1,0 +1,31 @@
+@startuml
+skinparam backgroundColor white
+
+title Processo de Change Management
+
+start
+:Request de Mudança;
+:Classificar tipo;
+
+switch (Tipo?)
+case (Standard)
+    :Deploy automático;
+case (Normal)
+    :Tech Lead review;
+    :Agendar deploy;
+case (Emergency)
+    :Aprovação rápida;
+    :Deploy imediato;
+    :Post-mortem;
+case (Major)
+    :CAB meeting;
+    :Risk assessment;
+    :Agendar janela;
+endswitch
+
+:Executar mudança;
+:Validar;
+:Documentar;
+stop
+
+@enduml

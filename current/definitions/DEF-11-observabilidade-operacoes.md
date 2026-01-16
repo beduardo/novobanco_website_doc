@@ -1,7 +1,7 @@
 ---
 id: DEF-11-observabilidade-operacoes
 aliases:
-  - Observabilidade e Operacoes
+  - Observabilidade e Operações
 tags:
   - nextreality-novobanco-website-definitions
   - definitions
@@ -18,17 +18,17 @@ reviewed: true
 status: completed
 ---
 
-# DEF-11: Observabilidade & Operacoes
+# DEF-11: Observabilidade & Operações
 
-> **Secao relacionada:** [SEC-11 - Observabilidade & Operacoes](../sections/SEC-11-observabilidade-operacoes.md)
+> **Secção relacionada:** [SEC-11 - Observabilidade & Operações](../sections/SEC-11-observabilidade-operacoes.md)
 
 ## Contexto
 
-Definir a estrategia de observabilidade do HomeBanking Web, incluindo logging centralizado, metricas, tracing distribuido, alertas e dashboards operacionais. A stack ELK ja foi definida como base (DEC-008).
+Definir a estratégia de observabilidade do HomeBanking Web, incluindo logging centralizado, métricas, tracing distribuído, alertas e dashboards operacionais. A stack ELK já foi definida como base (DEC-008).
 
 ---
 
-## Visao Geral da Stack de Observabilidade
+## Visão Geral da Stack de Observabilidade
 
 ```plantuml
 @startuml
@@ -37,7 +37,7 @@ skinparam componentStyle rectangle
 
 title Stack de Observabilidade - HomeBanking Web
 
-package "Aplicacao" {
+package "Aplicação" {
     [Frontend SPA] as fe
     [BFF .NET] as bff
 }
@@ -77,12 +77,12 @@ elastalert --> notify : alerts
 
 ## Pilares da Observabilidade
 
-### Os Tres Pilares
+### Os Três Pilares
 
-| Pilar | Proposito | Ferramenta |
+| Pilar | Propósito | Ferramenta |
 |-------|-----------|------------|
 | **Logs** | Eventos e debugging | ELK (Elasticsearch, Logstash, Kibana) |
-| **Metricas** | Performance e saude | Prometheus + Grafana (complemento) |
+| **Métricas** | Performance e saúde | Prometheus + Grafana (complemento) |
 | **Traces** | Fluxo de requests | Elastic APM |
 
 ---
@@ -111,15 +111,15 @@ Todos os logs devem seguir formato JSON estruturado:
 }
 ```
 
-### Campos Obrigatorios
+### Campos Obrigatórios
 
-| Campo | Tipo | Descricao |
+| Campo | Tipo | Descrição |
 |-------|------|-----------|
 | `timestamp` | ISO8601 | Data/hora UTC do evento |
 | `level` | string | DEBUG, INFO, WARN, ERROR, FATAL |
 | `service` | string | Nome do componente (frontend-web, bff-web) |
-| `correlation_id` | UUID | ID para correlacao entre servicos |
-| `message` | string | Descricao do evento |
+| `correlation_id` | UUID | ID para correlação entre serviços |
+| `message` | string | Descrição do evento |
 | `environment` | string | dev, qa, prod |
 
 ### Campos Opcionais (Contextuais)
@@ -127,13 +127,13 @@ Todos os logs devem seguir formato JSON estruturado:
 | Campo | Tipo | Uso |
 |-------|------|-----|
 | `user_id` | string | Identificador do utilizador (masked) |
-| `session_id` | string | ID da sessao |
-| `operation` | string | Tipo de operacao |
-| `duration_ms` | number | Duracao da operacao |
-| `error_code` | string | Codigo de erro |
+| `session_id` | string | ID da sessão |
+| `operation` | string | Tipo de operação |
+| `duration_ms` | number | Duração da operação |
+| `error_code` | string | Código de erro |
 | `stack_trace` | string | Stack trace (apenas em ERROR) |
 
-### Mascaramento de Dados Sensiveis
+### Mascaramento de Dados Sensíveis
 
 | Tipo de Dado | Tratamento | Exemplo |
 |--------------|------------|---------|
@@ -144,43 +144,43 @@ Todos os logs devem seguir formato JSON estruturado:
 | NIF | Mascarar | `***` |
 | Tokens | Nunca logar | - |
 
-### Niveis de Log por Ambiente
+### Níveis de Log por Ambiente
 
-| Ambiente | Nivel Minimo | Retencao Hot | Retencao Cold |
+| Ambiente | Nível Mínimo | Retenção Hot | Retenção Cold |
 |----------|--------------|--------------|---------------|
 | dev | DEBUG | 7 dias | - |
 | qa | DEBUG | 14 dias | - |
 | prod | INFO | 30 dias | 1 ano |
 
-### Retencao para Auditoria
+### Retenção para Auditoria
 
-| Tipo de Log | Retencao | Requisito |
+| Tipo de Log | Retenção | Requisito |
 |-------------|----------|-----------|
-| Logs de autenticacao | 7 anos | Compliance bancario |
-| Logs de transacoes | 7 anos | Compliance bancario |
+| Logs de autenticação | 7 anos | Compliance bancário |
+| Logs de transações | 7 anos | Compliance bancário |
 | Logs de erro | 1 ano | Operacional |
 | Logs gerais | 90 dias | Operacional |
 
 ---
 
-## Metricas
+## Métricas
 
 ### Golden Signals
 
-| Signal | Metrica | Target | Alerta |
+| Signal | Métrica | Target | Alerta |
 |--------|---------|--------|--------|
 | **Latency** | P95 response time | < 3s | > 5s |
 | **Traffic** | Requests per second | Baseline | > 2x baseline |
 | **Errors** | Error rate (5xx) | < 0.1% | > 1% |
 | **Saturation** | CPU/Memory usage | < 70% | > 85% |
 
-### Metricas de Aplicacao
+### Métricas de Aplicação
 
 ```plantuml
 @startuml
 skinparam backgroundColor white
 
-title Metricas por Componente
+title Métricas por Componente
 
 rectangle "Frontend SPA" {
     card "LCP (Largest Contentful Paint)"
@@ -208,21 +208,21 @@ rectangle "Infraestrutura" {
 @enduml
 ```
 
-### Metricas de Negocio
+### Métricas de Negócio
 
-| Metrica | Descricao | Dashboard |
+| Métrica | Descrição | Dashboard |
 |---------|-----------|-----------|
-| Logins/hora | Taxa de autenticacoes | Business |
-| Transacoes/tipo | Transferencias, pagamentos | Business |
-| Taxa abandono login | % que nao completa login | Business |
-| Erros auth | Falhas de autenticacao | Security |
-| Sessoes ativas | Utilizadores online | Operations |
+| Logins/hora | Taxa de autenticações | Business |
+| Transações/tipo | Transferências, pagamentos | Business |
+| Taxa abandono login | % que não completa login | Business |
+| Erros auth | Falhas de autenticação | Security |
+| Sessões ativas | Utilizadores online | Operations |
 
 ---
 
-## Tracing Distribuido
+## Tracing Distribuído
 
-### Estrategia de Correlation
+### Estratégia de Correlation
 
 ```plantuml
 @startuml
@@ -237,7 +237,7 @@ participant "BFF" as bff
 participant "Backend API" as api
 database "ELK" as elk
 
-User -> fe : Acao
+User -> fe : Ação
 fe -> fe : Gerar correlation_id
 note right of fe
 X-Correlation-ID: abc123
@@ -261,17 +261,17 @@ end note
 @enduml
 ```
 
-### Propagacao de Headers
+### Propagação de Headers
 
-| Header | Proposito | Gerado por |
+| Header | Propósito | Gerado por |
 |--------|-----------|------------|
-| `X-Correlation-ID` | Correlacao de logs | Frontend (UUID) |
-| `X-Request-ID` | ID unico do request | BFF |
+| `X-Correlation-ID` | Correlação de logs | Frontend (UUID) |
+| `X-Request-ID` | ID único do request | BFF |
 | `traceparent` | W3C Trace Context | APM Agent |
 
 ### Elastic APM
 
-| Componente | Instrumentacao |
+| Componente | Instrumentação |
 |------------|----------------|
 | Frontend | RUM (Real User Monitoring) JS Agent |
 | BFF .NET | Elastic APM .NET Agent |
@@ -280,20 +280,20 @@ end note
 
 ## SLIs, SLOs e SLAs
 
-### Definicoes
+### Definições
 
-| Termo | Definicao | Responsavel |
+| Termo | Definição | Responsável |
 |-------|-----------|-------------|
-| **SLI** | Service Level Indicator - metrica medida | Engenharia |
+| **SLI** | Service Level Indicator - métrica medida | Engenharia |
 | **SLO** | Service Level Objective - target interno | Engenharia |
-| **SLA** | Service Level Agreement - compromisso externo | Negocio |
+| **SLA** | Service Level Agreement - compromisso externo | Negócio |
 
 ### SLOs do Canal Web
 
-| SLI | SLO Target | Janela | Calculo |
+| SLI | SLO Target | Janela | Cálculo |
 |-----|------------|--------|---------|
 | Disponibilidade | 99.9% | Mensal | Uptime / Tempo total |
-| Latencia P95 | < 3s | Mensal | Percentil 95 dos requests |
+| Latência P95 | < 3s | Mensal | Percentil 95 dos requests |
 | Taxa de Erro | < 0.1% | Mensal | Erros 5xx / Total requests |
 | TTFB | < 800ms | Mensal | Time to First Byte P95 |
 
@@ -317,7 +317,7 @@ Exemplo (99.9% disponibilidade):
 
 ## Alertas
 
-### Estrategia de Alerting
+### Estratégia de Alerting
 
 ```plantuml
 @startuml
@@ -326,20 +326,20 @@ skinparam backgroundColor white
 title Fluxo de Alertas
 
 start
-:Metrica/Log anomalo;
+:Métrica/Log anómalo;
 :ElastAlert detecta;
 
-if (Severidade?) then (P1 - Critico)
+if (Severidade?) then (P1 - Crítico)
     :Alerta imediato;
     :PagerDuty/On-call;
-    :Notificacao Teams;
+    :Notificação Teams;
 else (P2 - Alto)
     :Alerta em 5 min;
     :Email equipa;
     :Canal Teams;
-else (P3 - Medio)
+else (P3 - Médio)
     :Alerta em 15 min;
-    :Ticket automatico;
+    :Ticket automático;
 else (P4 - Baixo)
     :Dashboard apenas;
 endif
@@ -349,22 +349,22 @@ stop
 @enduml
 ```
 
-### Classificacao de Alertas
+### Classificação de Alertas
 
-| Severidade | Criterio | Tempo Resposta | Notificacao |
+| Severidade | Critério | Tempo Resposta | Notificação |
 |------------|----------|----------------|-------------|
-| **P1 - Critico** | Servico indisponivel, impacto total | < 15 min | On-call + SMS |
-| **P2 - Alto** | Degradacao significativa | < 30 min | Email + Teams |
-| **P3 - Medio** | Degradacao parcial | < 4 horas | Email |
-| **P4 - Baixo** | Anomalia sem impacto | Proximo dia util | Ticket |
+| **P1 - Crítico** | Serviço indisponível, impacto total | < 15 min | On-call + SMS |
+| **P2 - Alto** | Degradação significativa | < 30 min | Email + Teams |
+| **P3 - Médio** | Degradação parcial | < 4 horas | Email |
+| **P4 - Baixo** | Anomalia sem impacto | Próximo dia útil | Ticket |
 
 ### Alertas Configurados
 
-| Alerta | Condicao | Severidade |
+| Alerta | Condição | Severidade |
 |--------|----------|------------|
-| Servico DOWN | Health check falha > 2 min | P1 |
+| Serviço DOWN | Health check falha > 2 min | P1 |
 | Error Rate Alto | > 5% erros 5xx | P1 |
-| Latencia Degradada | P95 > 5s por 5 min | P2 |
+| Latência Degradada | P95 > 5s por 5 min | P2 |
 | CPU Saturado | > 90% por 10 min | P2 |
 | Memory Alto | > 85% por 10 min | P2 |
 | Auth Failures Spike | > 10x baseline | P2 |
@@ -378,11 +378,11 @@ stop
 
 ### Dashboards Operacionais
 
-| Dashboard | Audiencia | Conteudo |
+| Dashboard | Audiência | Conteúdo |
 |-----------|-----------|----------|
 | **Health Overview** | NOC / On-call | Status geral, alertas ativos, SLO status |
-| **Performance** | Engenharia | Latencia, throughput, errors por endpoint |
-| **Business** | Produto | Logins, transacoes, conversion rates |
+| **Performance** | Engenharia | Latência, throughput, errors por endpoint |
+| **Business** | Produto | Logins, transações, conversion rates |
 | **Security** | SecOps | Auth failures, suspicious activity |
 | **Infrastructure** | DevOps | CPU, memory, pods, network |
 
@@ -412,49 +412,49 @@ stop
 
 ---
 
-## Questoes Pendentes de Confirmacao
+## Questões Pendentes de Confirmação
 
-| ID | Questao | Responsavel | Prioridade |
+| ID | Questão | Responsável | Prioridade |
 |----|---------|-------------|------------|
-| Q-11-001 | Stack ELK existente ou nova instancia? | Infra | Alta |
-| Q-11-002 | Complemento Prometheus/Grafana? | Arquitetura | Media |
-| Q-11-003 | Ferramenta de alerting (ElastAlert vs alternativa) | Infra | Media |
-| Q-11-004 | Integracao com ferramentas de on-call existentes | Operacoes | Media |
-| Q-11-005 | Retencao de logs de auditoria (confirmar 7 anos) | Compliance | Alta |
+| Q-11-001 | Stack ELK existente ou nova instância? | Infra | Alta |
+| Q-11-002 | Complemento Prometheus/Grafana? | Arquitetura | Média |
+| Q-11-003 | Ferramenta de alerting (ElastAlert vs alternativa) | Infra | Média |
+| Q-11-004 | Integração com ferramentas de on-call existentes | Operações | Média |
+| Q-11-005 | Retenção de logs de auditoria (confirmar 7 anos) | Compliance | Alta |
 
 ---
 
-## Decisoes
+## Decisões
 
 ### Stack de Observabilidade
-- **Decisao:** ELK Stack como base (DEC-008 aceite)
-- **Justificacao:** Reutilizacao de infraestrutura existente, centralizacao de logs
+- **Decisão:** ELK Stack como base (DEC-008 aceite)
+- **Justificação:** Reutilização de infraestrutura existente, centralização de logs
 - **Alternativas consideradas:** Prometheus/Grafana (complemento), Datadog (custo), Jaeger+Loki
 
-### Tracing Distribuido
-- **Decisao:** Elastic APM com correlation_id em headers
-- **Justificacao:** Integracao nativa com ELK, suporte a .NET e JS
-- **Alternativas consideradas:** Jaeger (complexidade adicional), OpenTelemetry (mais generico)
+### Tracing Distribuído
+- **Decisão:** Elastic APM com correlation_id em headers
+- **Justificação:** Integração nativa com ELK, suporte a .NET e JS
+- **Alternativas consideradas:** Jaeger (complexidade adicional), OpenTelemetry (mais genérico)
 
 ### Alerting
-- **Decisao:** ElastAlert integrado com ELK
-- **Justificacao:** Alertas baseados em logs e metricas, integracao nativa
+- **Decisão:** ElastAlert integrado com ELK
+- **Justificação:** Alertas baseados em logs e métricas, integração nativa
 - **Alternativas consideradas:** Prometheus Alertmanager, PagerDuty rules
 
 ### SLOs
-- **Decisao:** Disponibilidade 99.9%, Latencia P95 < 3s, Error Rate < 0.1%
-- **Justificacao:** Alinhamento com DEF-02-requisitos-nao-funcionais
-- **Alternativas consideradas:** SLOs mais agressivos (custo vs beneficio)
+- **Decisão:** Disponibilidade 99.9%, Latência P95 < 3s, Error Rate < 0.1%
+- **Justificação:** Alinhamento com DEF-02-requisitos-nao-funcionais
+- **Alternativas consideradas:** SLOs mais agressivos (custo vs benefício)
 
 ---
 
-## Decisoes Relacionadas
+## Decisões Relacionadas
 
 - [DEC-008-stack-observabilidade-elk.md](../decisions/DEC-008-stack-observabilidade-elk.md) - Stack de observabilidade
 
-## Referencias
+## Referências
 
-- [DEF-02-requisitos-nao-funcionais.md](DEF-02-requisitos-nao-funcionais.md) - SLAs de negocio
+- [DEF-02-requisitos-nao-funcionais.md](DEF-02-requisitos-nao-funcionais.md) - SLAs de negócio
 - [DEF-10-arquitetura-operacional.md](DEF-10-arquitetura-operacional.md) - Infraestrutura
 - Google SRE Book - SLIs/SLOs/SLAs
 - Elastic APM Documentation

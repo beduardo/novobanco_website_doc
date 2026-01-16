@@ -20,11 +20,11 @@ status: completed
 
 # DEF-12: Desempenho & Fiabilidade
 
-> **Secao relacionada:** [SEC-12 - Desempenho & Fiabilidade](../sections/SEC-12-desempenho-fiabilidade.md)
+> **Secção relacionada:** [SEC-12 - Desempenho & Fiabilidade](../sections/SEC-12-desempenho-fiabilidade.md)
 
 ## Contexto
 
-Definir os requisitos e estrategias de desempenho e fiabilidade do HomeBanking Web, incluindo objetivos de carga, estrategias de caching, otimizacoes frontend e backend, auto-scaling, capacity planning e testes de carga.
+Definir os requisitos e estratégias de desempenho e fiabilidade do HomeBanking Web, incluindo objetivos de carga, estratégias de caching, otimizações frontend e backend, auto-scaling, capacity planning e testes de carga.
 
 ---
 
@@ -32,17 +32,17 @@ Definir os requisitos e estrategias de desempenho e fiabilidade do HomeBanking W
 
 ### Requisitos Base (DEF-02)
 
-| Metrica | Target | Fonte |
+| Métrica | Target | Fonte |
 |---------|--------|-------|
 | Utilizadores concorrentes | 400 | DEF-02 |
 | Throughput | 10 TPS | DEF-02 |
-| Tempo resposta operacoes | < 3s | DEF-02 |
-| Carregamento pagina inicial | < 10s | DEF-02 |
+| Tempo resposta operações | < 3s | DEF-02 |
+| Carregamento página inicial | < 10s | DEF-02 |
 | Disponibilidade | 99.9% | DEF-02 |
 
 ### Core Web Vitals Targets
 
-| Metrica | Target | Classificacao |
+| Métrica | Target | Classificação |
 |---------|--------|---------------|
 | **LCP** (Largest Contentful Paint) | < 2.5s | Good |
 | **FID** (First Input Delay) | < 100ms | Good |
@@ -78,8 +78,8 @@ rectangle "Carga Stress" {
 
 note bottom of "Carga Pico"
 Picos esperados:
-- Fim de mes
-- Periodos fiscais
+- Fim de mês
+- Períodos fiscais
 - Campanhas
 end note
 
@@ -88,7 +88,7 @@ end note
 
 ---
 
-## Estrategia de Caching
+## Estratégia de Caching
 
 ### Camadas de Cache
 
@@ -106,7 +106,7 @@ database "Redis" as redis
 participant "Backend" as api
 
 User -> browser : Request
-browser -> browser : Local Storage\n(sessao, prefs)
+browser -> browser : Local Storage\n(sessão, prefs)
 browser -> cdn : Static assets\n(js, css, images)
 cdn --> browser : Cache hit
 
@@ -127,58 +127,58 @@ end
 
 ### Tipos de Cache por Componente
 
-| Componente | Tipo | TTL | Estrategia |
+| Componente | Tipo | TTL | Estratégia |
 |------------|------|-----|------------|
-| Browser | Local Storage | Sessao | Dados de sessao, preferencias |
-| Browser | Service Worker | 1h | Assets estaticos (PWA) |
+| Browser | Local Storage | Sessão | Dados de sessão, preferências |
+| Browser | Service Worker | 1h | Assets estáticos (PWA) |
 | CDN | Edge Cache | 24h | JS, CSS, imagens, fontes |
-| BFF | Redis | Variavel | Dados de API (ver tabela abaixo) |
+| BFF | Redis | Variável | Dados de API (ver tabela abaixo) |
 
 ### TTL por Tipo de Dado (Redis)
 
-| Dado | TTL | Justificacao |
+| Dado | TTL | Justificação |
 |------|-----|--------------|
-| Sessao do utilizador | 10 min | Inatividade timeout |
-| Tokens OAuth | Variavel | Alinhado com expiracao |
-| Configuracoes do sistema | 5 min | Baixa frequencia de mudanca |
-| Dados de referencia (paises, bancos) | 1 hora | Dados estaticos |
-| Cotacoes/Taxas | 1 min | Dados volateis |
+| Sessão do utilizador | 10 min | Inatividade timeout |
+| Tokens OAuth | Variável | Alinhado com expiração |
+| Configurações do sistema | 5 min | Baixa frequência de mudança |
+| Dados de referência (países, bancos) | 1 hora | Dados estáticos |
+| Cotações/Taxas | 1 min | Dados voláteis |
 
 ### Cache Invalidation
 
-| Evento | Acao |
+| Evento | Ação |
 |--------|------|
-| Logout | Invalidar sessao no Redis |
-| Transacao executada | Invalidar cache de saldos (se aplicavel) |
+| Logout | Invalidar sessão no Redis |
+| Transação executada | Invalidar cache de saldos (se aplicável) |
 | Deploy | Versionar assets (cache busting) |
-| Configuracao alterada | Invalidar cache de config |
+| Configuração alterada | Invalidar cache de config |
 
 ---
 
-## Otimizacao Frontend
+## Otimização Frontend
 
 ### Bundle Optimization
 
-| Tecnica | Implementacao | Impacto |
+| Técnica | Implementação | Impacto |
 |---------|---------------|---------|
 | Code Splitting | React.lazy() + Suspense | Reduz initial bundle |
-| Tree Shaking | Webpack/Vite config | Remove codigo nao utilizado |
+| Tree Shaking | Webpack/Vite config | Remove código não utilizado |
 | Lazy Loading | Componentes e rotas | Carrega sob demanda |
 | Minification | Terser (JS), CSSNano | Reduz tamanho |
-| Compression | gzip/Brotli | 70-90% reducao |
+| Compression | gzip/Brotli | 70-90% redução |
 
 ### Budget de Bundle
 
-| Metrica | Limite | Acao se exceder |
+| Métrica | Limite | Ação se exceder |
 |---------|--------|-----------------|
 | Initial JS | < 200KB (gzipped) | Code split |
 | Initial CSS | < 50KB (gzipped) | Purge CSS |
 | Largest chunk | < 100KB | Split ou lazy load |
 | Total assets | < 1MB | Review dependencies |
 
-### Otimizacao de Assets
+### Otimização de Assets
 
-| Asset | Estrategia |
+| Asset | Estratégia |
 |-------|------------|
 | Imagens | WebP format, lazy loading, srcset |
 | Fontes | WOFF2, font-display: swap, subset |
@@ -188,9 +188,9 @@ end
 ### Service Worker (PWA)
 
 ```javascript
-// Estrategia de cache
+// Estratégia de cache
 const CACHE_STRATEGIES = {
-  // Assets estaticos - Cache First
+  // Assets estáticos - Cache First
   static: 'CacheFirst',
 
   // API calls - Network First
@@ -203,20 +203,20 @@ const CACHE_STRATEGIES = {
 
 ---
 
-## Otimizacao Backend (BFF)
+## Otimização Backend (BFF)
 
 ### Connection Pooling
 
-| Conexao | Pool Size | Timeout |
+| Conexão | Pool Size | Timeout |
 |---------|-----------|---------|
 | Redis | 10-20 | 5s |
 | HTTP Client (Backend) | 100 | 30s |
 
-### Compressao
+### Compressão
 
-| Tipo | Configuracao |
+| Tipo | Configuração |
 |------|--------------|
-| Response | gzip (nivel 6) |
+| Response | gzip (nível 6) |
 | Threshold | > 1KB |
 | Content-Types | application/json, text/html |
 
@@ -254,7 +254,7 @@ note right: Task.WhenAll() em .NET
 ### Horizontal Pod Autoscaler (HPA)
 
 ```yaml
-# Configuracao HPA
+# Configuração HPA
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -294,7 +294,7 @@ spec:
         periodSeconds: 120
 ```
 
-### Configuracao por Componente
+### Configuração por Componente
 
 | Componente | Min Replicas | Max Replicas | CPU Target | Memory Target |
 |------------|--------------|--------------|------------|---------------|
@@ -303,12 +303,12 @@ spec:
 
 ### Scale-up vs Scale-down
 
-| Evento | Tempo | Acao |
+| Evento | Tempo | Ação |
 |--------|-------|------|
-| Scale-up | 60s estabilizacao | Duplicar replicas |
-| Scale-down | 300s estabilizacao | Reduzir 50% |
+| Scale-up | 60s estabilização | Duplicar réplicas |
+| Scale-down | 300s estabilização | Reduzir 50% |
 
-> **Nota:** Scale-down mais conservador para evitar oscilacoes.
+> **Nota:** Scale-down mais conservador para evitar oscilações.
 
 ---
 
@@ -337,7 +337,7 @@ Total estimado: 5 vCPU, 2.5Gi RAM
 
 ---
 
-## Resiliencia
+## Resiliência
 
 ### Pod Disruption Budget
 
@@ -353,16 +353,16 @@ spec:
       app: bff-web
 ```
 
-### Padroes de Resiliencia
+### Padrões de Resiliência
 
-| Padrao | Implementacao | Referencia |
+| Padrão | Implementação | Referência |
 |--------|---------------|------------|
 | Circuit Breaker | Polly (.NET) | DEF-05-padroes-resiliencia |
 | Retry with Backoff | Polly | DEF-05-padroes-resiliencia |
 | Timeout | HttpClient timeout | DEF-05-padroes-resiliencia |
-| Bulkhead | Limite de conexoes | DEF-05-padroes-resiliencia |
+| Bulkhead | Limite de conexões | DEF-05-padroes-resiliencia |
 
-### Configuracao Circuit Breaker
+### Configuração Circuit Breaker
 
 ```csharp
 // Polly Circuit Breaker
@@ -381,7 +381,7 @@ services.AddHttpClient("BackendAPI")
 
 ## Testes de Carga
 
-### Estrategia de Load Testing
+### Estratégia de Load Testing
 
 ```plantuml
 @startuml
@@ -402,7 +402,7 @@ note right: 600 users, 15 min
 
 if (SLOs atingidos?) then (sim)
     :Release aprovada;
-else (nao)
+else (não)
     :Investigar bottlenecks;
     :Otimizar;
     :Re-testar;
@@ -413,18 +413,18 @@ stop
 @enduml
 ```
 
-### Cenarios de Teste
+### Cenários de Teste
 
-| Cenario | Users | Duracao | Objetivo |
+| Cenário | Users | Duração | Objetivo |
 |---------|-------|---------|----------|
 | Smoke | 10 | 5 min | Validar ambiente |
 | Load | 400 | 30 min | Validar capacidade nominal |
 | Stress | 600 | 15 min | Identificar limites |
 | Soak | 200 | 4 horas | Identificar memory leaks |
 
-### Metricas a Capturar
+### Métricas a Capturar
 
-| Metrica | Target | Fail Criteria |
+| Métrica | Target | Fail Criteria |
 |---------|--------|---------------|
 | Response Time P95 | < 3s | > 5s |
 | Error Rate | < 0.1% | > 1% |
@@ -434,60 +434,60 @@ stop
 
 ### Ferramenta Recomendada
 
-| Ferramenta | Uso | Justificacao |
+| Ferramenta | Uso | Justificação |
 |------------|-----|--------------|
-| **k6** | Load testing | Scripting em JS, integracao CI/CD |
+| **k6** | Load testing | Scripting em JS, integração CI/CD |
 | Artillery | Alternativa | Simples, YAML-based |
 | JMeter | Legado | Mais complexo, UI-based |
 
 ---
 
-## Questoes Pendentes de Confirmacao
+## Questões Pendentes de Confirmação
 
-| ID | Questao | Responsavel | Prioridade |
+| ID | Questão | Responsável | Prioridade |
 |----|---------|-------------|------------|
-| Q-12-001 | Picos de utilizacao especificos (datas) | Produto | Media |
+| Q-12-001 | Picos de utilização específicos (datas) | Produto | Média |
 | Q-12-002 | Limites de recursos definitivos | DevOps | Alta |
-| Q-12-003 | Ferramenta de load testing aprovada | QA | Media |
-| Q-12-004 | Budget de bundle size | Frontend Lead | Media |
+| Q-12-003 | Ferramenta de load testing aprovada | QA | Média |
+| Q-12-004 | Budget de bundle size | Frontend Lead | Média |
 
 ---
 
-## Decisoes
+## Decisões
 
 ### Targets de Performance
-- **Decisao:** Core Web Vitals como baseline (LCP < 2.5s, FID < 100ms, CLS < 0.1)
-- **Justificacao:** Standard da industria, impacto em SEO e UX
-- **Alternativas consideradas:** Metricas customizadas apenas
+- **Decisão:** Core Web Vitals como baseline (LCP < 2.5s, FID < 100ms, CLS < 0.1)
+- **Justificação:** Standard da indústria, impacto em SEO e UX
+- **Alternativas consideradas:** Métricas customizadas apenas
 
-### Estrategia de Cache
-- **Decisao:** Cache multi-camada (Browser + CDN + Redis)
-- **Justificacao:** Maximizar performance em todos os niveis
+### Estratégia de Cache
+- **Decisão:** Cache multi-camada (Browser + CDN + Redis)
+- **Justificação:** Maximizar performance em todos os níveis
 - **Alternativas consideradas:** Cache apenas no BFF
 
 ### Auto-scaling
-- **Decisao:** HPA com CPU 70% e Memory 80%, min 2 replicas
-- **Justificacao:** Balanco entre responsividade e custo
+- **Decisão:** HPA com CPU 70% e Memory 80%, min 2 réplicas
+- **Justificação:** Balanço entre responsividade e custo
 - **Alternativas consideradas:** Scaling manual, KEDA
 
 ### Testes de Carga
-- **Decisao:** k6 para load testing, executar antes de cada release major
-- **Justificacao:** Integracao CI/CD, scripting flexivel
+- **Decisão:** k6 para load testing, executar antes de cada release major
+- **Justificação:** Integração CI/CD, scripting flexível
 - **Alternativas consideradas:** JMeter, Artillery
 
 ---
 
-## Decisoes Relacionadas
+## Decisões Relacionadas
 
 - [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Containers e auto-scaling
-- [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - BFF (cache, resiliencia)
+- [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - BFF (cache, resiliência)
 - [DEC-009-stack-tecnologica-frontend.md](../decisions/DEC-009-stack-tecnologica-frontend.md) - Stack frontend
 - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack backend
 
-## Referencias
+## Referências
 
 - [DEF-02-requisitos-nao-funcionais.md](DEF-02-requisitos-nao-funcionais.md) - NFRs de performance
-- [DEF-05-padroes-resiliencia.md](DEF-05-padroes-resiliencia.md) - Padroes de resiliencia
+- [DEF-05-padroes-resiliencia.md](DEF-05-padroes-resiliencia.md) - Padrões de resiliência
 - [DEF-06-arquitetura-dados.md](DEF-06-arquitetura-dados.md) - Cache Redis
 - [DEF-10-arquitetura-operacional.md](DEF-10-arquitetura-operacional.md) - Infraestrutura
 - Google Core Web Vitals

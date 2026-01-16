@@ -1,6 +1,6 @@
 ---
 aliases:
-  - Visao Geral da Solucao
+  - Visão Geral da Solução
 tags:
   - nextreality-novobanco-website-sections
   - sections
@@ -15,34 +15,34 @@ reviewed: true
 status: in-progress
 ---
 
-# 3. Visao Geral da Solucao
+# 3. Visão Geral da Solução
 
-> **Definicoes requeridas:**
+> **Definições requeridas:**
 > - [DEF-03-principios-arquitetura.md](../definitions/DEF-03-principios-arquitetura.md) - Status: completed
 > - [DEF-03-casos-uso-principais.md](../definitions/DEF-03-casos-uso-principais.md) - Status: completed
 >
-> **Decisoes relacionadas:**
+> **Decisões relacionadas:**
 > - [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Status: accepted
 > - [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - Status: accepted
 > - [DEC-008-stack-observabilidade-elk.md](../decisions/DEC-008-stack-observabilidade-elk.md) - Status: accepted
 
-## Proposito
+## Propósito
 
-Apresentar os principios de arquitetura, diagrama conceptual e casos de uso principais da solucao HomeBanking Web.
+Apresentar os princípios de arquitetura, diagrama conceptual e casos de uso principais da solução HomeBanking Web.
 
-## Conteudo
+## Conteúdo
 
-### 3.1 Principios de Arquitetura
+### 3.1 Princípios de Arquitetura
 
-| Principio | Decisao | Descricao |
+| Princípio | Decisão | Descrição |
 |-----------|---------|-----------|
 | **Cloud Strategy** | Containers OpenShift | Arquitetura orientada a containers, compliant com OpenShift |
-| **API Strategy** | BFF (Backend for Frontend) | Camada de agregacao especifica para o canal web, isolando sistemas legados |
-| **Build vs Buy** | Preferencia Build | Avaliacao caso a caso, construir quando solucoes de mercado forem caras ou inadequadas |
+| **API Strategy** | BFF (Backend for Frontend) | Camada de agregação específica para o canal web, isolando sistemas legados |
+| **Build vs Buy** | Preferência Build | Avaliação caso a caso, construir quando soluções de mercado forem caras ou inadequadas |
 | **Acoplamento Legados** | Via BFF apenas | Frontend isolado de complexidades dos sistemas legados |
-| **Observabilidade** | Stack ELK | Logs de aplicacao e metricas centralizados |
-| **Seguranca** | _A definir_ | Avaliar Zero Trust e Defense in Depth |
-| **Resiliencia** | _A definir_ | Necessita aprofundamento |
+| **Observabilidade** | Stack ELK | Logs de aplicação e métricas centralizados |
+| **Segurança** | _A definir_ | Avaliar Zero Trust e Defense in Depth |
+| **Resiliência** | _A definir_ | Necessita aprofundamento |
 | **Portabilidade** | _A definir_ | Necessita aprofundamento |
 
 ### 3.2 Diagrama Conceptual
@@ -72,12 +72,12 @@ package "Camada BFF" {
     [BFF Web\n(Backend for Frontend)] as BFF
     note right of BFF
       Container OpenShift
-      Agregacao/Transformacao
+      Agregação/Transformação
       Isolamento de Legados
     end note
 }
 
-package "Servicos Existentes" {
+package "Serviços Existentes" {
     [API Gateway] as APIGW
     [Backend Services] as BE
 }
@@ -89,8 +89,8 @@ package "Infraestrutura Existente" {
 
 package "Terceiros" {
     [KYC/AML] as KYC
-    [Cartoes] as CARDS
-    [Notificacoes] as NOTIF
+    [Cartões] as CARDS
+    [Notificações] as NOTIF
 }
 
 package "Observabilidade" {
@@ -99,7 +99,7 @@ package "Observabilidade" {
 
 USER --> WEB : HTTPS
 WEB --> BFF : HTTPS/REST
-BFF --> APIGW : Integracao
+BFF --> APIGW : Integração
 APIGW --> BE
 BE --> CORE
 BE --> DB
@@ -107,8 +107,8 @@ BE --> KYC
 BE --> CARDS
 BE --> NOTIF
 
-WEB ..> ELK : Logs/Metricas
-BFF ..> ELK : Logs/Metricas
+WEB ..> ELK : Logs/Métricas
+BFF ..> ELK : Logs/Métricas
 
 @enduml
 ```
@@ -117,20 +117,20 @@ BFF ..> ELK : Logs/Metricas
 
 | Componente | Tipo | Responsabilidade | Tecnologia |
 |------------|------|------------------|------------|
-| **HomeBanking Web** | Frontend SPA | Interface do utilizador, experiencia web responsiva | _A definir (SEC-04)_ |
-| **BFF Web** | Backend | Agregacao, transformacao, orquestracao para canal web | _A definir (SEC-05)_ |
-| **API Gateway** | Infraestrutura | Roteamento, rate limiting, autenticacao | Existente |
-| **Backend Services** | Servicos | Logica de negocio, integracoes | Existente |
-| **ELK Stack** | Observabilidade | Logs centralizados, metricas, dashboards | Existente |
+| **HomeBanking Web** | Frontend SPA | Interface do utilizador, experiência web responsiva | _A definir (SEC-04)_ |
+| **BFF Web** | Backend | Agregação, transformação, orquestração para canal web | _A definir (SEC-05)_ |
+| **API Gateway** | Infraestrutura | Roteamento, rate limiting, autenticação | Existente |
+| **Backend Services** | Serviços | Lógica de negócio, integrações | Existente |
+| **ELK Stack** | Observabilidade | Logs centralizados, métricas, dashboards | Existente |
 
 ### 3.4 Casos de Uso Principais
 
 #### 3.4.1 Atores
 
-| Ator                | Descricao                        | Prioridade |
+| Ator                | Descrição                        | Prioridade |
 | ------------------- | -------------------------------- | ---------- |
 | Cliente Individual  | Cliente particular do Novo Banco | Principal  |
-| Cliente Empresarial | _Futuro_                         | Secundario |
+| Cliente Empresarial | _Futuro_                         | Secundário |
 
 #### 3.4.2 Casos de Uso por Categoria
 
@@ -143,25 +143,25 @@ left to right direction
 actor "Cliente Individual" as USER
 
 rectangle "HomeBanking Web" {
-    package "Autenticacao" {
+    package "Autenticação" {
         usecase "Login" as UC_LOGIN
         usecase "Registo" as UC_REG
-        usecase "Recuperacao Acessos" as UC_REC
+        usecase "Recuperação Acessos" as UC_REC
     }
 
     package "Consultas" {
         usecase "Dashboard" as UC_DASH
         usecase "Saldos e Movimentos" as UC_SALDOS
-        usecase "Patrimonio" as UC_PAT
+        usecase "Património" as UC_PAT
     }
 
-    package "Operacoes" {
-        usecase "Transferencias" as UC_TRANSF
+    package "Operações" {
+        usecase "Transferências" as UC_TRANSF
         usecase "Pagamentos" as UC_PAG
     }
 
     package "Investimentos" {
-        usecase "Acoes/ETF/Fundos" as UC_INV
+        usecase "Ações/ETF/Fundos" as UC_INV
         usecase "Robot Advisor" as UC_ROBOT
     }
 }
@@ -178,31 +178,31 @@ USER --> UC_INV
 USER --> UC_ROBOT
 
 note right of UC_LOGIN
-  **Critico**
-  SCA obrigatorio
+  **Crítico**
+  SCA obrigatório
 end note
 
 note right of UC_TRANSF
-  **Critico**
-  SCA obrigatorio
+  **Crítico**
+  SCA obrigatório
 end note
 
 @enduml
 ```
 
-#### 3.4.3 Casos de Uso Criticos
+#### 3.4.3 Casos de Uso Críticos
 
 | Caso de Uso | Criticidade | Requisitos Especiais |
 |-------------|-------------|----------------------|
-| **Login** | Alta | SCA obrigatorio, ponto de entrada |
-| **Transferencias** | Alta | SCA obrigatorio, operacao financeira core |
+| **Login** | Alta | SCA obrigatório, ponto de entrada |
+| **Transferências** | Alta | SCA obrigatório, operação financeira core |
 
-#### 3.4.4 Requisitos de Autenticacao
+#### 3.4.4 Requisitos de Autenticação
 
-- **SCA (Strong Customer Authentication):** Obrigatorio para todo o acesso a aplicacao
+- **SCA (Strong Customer Authentication):** Obrigatório para todo o acesso à aplicação
 - **Conformidade:** PSD2
 
-### 3.5 Integracao com Infraestrutura Existente
+### 3.5 Integração com Infraestrutura Existente
 
 ```plantuml
 @startuml
@@ -217,7 +217,7 @@ package "Existente (App Mobile)" #LightGreen {
     [API Gateway] as APIGW
     [Backend Services] as BE
     [Core Banking] as CORE
-    [Integracoes Terceiros] as THIRD
+    [Integrações Terceiros] as THIRD
     database "Base de Dados" as DB
 }
 
@@ -241,30 +241,30 @@ end note
 @enduml
 ```
 
-| Componente | Origem | Acao |
+| Componente | Origem | Ação |
 |------------|--------|------|
 | Frontend Web | Novo | Desenvolver |
 | BFF Web | Novo | Desenvolver |
 | API Gateway | Existente | Reutilizar |
 | Backend Services | Existente | Reutilizar |
 | Core Banking | Existente | Reutilizar |
-| Integracoes Terceiros | Existente | Reutilizar |
+| Integrações Terceiros | Existente | Reutilizar |
 | Base de Dados | Existente | Reutilizar |
 
-## Entregaveis
+## Entregáveis
 
-- [x] Lista de principios arquiteturais documentados
-- [x] Diagrama conceptual de alto nivel (C4 Level 1)
-- [x] Descricao dos componentes principais
+- [x] Lista de princípios arquiteturais documentados
+- [x] Diagrama conceptual de alto nível (C4 Level 1)
+- [x] Descrição dos componentes principais
 - [x] Diagrama de casos de uso
-- [x] Mapeamento de integracao com sistemas existentes
+- [x] Mapeamento de integração com sistemas existentes
 
-## Definicoes Utilizadas
+## Definições Utilizadas
 
 - [x] [DEF-03-principios-arquitetura.md](../definitions/DEF-03-principios-arquitetura.md) - Status: completed
 - [x] [DEF-03-casos-uso-principais.md](../definitions/DEF-03-casos-uso-principais.md) - Status: completed
 
-## Decisoes Referenciadas
+## Decisões Referenciadas
 
 - [x] [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Status: accepted
 - [x] [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - Status: accepted
@@ -272,10 +272,10 @@ end note
 
 ## Itens Pendentes
 
-| Item | Documento | Responsavel |
+| Item | Documento | Responsável |
 |------|-----------|-------------|
-| Principios de Seguranca (Zero Trust, Defense in Depth) | DEF-03-principios-arquitetura | Area de Seguranca |
-| Estrategia de Resiliencia | DEF-03-principios-arquitetura | Arquitetura |
+| Princípios de Segurança (Zero Trust, Defense in Depth) | DEF-03-principios-arquitetura | Área de Segurança |
+| Estratégia de Resiliência | DEF-03-principios-arquitetura | Arquitetura |
 | Requisitos de Portabilidade | DEF-03-principios-arquitetura | Arquitetura |
-| Casos de Uso com Terceiros | DEF-03-casos-uso-principais | Integracao |
+| Casos de Uso com Terceiros | DEF-03-casos-uso-principais | Integração |
 | Requisitos Offline | DEF-03-casos-uso-principais | Arquitetura |

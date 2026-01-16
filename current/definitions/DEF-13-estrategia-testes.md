@@ -1,7 +1,7 @@
 ---
 id: DEF-13-estrategia-testes
 aliases:
-  - Estrategia de Testes
+  - Estratégia de Testes
 tags:
   - nextreality-novobanco-website-definitions
   - definitions
@@ -17,23 +17,23 @@ reviewed: true
 status: completed
 ---
 
-# DEF-13: Estrategia de Testes
+# DEF-13: Estratégia de Testes
 
-> **Secao relacionada:** [SEC-13 - Estrategia de Testes](../sections/SEC-13-estrategia-testes.md)
+> **Secção relacionada:** [SEC-13 - Estratégia de Testes](../sections/SEC-13-estrategia-testes.md)
 
 ## Contexto
 
-Definir a estrategia de testes do HomeBanking Web, incluindo testes unitarios, integracao, contrato, E2E, performance, seguranca, acessibilidade, test data management e matriz de responsabilidades.
+Definir a estratégia de testes do HomeBanking Web, incluindo testes unitários, integração, contrato, E2E, performance, segurança, acessibilidade, test data management e matriz de responsabilidades.
 
 ---
 
-## Piramide de Testes
+## Pirâmide de Testes
 
 ```plantuml
 @startuml
 skinparam backgroundColor white
 
-title Piramide de Testes - HomeBanking Web
+title Pirâmide de Testes - HomeBanking Web
 
 rectangle "E2E Tests" as e2e #lightcoral {
     card "10%"
@@ -59,13 +59,13 @@ int -[hidden]-> e2e
 note right of e2e
 Mais lentos
 Mais custos
-Mais frageis
+Mais frágeis
 end note
 
 note right of unit
-Mais rapidos
+Mais rápidos
 Mais baratos
-Mais estaveis
+Mais estáveis
 end note
 
 @enduml
@@ -73,11 +73,11 @@ end note
 
 ---
 
-## Testes Unitarios
+## Testes Unitários
 
 ### Frontend (React + TypeScript)
 
-| Aspecto | Especificacao |
+| Aspecto | Especificação |
 |---------|---------------|
 | Framework | Vitest |
 | Assertions | Vitest expect |
@@ -85,17 +85,17 @@ end note
 | Mocking | Vitest mocks |
 | Coverage | Istanbul |
 
-### Cobertura Minima
+### Cobertura Mínima
 
-| Tipo de Codigo | Cobertura Target |
+| Tipo de Código | Cobertura Target |
 |----------------|------------------|
-| Componentes criticos | >= 90% |
+| Componentes críticos | >= 90% |
 | Hooks customizados | >= 90% |
 | Utils/helpers | >= 80% |
-| Servicos | >= 80% |
-| Codigo geral | >= 80% |
+| Serviços | >= 80% |
+| Código geral | >= 80% |
 
-### Exemplo de Teste Unitario (Frontend)
+### Exemplo de Teste Unitário (Frontend)
 
 ```typescript
 // LoginForm.test.tsx
@@ -133,14 +133,14 @@ describe('LoginForm', () => {
 
 ### BFF (.NET 8)
 
-| Aspecto | Especificacao |
+| Aspecto | Especificação |
 |---------|---------------|
 | Framework | xUnit |
 | Assertions | FluentAssertions |
 | Mocking | Moq / NSubstitute |
 | Coverage | Coverlet |
 
-### Exemplo de Teste Unitario (BFF)
+### Exemplo de Teste Unitário (BFF)
 
 ```csharp
 // TransferServiceTests.cs
@@ -185,15 +185,15 @@ public class TransferServiceTests
 
 ---
 
-## Testes de Integracao
+## Testes de Integração
 
-### Estrategia
+### Estratégia
 
 ```plantuml
 @startuml
 skinparam backgroundColor white
 
-title Testes de Integracao
+title Testes de Integração
 
 rectangle "BFF" as bff {
     rectangle "API Controllers" as api
@@ -223,7 +223,7 @@ svc -> redis : Real Redis (container)
 | TestContainers | Redis container para testes |
 | WebApplicationFactory | In-memory BFF para testes |
 
-### Exemplo de Teste de Integracao
+### Exemplo de Teste de Integração
 
 ```csharp
 // AccountsControllerIntegrationTests.cs
@@ -304,11 +304,11 @@ provider --> broker : Verification results
 
 ### Quando Usar
 
-| Cenario | Usar Pact? |
+| Cenário | Usar Pact? |
 |---------|------------|
 | BFF <-> Backend API | Sim (recomendado) |
 | Frontend <-> BFF | Opcional (E2E cobre) |
-| Servicos internos | Sim |
+| Serviços internos | Sim |
 
 ---
 
@@ -316,24 +316,24 @@ provider --> broker : Verification results
 
 ### Framework: Playwright
 
-| Aspecto | Especificacao |
+| Aspecto | Especificação |
 |---------|---------------|
 | Framework | Playwright |
 | Browsers | Chromium, Firefox, WebKit |
 | Execution | CI/CD (headless) |
 | Reports | HTML + Screenshots |
 
-### Cenarios Criticos (Cobertura Minima)
+### Cenários Críticos (Cobertura Mínima)
 
 | Fluxo | Prioridade | Criticidade |
 |-------|------------|-------------|
-| Login via QR Code | Alta | Critico |
-| Login tradicional (fallback) | Alta | Critico |
-| Consulta de saldos | Alta | Critico |
-| Transferencia nacional | Alta | Critico |
-| Pagamento de servicos | Alta | Critico |
-| Logout | Media | Alto |
-| Alteracao de dados | Media | Alto |
+| Login via QR Code | Alta | Crítico |
+| Login tradicional (fallback) | Alta | Crítico |
+| Consulta de saldos | Alta | Crítico |
+| Transferência nacional | Alta | Crítico |
+| Pagamento de serviços | Alta | Crítico |
+| Logout | Média | Alto |
+| Alteração de dados | Média | Alto |
 
 ### Exemplo de Teste E2E
 
@@ -348,10 +348,10 @@ test.describe('Login Flow', () => {
     // Simular scan de QR Code (ambiente de teste)
     await page.click('[data-testid="qr-login-button"]');
 
-    // Aguardar redirect apos autenticacao simulada
+    // Aguardar redirect após autenticação simulada
     await page.waitForURL('/dashboard');
 
-    // Verificar elementos da pagina inicial
+    // Verificar elementos da página inicial
     await expect(page.locator('[data-testid="welcome-message"]')).toBeVisible();
     await expect(page.locator('[data-testid="account-summary"]')).toBeVisible();
   });
@@ -359,7 +359,7 @@ test.describe('Login Flow', () => {
   test('should display error for invalid session', async ({ page }) => {
     await page.goto('/login');
 
-    // Forcar erro de sessao
+    // Forçar erro de sessão
     await page.evaluate(() => localStorage.clear());
     await page.goto('/dashboard');
 
@@ -370,7 +370,7 @@ test.describe('Login Flow', () => {
 });
 ```
 
-### Configuracao CI/CD
+### Configuração CI/CD
 
 ```yaml
 # azure-pipelines.yml (E2E stage)
@@ -402,7 +402,7 @@ test.describe('Login Flow', () => {
 
 ---
 
-## Testes de Seguranca
+## Testes de Segurança
 
 ### Tipos de Testes
 
@@ -410,7 +410,7 @@ test.describe('Login Flow', () => {
 |------|------------|--------|
 | SAST | SonarQube / Checkmarx | Cada commit |
 | DAST | OWASP ZAP | Pre-release |
-| Dependency Scan | Snyk / Dependabot | Diario |
+| Dependency Scan | Snyk / Dependabot | Diário |
 | Penetration Test | Manual (externo) | Antes go-live |
 
 ### OWASP Top 10 Coverage
@@ -434,7 +434,7 @@ test.describe('Login Flow', () => {
 
 ### Framework: axe-core
 
-| Aspecto | Especificacao |
+| Aspecto | Especificação |
 |---------|---------------|
 | Standard | WCAG 2.1 AA |
 | Tool | axe-core |
@@ -476,13 +476,13 @@ test.describe('Accessibility', () => {
 
 ## Test Data Management
 
-### Estrategia
+### Estratégia
 
 | Ambiente | Dados |
 |----------|-------|
-| dev | Dados sinteticos (fixtures) |
-| qa | Dados anonimizados de producao |
-| prod | N/A (nao testar em prod) |
+| dev | Dados sintéticos (fixtures) |
+| qa | Dados anonimizados de produção |
+| prod | N/A (não testar em prod) |
 
 ### Fixtures
 
@@ -530,7 +530,7 @@ export const testUsers = {
 | Coverage | >= 80% | Sim |
 | SAST | 0 Critical, 0 High | Sim |
 | E2E Critical | 100% pass | Sim |
-| E2E Non-critical | >= 95% pass | Nao |
+| E2E Non-critical | >= 95% pass | Não |
 | Accessibility | 0 Critical | Sim |
 
 ```plantuml
@@ -551,19 +551,19 @@ if (Pass?) then (sim)
             :E2E Tests;
             if (Critical pass?) then (sim)
                 :Deploy to DEV;
-            else (nao)
+            else (não)
                 :BLOCK;
                 stop
             endif
-        else (nao)
+        else (não)
             :BLOCK;
             stop
         endif
-    else (nao)
+    else (não)
         :BLOCK;
         stop
     endif
-else (nao)
+else (não)
     :BLOCK;
     stop
 endif
@@ -575,50 +575,50 @@ stop
 
 ---
 
-## Questoes Pendentes de Confirmacao
+## Questões Pendentes de Confirmação
 
-| ID | Questao | Responsavel | Prioridade |
+| ID | Questão | Responsável | Prioridade |
 |----|---------|-------------|------------|
-| Q-13-001 | Cobertura minima aprovada (80%) | Tech Lead | Alta |
-| Q-13-002 | Ferramenta de contract testing (Pact) | Arquitetura | Media |
-| Q-13-003 | Dados de teste anonimizados disponiveis | DBA / QA | Media |
+| Q-13-001 | Cobertura mínima aprovada (80%) | Tech Lead | Alta |
+| Q-13-002 | Ferramenta de contract testing (Pact) | Arquitetura | Média |
+| Q-13-003 | Dados de teste anonimizados disponíveis | DBA / QA | Média |
 | Q-13-004 | Fornecedor de pentest | SecOps | Alta |
 
 ---
 
-## Decisoes
+## Decisões
 
 ### Unit Testing Framework
-- **Decisao:** Vitest (Frontend), xUnit (BFF)
-- **Justificacao:** Alinhamento com stack definida (DEC-009, DEC-010)
+- **Decisão:** Vitest (Frontend), xUnit (BFF)
+- **Justificação:** Alinhamento com stack definida (DEC-009, DEC-010)
 - **Alternativas consideradas:** Jest (frontend), NUnit (backend)
 
 ### E2E Testing Framework
-- **Decisao:** Playwright
-- **Justificacao:** Multi-browser, moderno, boa integracao CI/CD
+- **Decisão:** Playwright
+- **Justificação:** Multi-browser, moderno, boa integração CI/CD
 - **Alternativas consideradas:** Cypress, Selenium
 
 ### Contract Testing
-- **Decisao:** Pact (se necessario para BFF<->Backend)
-- **Justificacao:** Consumer-driven, ampla adocao
+- **Decisão:** Pact (se necessário para BFF<->Backend)
+- **Justificação:** Consumer-driven, ampla adoção
 - **Alternativas consideradas:** Spring Cloud Contract
 
 ### Security Testing
-- **Decisao:** SAST no pipeline + DAST pre-release + Pentest antes go-live
-- **Justificacao:** Cobertura completa do SDLC
+- **Decisão:** SAST no pipeline + DAST pre-release + Pentest antes go-live
+- **Justificação:** Cobertura completa do SDLC
 - **Alternativas consideradas:** Apenas SAST
 
 ---
 
-## Decisoes Relacionadas
+## Decisões Relacionadas
 
 - [DEC-009-stack-tecnologica-frontend.md](../decisions/DEC-009-stack-tecnologica-frontend.md) - Stack frontend (framework de testes)
 - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack backend (framework de testes)
 
-## Referencias
+## Referências
 
 - [DEF-10-arquitetura-operacional.md](DEF-10-arquitetura-operacional.md) - CI/CD e Quality Gates
-- [DEF-08-seguranca-conformidade.md](DEF-08-seguranca-conformidade.md) - Requisitos de seguranca
+- [DEF-08-seguranca-conformidade.md](DEF-08-seguranca-conformidade.md) - Requisitos de segurança
 - [DEF-04-design-system.md](DEF-04-design-system.md) - WCAG requirements
 - Testing Trophy (Kent C. Dodds)
 - OWASP Testing Guide

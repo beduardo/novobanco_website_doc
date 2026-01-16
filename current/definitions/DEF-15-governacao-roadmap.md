@@ -1,7 +1,7 @@
 ---
 id: DEF-15-governacao-roadmap
 aliases:
-  - Governacao e Roadmap
+  - Governação e Roadmap
 tags:
   - nextreality-novobanco-website-definitions
   - definitions
@@ -17,17 +17,17 @@ reviewed: true
 status: completed
 ---
 
-# DEF-15: Governacao & Roadmap
+# DEF-15: Governação & Roadmap
 
-> **Secao relacionada:** [SEC-15 - Governacao & Roadmap](../sections/SEC-15-governacao-roadmap.md)
+> **Secção relacionada:** [SEC-15 - Governação & Roadmap](../sections/SEC-15-governacao-roadmap.md)
 
 ## Contexto
 
-Definir o modelo de governacao e roadmap do HomeBanking Web, incluindo modelo de governacao, gestao de decisoes arquiteturais, roadmap de produto, gestao de divida tecnica, processo de gestao de mudanca, KPIs de sucesso e continuous improvement.
+Definir o modelo de governação e roadmap do HomeBanking Web, incluindo modelo de governação, gestão de decisões arquiteturais, roadmap de produto, gestão de dívida técnica, processo de gestão de mudança, KPIs de sucesso e continuous improvement.
 
 ---
 
-## Modelo de Governanca
+## Modelo de Governança
 
 ### Estrutura Organizacional
 
@@ -35,7 +35,7 @@ Definir o modelo de governacao e roadmap do HomeBanking Web, incluindo modelo de
 @startuml
 skinparam backgroundColor white
 
-title Estrutura de Governanca - HomeBanking Web
+title Estrutura de Governança - HomeBanking Web
 
 rectangle "Steering Committee" as steering {
     card "Sponsor"
@@ -70,43 +70,43 @@ support --> delivery : Support
 @enduml
 ```
 
-### Papeis e Responsabilidades
+### Papéis e Responsabilidades
 
 | Papel | Responsabilidades |
 |-------|-------------------|
-| **Sponsor** | Aprovacao estrategica, budget, escalacao |
-| **Product Owner** | Backlog, priorizacao, aceitacao |
-| **Tech Lead** | Decisoes tecnicas, arquitetura, quality |
-| **Scrum Master** | Processo, impedimentos, cerimonias |
+| **Sponsor** | Aprovação estratégica, budget, escalação |
+| **Product Owner** | Backlog, priorização, aceitação |
+| **Tech Lead** | Decisões técnicas, arquitetura, quality |
+| **Scrum Master** | Processo, impedimentos, cerimónias |
 | **Frontend Lead** | Arquitetura frontend, code review |
 | **Backend Lead** | Arquitetura BFF, code review |
-| **QA Lead** | Estrategia de testes, qualidade |
-| **DevOps** | Infraestrutura, CI/CD, operacoes |
-| **Security** | Validacao de seguranca, compliance |
+| **QA Lead** | Estratégia de testes, qualidade |
+| **DevOps** | Infraestrutura, CI/CD, operações |
+| **Security** | Validação de segurança, compliance |
 
 ### Modelo de Trabalho
 
-| Aspecto | Especificacao |
+| Aspecto | Especificação |
 |---------|---------------|
 | Metodologia | Scrum (2-week sprints) |
-| Cerimonias | Daily, Planning, Review, Retro |
+| Cerimónias | Daily, Planning, Review, Retro |
 | Ferramentas | Azure DevOps (boards), Teams |
 | Reporting | Sprint Review + Monthly Report |
 
 ---
 
-## Gestao de Decisoes Arquiteturais
+## Gestão de Decisões Arquiteturais
 
-### Processo de Decisao
+### Processo de Decisão
 
 ```plantuml
 @startuml
 skinparam backgroundColor white
 
-title Processo de Decisao Arquitetural (ADR)
+title Processo de Decisão Arquitetural (ADR)
 
 start
-:Identificar necessidade de decisao;
+:Identificar necessidade de decisão;
 :Criar ADR (status: proposed);
 
 :Analisar alternativas;
@@ -117,11 +117,11 @@ if (Impacto alto?) then (sim)
     :Steering Committee;
     if (Aprovado?) then (sim)
         :Atualizar status: accepted;
-    else (nao)
+    else (não)
         :Revisar ou rejeitar;
         stop
     endif
-else (nao)
+else (não)
     :Tech Lead aprova;
     :Atualizar status: accepted;
 endif
@@ -133,47 +133,47 @@ stop
 @enduml
 ```
 
-### Tipos de Decisao
+### Tipos de Decisão
 
 | Tipo | Aprovador | Exemplos |
 |------|-----------|----------|
-| **Estrategica** | Steering Committee | Stack tecnologica, arquitetura global |
-| **Tatica** | Tech Lead | Padroes de codigo, bibliotecas |
-| **Operacional** | Lead da area | Configuracoes, tooling |
+| **Estratégica** | Steering Committee | Stack tecnológica, arquitetura global |
+| **Tática** | Tech Lead | Padrões de código, bibliotecas |
+| **Operacional** | Lead da área | Configurações, tooling |
 
 ### ADRs do Projeto
 
-| ID | Decisao | Status | Data |
+| ID | Decisão | Status | Data |
 |----|---------|--------|------|
-| DEC-001 | Estrategia de autenticacao web | Accepted | 2026-01-04 |
-| DEC-002 | Gestao de sessoes e tokens | Accepted | 2026-01-04 |
-| DEC-003 | Modelo de autorizacao ABAC | Accepted | 2026-01-04 |
-| DEC-004 | Controlos de seguranca frontend | Accepted | 2026-01-04 |
+| DEC-001 | Estratégia de autenticação web | Accepted | 2026-01-04 |
+| DEC-002 | Gestão de sessões e tokens | Accepted | 2026-01-04 |
+| DEC-003 | Modelo de autorização ABAC | Accepted | 2026-01-04 |
+| DEC-004 | Controlos de segurança frontend | Accepted | 2026-01-04 |
 | DEC-005 | Armazenamento de dados canal web | Accepted | 2026-01-04 |
-| DEC-006 | Estrategia de containers OpenShift | Accepted | 2026-01-04 |
-| DEC-007 | Padrao BFF | Accepted | 2026-01-04 |
+| DEC-006 | Estratégia de containers OpenShift | Accepted | 2026-01-04 |
+| DEC-007 | Padrão BFF | Accepted | 2026-01-04 |
 | DEC-008 | Stack de observabilidade ELK | Accepted | 2026-01-04 |
-| DEC-009 | Stack tecnologica frontend | Accepted | 2026-01-04 |
-| DEC-010 | Stack tecnologica backend | Accepted | 2026-01-04 |
+| DEC-009 | Stack tecnológica frontend | Accepted | 2026-01-04 |
+| DEC-010 | Stack tecnológica backend | Accepted | 2026-01-04 |
 
 ---
 
 ## Roadmap de Produto
 
-### Visao de Longo Prazo
+### Visão de Longo Prazo
 
 ```plantuml
 @startuml
 skinparam backgroundColor white
 
-title Roadmap - Visao de Longo Prazo
+title Roadmap - Visão de Longo Prazo
 
 |2026 Q1-Q2|
 :MVP + Go-Live;
 note right: 35 features (paridade mobile)
 
 |2026 Q3|
-:Evolucao v1.1;
+:Evolução v1.1;
 note right
 - Melhorias UX
 - Performance
@@ -184,124 +184,124 @@ end note
 :Novas Features;
 note right
 - Features exclusivas web
-- Integracao Open Banking
+- Integração Open Banking
 end note
 
 |2027+|
-:Expansao;
+:Expansão;
 note right
 - Novos canais
-- Personalizacao
+- Personalização
 - AI/ML features
 end note
 
 @enduml
 ```
 
-### Backlog de Features Pos-MVP
+### Backlog de Features Pós-MVP
 
-| Feature | Prioridade | Estimativa | Dependencias |
+| Feature | Prioridade | Estimativa | Dependências |
 |---------|------------|------------|--------------|
-| Dashboard personalizavel | P2 | M | MVP |
-| Notificacoes web push | P2 | S | MVP |
+| Dashboard personalizável | P2 | M | MVP |
+| Notificações web push | P2 | S | MVP |
 | Modo escuro | P3 | S | Design System |
-| Exportacao de extratos PDF | P2 | M | MVP |
+| Exportação de extratos PDF | P2 | M | MVP |
 | Comparador de produtos | P3 | L | Backend API |
 | Chat com assistente | P3 | XL | Chatbot platform |
 
 ### Release Cadence
 
-| Tipo | Frequencia | Conteudo |
+| Tipo | Frequência | Conteúdo |
 |------|------------|----------|
 | **Major** | Trimestral | Novas features significativas |
 | **Minor** | Mensal | Melhorias e features pequenas |
-| **Patch** | Semanal (se necessario) | Bug fixes, seguranca |
+| **Patch** | Semanal (se necessário) | Bug fixes, segurança |
 
 ---
 
-## Gestao de Divida Tecnica
+## Gestão de Dívida Técnica
 
-### Estrategia
+### Estratégia
 
 ```plantuml
 @startuml
 skinparam backgroundColor white
 
-title Gestao de Divida Tecnica
+title Gestão de Dívida Técnica
 
-|Identificacao|
+|Identificação|
 start
 :Code Review;
-:Metricas (SonarQube);
+:Métricas (SonarQube);
 :Retrospectivas;
 
-|Classificacao|
+|Classificação|
 :Priorizar por impacto;
 note right
-Alto: Seguranca, Performance
-Medio: Maintainability
-Baixo: Codigo morto
+Alto: Segurança, Performance
+Médio: Maintainability
+Baixo: Código morto
 end note
 
-|Alocacao|
+|Alocação|
 :Reservar 20% da capacidade;
 :Incluir no sprint planning;
 
-|Execucao|
-:Resolver divida tecnica;
+|Execução|
+:Resolver dívida técnica;
 :Documentar melhoria;
 
-|Monitorizacao|
-:Atualizar metricas;
+|Monitorização|
+:Atualizar métricas;
 :Reportar progresso;
 stop
 
 @enduml
 ```
 
-### Categorias de Divida Tecnica
+### Categorias de Dívida Técnica
 
 | Categoria | Exemplos | Prioridade |
 |-----------|----------|------------|
-| **Seguranca** | Vulnerabilidades, outdated dependencies | Critica |
+| **Segurança** | Vulnerabilidades, outdated dependencies | Crítica |
 | **Performance** | Queries lentas, memory leaks | Alta |
-| **Arquitetura** | Code smells, tight coupling | Media |
-| **Codigo** | Duplicacao, complexidade ciclomatica | Media |
-| **Testes** | Baixa cobertura, testes frageis | Media |
-| **Documentacao** | APIs nao documentadas | Baixa |
+| **Arquitetura** | Code smells, tight coupling | Média |
+| **Código** | Duplicação, complexidade ciclomática | Média |
+| **Testes** | Baixa cobertura, testes frágeis | Média |
+| **Documentação** | APIs não documentadas | Baixa |
 
-### Metricas de Divida Tecnica
+### Métricas de Dívida Técnica
 
-| Metrica | Ferramenta | Target |
+| Métrica | Ferramenta | Target |
 |---------|------------|--------|
 | Code Coverage | Istanbul/Coverlet | >= 80% |
-| Cyclomatic Complexity | SonarQube | < 15 por metodo |
+| Cyclomatic Complexity | SonarQube | < 15 por método |
 | Duplicated Lines | SonarQube | < 3% |
 | Technical Debt Ratio | SonarQube | < 5% |
 | Outdated Dependencies | Dependabot | 0 critical |
 
-### Alocacao de Capacidade
+### Alocação de Capacidade
 
-| Sprint | Features | Divida Tecnica | Bugs |
+| Sprint | Features | Dívida Técnica | Bugs |
 |--------|----------|----------------|------|
 | Normal | 70% | 20% | 10% |
 | Pre-release | 50% | 30% | 20% |
-| Pos-release | 40% | 20% | 40% |
+| Pós-release | 40% | 20% | 40% |
 
 ---
 
-## Processo de Gestao de Mudanca
+## Processo de Gestão de Mudança
 
 ### Change Advisory Board (CAB)
 
-| Tipo de Mudanca | Aprovacao | Lead Time |
+| Tipo de Mudança | Aprovação | Lead Time |
 |-----------------|-----------|-----------|
-| **Standard** | Automatica (CI/CD) | Imediato |
+| **Standard** | Automática (CI/CD) | Imediato |
 | **Normal** | Tech Lead | 1 dia |
 | **Emergency** | On-call + Tech Lead | Imediato |
 | **Major** | CAB | 1 semana |
 
-### Fluxo de Mudanca
+### Fluxo de Mudança
 
 ```plantuml
 @startuml
@@ -310,17 +310,17 @@ skinparam backgroundColor white
 title Processo de Change Management
 
 start
-:Request de Mudanca;
+:Request de Mudança;
 :Classificar tipo;
 
 switch (Tipo?)
 case (Standard)
-    :Deploy automatico;
+    :Deploy automático;
 case (Normal)
     :Tech Lead review;
     :Agendar deploy;
 case (Emergency)
-    :Aprovacao rapida;
+    :Aprovação rápida;
     :Deploy imediato;
     :Post-mortem;
 case (Major)
@@ -329,7 +329,7 @@ case (Major)
     :Agendar janela;
 endswitch
 
-:Executar mudanca;
+:Executar mudança;
 :Validar;
 :Documentar;
 stop
@@ -337,26 +337,26 @@ stop
 @enduml
 ```
 
-### Janelas de Mudanca
+### Janelas de Mudança
 
-| Ambiente | Janela | Restricoes |
+| Ambiente | Janela | Restrições |
 |----------|--------|------------|
 | dev | 24/7 | Nenhuma |
 | qa | 24/7 | Nenhuma |
-| prod (standard) | 9h-18h dias uteis | Evitar sextas |
-| prod (major) | Sabados 6h-10h | Comunicacao previa |
+| prod (standard) | 9h-18h dias úteis | Evitar sextas |
+| prod (major) | Sábados 6h-10h | Comunicação prévia |
 
 ---
 
 ## KPIs de Sucesso
 
-### KPIs Tecnicos
+### KPIs Técnicos
 
-| KPI | Metrica | Target | Medicao |
+| KPI | Métrica | Target | Medição |
 |-----|---------|--------|---------|
 | **Disponibilidade** | Uptime % | 99.9% | Mensal |
-| **Latencia** | Response time P95 | < 3s | Diario |
-| **Taxa de Erro** | Error rate | < 0.1% | Diario |
+| **Latência** | Response time P95 | < 3s | Diário |
+| **Taxa de Erro** | Error rate | < 0.1% | Diário |
 | **MTTR** | Mean Time To Recover | < 30 min | Por incidente |
 | **Deploy Frequency** | Deploys/semana | >= 2 | Semanal |
 | **Lead Time** | Commit to prod | < 1 dia | Por deploy |
@@ -364,13 +364,13 @@ stop
 
 ### KPIs de Produto
 
-| KPI | Metrica | Target | Medicao |
+| KPI | Métrica | Target | Medição |
 |-----|---------|--------|---------|
-| **Adocao** | Utilizadores ativos | +20% Q/Q | Mensal |
-| **Engagement** | Sessoes/utilizador | >= 5/mes | Mensal |
-| **Satisfacao** | NPS | >= 40 | Trimestral |
-| **Task Success** | Taxa de conclusao de fluxos | >= 95% | Semanal |
-| **Time on Task** | Tempo medio por operacao | Baseline -10% | Mensal |
+| **Adoção** | Utilizadores ativos | +20% Q/Q | Mensal |
+| **Engagement** | Sessões/utilizador | >= 5/mês | Mensal |
+| **Satisfação** | NPS | >= 40 | Trimestral |
+| **Task Success** | Taxa de conclusão de fluxos | >= 95% | Semanal |
+| **Time on Task** | Tempo médio por operação | Baseline -10% | Mensal |
 
 ### Dashboard de KPIs
 
@@ -398,9 +398,9 @@ stop
 
 ## Continuous Improvement
 
-### Cerimonias de Melhoria
+### Cerimónias de Melhoria
 
-| Cerimonia | Frequencia | Participantes | Output |
+| Cerimónia | Frequência | Participantes | Output |
 |-----------|------------|---------------|--------|
 | Sprint Retro | 2 semanas | Equipa | Action items |
 | Tech Retro | Mensal | Tech team | Tech improvements |
@@ -413,12 +413,12 @@ stop
 @startuml
 skinparam backgroundColor white
 
-title Ciclo de Melhoria Continua
+title Ciclo de Melhoria Contínua
 
 start
 :Coletar feedback;
 note right
-- Metricas
+- Métricas
 - Retros
 - Incidents
 - User feedback
@@ -434,58 +434,58 @@ stop
 @enduml
 ```
 
-### Metricas de Maturidade
+### Métricas de Maturidade
 
-| Area | Nivel Atual | Target | Acoes |
+| Área | Nível Atual | Target | Ações |
 |------|-------------|--------|-------|
-| CI/CD | 3 | 4 | Automacao de testes |
-| Observability | 3 | 4 | Tracing distribuido |
+| CI/CD | 3 | 4 | Automação de testes |
+| Observability | 3 | 4 | Tracing distribuído |
 | Security | 3 | 4 | DAST automatizado |
-| Documentation | 2 | 3 | API docs automaticas |
+| Documentation | 2 | 3 | API docs automáticas |
 
 ---
 
-## Questoes Pendentes de Confirmacao
+## Questões Pendentes de Confirmação
 
-| ID | Questao | Responsavel | Prioridade |
+| ID | Questão | Responsável | Prioridade |
 |----|---------|-------------|------------|
-| Q-15-001 | Modelo de governanca formal | Sponsor | Media |
-| Q-15-002 | Composicao do CAB | Sponsor | Media |
-| Q-15-003 | Budget para divida tecnica (20%) | PO | Alta |
-| Q-15-004 | Frequencia de releases pos-MVP | PO | Media |
-| Q-15-005 | KPIs de negocio adicionais | Produto | Baixa |
+| Q-15-001 | Modelo de governação formal | Sponsor | Média |
+| Q-15-002 | Composição do CAB | Sponsor | Média |
+| Q-15-003 | Budget para dívida técnica (20%) | PO | Alta |
+| Q-15-004 | Frequência de releases pós-MVP | PO | Média |
+| Q-15-005 | KPIs de negócio adicionais | Produto | Baixa |
 
 ---
 
-## Decisoes
+## Decisões
 
 ### Governance Model
-- **Decisao:** Scrum com sprints de 2 semanas
-- **Justificacao:** Flexibilidade, feedback rapido, alinhado com praticas agile
+- **Decisão:** Scrum com sprints de 2 semanas
+- **Justificação:** Flexibilidade, feedback rápido, alinhado com práticas agile
 - **Alternativas consideradas:** Kanban (menos estrutura), SAFe (overkill)
 
 ### Change Management
-- **Decisao:** Modelo tiered (Standard/Normal/Emergency/Major)
-- **Justificacao:** Balanco entre agilidade e controle
-- **Alternativas consideradas:** CAB para todas as mudancas (muito rigido)
+- **Decisão:** Modelo tiered (Standard/Normal/Emergency/Major)
+- **Justificação:** Balanço entre agilidade e controle
+- **Alternativas consideradas:** CAB para todas as mudanças (muito rígido)
 
 ### Technical Debt Management
-- **Decisao:** 20% da capacidade alocada para divida tecnica
-- **Justificacao:** Manter qualidade sem bloquear features
+- **Decisão:** 20% da capacidade alocada para dívida técnica
+- **Justificação:** Manter qualidade sem bloquear features
 - **Alternativas consideradas:** Sprints dedicados (disruptivo)
 
 ### Release Cadence
-- **Decisao:** Major trimestral, Minor mensal, Patch semanal
-- **Justificacao:** Previsibilidade para stakeholders, flexibilidade para correcoes
+- **Decisão:** Major trimestral, Minor mensal, Patch semanal
+- **Justificação:** Previsibilidade para stakeholders, flexibilidade para correções
 - **Alternativas consideradas:** Continuous deployment (risco maior)
 
 ---
 
-## Decisoes Relacionadas
+## Decisões Relacionadas
 
 - All architectural decisions (DEC-001 to DEC-010)
 
-## Referencias
+## Referências
 
 - [CONTEXT.md](../CONTEXT.md) - Contexto do projeto
 - [DEF-10-arquitetura-operacional.md](DEF-10-arquitetura-operacional.md) - CI/CD

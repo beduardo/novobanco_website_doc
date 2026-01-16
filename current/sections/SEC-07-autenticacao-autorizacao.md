@@ -1,6 +1,6 @@
 ---
 aliases:
-  - Autenticacao e Autorizacao
+  - Autenticação e Autorização
 tags:
   - nextreality-novobanco-website-sections
   - sections
@@ -16,35 +16,35 @@ reviewed: true
 status: in-progress
 ---
 
-# 7. Autenticacao & Autorizacao
+# 7. Autenticação & Autorização
 
-> **Definicoes requeridas:**
+> **Definições requeridas:**
 > - [DEF-07-autenticacao-autorizacao.md](../definitions/DEF-07-autenticacao-autorizacao.md) - Status: completed
 > - [DEF-05-arquitetura-bff.md](../definitions/DEF-05-arquitetura-bff.md) - Status: completed
 >
-> **Decisoes relacionadas:**
+> **Decisões relacionadas:**
 > - [DEC-001-estrategia-autenticacao-web.md](../decisions/DEC-001-estrategia-autenticacao-web.md) - Status: accepted
 > - [DEC-002-gestao-sessoes-tokens.md](../decisions/DEC-002-gestao-sessoes-tokens.md) - Status: accepted
 > - [DEC-003-modelo-autorizacao-abac.md](../decisions/DEC-003-modelo-autorizacao-abac.md) - Status: accepted
 
-## Proposito
+## Propósito
 
-Definir a estrategia completa de autenticacao e autorizacao do HomeBanking Web, incluindo fluxos de autenticacao, MFA/SCA, gestao de sessoes, tokens e politicas de seguranca.
+Definir a estratégia completa de autenticação e autorização do HomeBanking Web, incluindo fluxos de autenticação, MFA/SCA, gestão de sessões, tokens e políticas de segurança.
 
-## Conteudo
+## Conteúdo
 
-### 7.1 Visao Geral de Autenticacao
+### 7.1 Visão Geral de Autenticação
 
 ```plantuml
 @startuml
 skinparam backgroundColor #FEFEFE
 
-title Metodos de Autenticacao - HomeBanking Web
+title Métodos de Autenticação - HomeBanking Web
 
-rectangle "Metodos de Autenticacao" {
-    rectangle "Fluxo Primario" #LightGreen {
+rectangle "Métodos de Autenticação" {
+    rectangle "Fluxo Primário" #LightGreen {
         [QR Code + Biometria App]
-        note bottom : Scan QR Code\nValidacao biometrica na app\nVinculacao de sessao
+        note bottom : Scan QR Code\nValidação biométrica na app\nVinculação de sessão
     }
 
     rectangle "Fluxo Fallback" #Yellow {
@@ -52,7 +52,7 @@ rectangle "Metodos de Autenticacao" {
         note bottom : Credenciais\n+ SMS OTP ou App Push
     }
 
-    rectangle "Nao Suportado" #LightCoral {
+    rectangle "Não Suportado" #LightCoral {
         [Certificado Digital]
     }
 }
@@ -60,19 +60,19 @@ rectangle "Metodos de Autenticacao" {
 @enduml
 ```
 
-| Metodo | Suporte | Observacao |
+| Método | Suporte | Observação |
 |--------|---------|------------|
-| QR Code + Biometria | Primario | Validacao via app mobile |
+| QR Code + Biometria | Primário | Validação via app mobile |
 | Username/Password | Fallback | Apenas quando QR Code falha |
 | SMS OTP | Fallback | Segundo fator no fallback |
 | App Push | Fallback | Segundo fator no fallback |
-| Certificado Digital | Nao | Nao suportado |
+| Certificado Digital | Não | Não suportado |
 
 **Login unificado:** Sim, mesmas credenciais da app mobile.
 
-### 7.2 Fluxos de Autenticacao
+### 7.2 Fluxos de Autenticação
 
-#### 7.2.1 Fluxo Primario - QR Code
+#### 7.2.1 Fluxo Primário - QR Code
 
 ```plantuml
 @startuml
@@ -94,11 +94,11 @@ USER -> APP : Abre app mobile
 USER -> APP : Escaneia QR Code
 APP -> APP : Solicita biometria
 USER -> APP : Confirma biometria
-APP -> AUTH : Valida + vincula sessao
-AUTH --> APP : Sessao aprovada
+APP -> AUTH : Valida + vincula sessão
+AUTH --> APP : Sessão aprovada
 
-AUTH --> BFF : Notifica aprovacao
-BFF -> BFF : Cria sessao web
+AUTH --> BFF : Notifica aprovação
+BFF -> BFF : Cria sessão web
 BFF --> FE : Set-Cookie: SessionID\n(HttpOnly, Secure, SameSite=Strict)
 FE --> USER : Acesso concedido
 
@@ -117,7 +117,7 @@ participant "BFF" as BFF
 participant "Auth Service" as AUTH
 
 USER -> FE : Indica falha no QR Code
-FE --> USER : Apresenta opcoes fallback
+FE --> USER : Apresenta opções fallback
 
 USER -> FE : Insere Username/Password
 FE -> BFF : POST /auth/login (credentials)
@@ -126,17 +126,17 @@ AUTH --> BFF : Requer 2FA
 
 alt SMS OTP
     BFF -> AUTH : Solicita envio OTP
-    AUTH --> USER : SMS com codigo
-    USER -> FE : Insere codigo OTP
+    AUTH --> USER : SMS com código
+    USER -> FE : Insere código OTP
     FE -> BFF : POST /auth/verify-otp
 else App Push
     BFF -> AUTH : Solicita push notification
     AUTH -> APP : Envia push
-    USER -> APP : Aprova notificacao
+    USER -> APP : Aprova notificação
 end
 
 AUTH --> BFF : 2FA validado
-BFF -> BFF : Cria sessao web
+BFF -> BFF : Cria sessão web
 BFF --> FE : Set-Cookie: SessionID
 FE --> USER : Acesso concedido
 
@@ -145,24 +145,24 @@ FE --> USER : Acesso concedido
 
 ### 7.3 MFA/SCA (Strong Customer Authentication)
 
-| Aspecto | Decisao |
+| Aspeto | Decisão |
 |---------|---------|
-| **SCA Obrigatorio** | Sim, para todos os acessos a areas restritas |
-| **Segundo fator primario** | Biometria via app (validacao QR Code) |
+| **SCA Obrigatório** | Sim, para todos os acessos a áreas restritas |
+| **Segundo fator primário** | Biometria via app (validação QR Code) |
 | **Segundo fator fallback** | SMS OTP ou App Push |
-| **Isencoes SCA** | Nenhuma |
+| **Isenções SCA** | Nenhuma |
 
-**Fluxo de fallback:** Apos o utilizador informar falha na leitura do QR Code, a aplicacao permite login com SMS OTP ou App Push, dependendo das opcoes habilitadas para o utilizador.
+**Fluxo de fallback:** Após o utilizador informar falha na leitura do QR Code, a aplicação permite login com SMS OTP ou App Push, dependendo das opções habilitadas para o utilizador.
 
-### 7.4 Gestao de Sessoes
+### 7.4 Gestão de Sessões
 
 ```plantuml
 @startuml
 skinparam backgroundColor #FEFEFE
 
-title Ciclo de Vida da Sessao
+title Ciclo de Vida da Sessão
 
-[*] --> Ativa : Login bem sucedido
+[*] --> Ativa : Login bem-sucedido
 
 Ativa --> Ativa : Atividade do utilizador\n(reset timeout inatividade)
 Ativa --> Aviso : 9 min inatividade
@@ -181,20 +181,20 @@ end note
 @enduml
 ```
 
-| Parametro | Valor |
+| Parâmetro | Valor |
 |-----------|-------|
 | **Timeout por inatividade** | 10 minutos |
 | **Timeout absoluto** | 30 minutos |
-| **Sessao exclusiva** | Desejavel (pendente aprovacao cliente) |
-| **Aviso de expiracao** | Popup com temporizador |
+| **Sessão exclusiva** | Desejável (pendente aprovação cliente) |
+| **Aviso de expiração** | Popup com temporizador |
 
-### 7.5 Estrategia de Tokens
+### 7.5 Estratégia de Tokens
 
 ```plantuml
 @startuml
 skinparam backgroundColor #FEFEFE
 
-title Arquitetura de Tokens - Dois Niveis
+title Arquitetura de Tokens - Dois Níveis
 
 package "Browser" {
     [Session Cookie] as SC
@@ -223,22 +223,22 @@ package "Backend Services" {
 @enduml
 ```
 
-| Token | Localizacao | TTL | Uso |
+| Token | Localização | TTL | Uso |
 |-------|-------------|-----|-----|
 | **Session Cookie** | Browser (cookie) | 30 min | Browser -> BFF |
 | **Access Token** | BFF Cache | 15 min | BFF -> Backend |
-| **Refresh Token** | BFF Cache | 7 dias | Renovacao silenciosa |
+| **Refresh Token** | BFF Cache | 7 dias | Renovação silenciosa |
 
-**Renovacao:** Refresh silencioso conforme atividade do utilizador. BFF renova tokens automaticamente antes de expiracao.
+**Renovação:** Refresh silencioso conforme atividade do utilizador. BFF renova tokens automaticamente antes de expiração.
 
-### 7.6 Autorizacao
+### 7.6 Autorização
 
-| Aspecto | Decisao |
+| Aspeto | Decisão |
 |---------|---------|
-| **Modelo** | ABAC hibrido com RBAC |
-| **Role** | Atributo do sujeito (quando necessario) |
-| **Atributos** | Sujeito, Recurso, Acao, Ambiente |
-| **Permissoes por operacao** | Sim (consulta vs transacao) |
+| **Modelo** | ABAC híbrido com RBAC |
+| **Role** | Atributo do sujeito (quando necessário) |
+| **Atributos** | Sujeito, Recurso, Ação, Ambiente |
+| **Permissões por operação** | Sim (consulta vs transação) |
 
 **Atributos considerados:**
 
@@ -246,53 +246,53 @@ package "Backend Services" {
 |-----------|-----------|
 | **Sujeito** | Utilizador, role, tipo de cliente, segmento |
 | **Recurso** | Tipo de conta, produto, limite |
-| **Acao** | Consulta, transacao, configuracao |
-| **Ambiente** | Canal (web), horario, localizacao, dispositivo |
+| **Ação** | Consulta, transação, configuração |
+| **Ambiente** | Canal (web), horário, localização, dispositivo |
 
-**Nota:** Roles e perfis especificos serao definidos no assessment inicial do projeto.
+**Nota:** Roles e perfis específicos serão definidos no assessment inicial do projeto.
 
-### 7.7 Politicas de Password
+### 7.7 Políticas de Password
 
-| Aspecto | Decisao |
+| Aspeto | Decisão |
 |---------|---------|
-| Requisitos minimos | Seguira requisitos da app (a aprofundar) |
-| Expiracao | _A definir_ |
-| Recuperacao | _A definir_ |
+| Requisitos mínimos | Seguirá requisitos da app (a aprofundar) |
+| Expiração | _A definir_ |
+| Recuperação | _A definir_ |
 | Bloqueio por tentativas | _A definir_ |
 
 ### 7.8 Anti-automation
 
-| Aspecto | Status |
+| Aspeto | Status |
 |---------|--------|
 | CAPTCHA | _A definir_ |
 | Rate limiting login | _A definir_ |
-| Detecao de bots | _A definir_ |
+| Deteção de bots | _A definir_ |
 
-### 7.9 Revogacao
+### 7.9 Revogação
 
-| Aspecto | Status |
+| Aspeto | Status |
 |---------|--------|
-| Revogacao por comprometimento | _A definir_ |
+| Revogação por comprometimento | _A definir_ |
 | Logout de todos os dispositivos | _A definir_ |
-| Revogacao ao mudar password | _A definir_ |
+| Revogação ao mudar password | _A definir_ |
 
-## Entregaveis
+## Entregáveis
 
-- [x] Diagramas de fluxo de autenticacao
-- [x] Especificacao de MFA/SCA
-- [x] Politica de gestao de sessoes
-- [x] Estrategia de tokens documentada
-- [x] Modelo de autorizacao
-- [ ] Politicas de password - Parcial
+- [x] Diagramas de fluxo de autenticação
+- [x] Especificação de MFA/SCA
+- [x] Política de gestão de sessões
+- [x] Estratégia de tokens documentada
+- [x] Modelo de autorização
+- [ ] Políticas de password - Parcial
 - [ ] Controlos anti-automation - Pendente
-- [ ] Procedimentos de revogacao - Pendente
+- [ ] Procedimentos de revogação - Pendente
 
-## Definicoes Utilizadas
+## Definições Utilizadas
 
 - [x] [DEF-07-autenticacao-autorizacao.md](../definitions/DEF-07-autenticacao-autorizacao.md) - Status: completed
 - [x] [DEF-05-arquitetura-bff.md](../definitions/DEF-05-arquitetura-bff.md) - Status: completed
 
-## Decisoes Referenciadas
+## Decisões Referenciadas
 
 - [x] [DEC-001-estrategia-autenticacao-web.md](../decisions/DEC-001-estrategia-autenticacao-web.md) - Status: accepted
 - [x] [DEC-002-gestao-sessoes-tokens.md](../decisions/DEC-002-gestao-sessoes-tokens.md) - Status: accepted
@@ -300,16 +300,16 @@ package "Backend Services" {
 
 ## Itens Pendentes
 
-| Item | Documento | Responsavel |
+| Item | Documento | Responsável |
 |------|-----------|-------------|
 | Fluxo de primeiro acesso/registo web | DEF-07-autenticacao-autorizacao | Arquitetura |
-| Validacao fluxos fallback (SMS/Push) | DEF-07-autenticacao-autorizacao | Produto |
-| Sessao exclusiva (aprovacao cliente) | DEF-07-autenticacao-autorizacao | Produto |
-| Requisitos de password | DEF-07-autenticacao-autorizacao | Seguranca |
-| Politica de expiracao password | DEF-07-autenticacao-autorizacao | Seguranca |
-| Fluxo de recuperacao password | DEF-07-autenticacao-autorizacao | UX |
-| Bloqueio por tentativas | DEF-07-autenticacao-autorizacao | Seguranca |
-| Estrategia CAPTCHA | DEF-07-autenticacao-autorizacao | Seguranca |
+| Validação fluxos fallback (SMS/Push) | DEF-07-autenticacao-autorizacao | Produto |
+| Sessão exclusiva (aprovação cliente) | DEF-07-autenticacao-autorizacao | Produto |
+| Requisitos de password | DEF-07-autenticacao-autorizacao | Segurança |
+| Política de expiração password | DEF-07-autenticacao-autorizacao | Segurança |
+| Fluxo de recuperação password | DEF-07-autenticacao-autorizacao | UX |
+| Bloqueio por tentativas | DEF-07-autenticacao-autorizacao | Segurança |
+| Estratégia CAPTCHA | DEF-07-autenticacao-autorizacao | Segurança |
 | Rate limiting login | DEF-07-autenticacao-autorizacao | Arquitetura |
-| Detecao de bots | DEF-07-autenticacao-autorizacao | Seguranca |
-| Procedimentos de revogacao | DEF-07-autenticacao-autorizacao | Seguranca |
+| Deteção de bots | DEF-07-autenticacao-autorizacao | Segurança |
+| Procedimentos de revogação | DEF-07-autenticacao-autorizacao | Segurança |

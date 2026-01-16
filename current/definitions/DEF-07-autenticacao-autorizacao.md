@@ -1,7 +1,7 @@
 ---
 id: DEF-07-autenticacao-autorizacao
 aliases:
-  - Autenticacao e Autorizacao
+  - Autenticação e Autorização
 tags:
   - nextreality-novobanco-website-definitions
   - definitions
@@ -17,143 +17,143 @@ reviewed: true
 status: completed
 ---
 
-# DEF-07: Autenticacao & Autorizacao
+# DEF-07: Autenticação & Autorização
 
-> **Secao relacionada:** [7 - Autenticacao & Autorizacao](../sections/SEC-07-autenticacao-autorizacao.md)
+> **Secção relacionada:** [7 - Autenticação & Autorização](../sections/SEC-07-autenticacao-autorizacao.md)
 
 ## Contexto
 
-Definir a estrategia de autenticacao e autorizacao do HomeBanking Web. Nota: O fluxo basico OAuth ja foi definido em DEF-05-arquitetura-bff.md. Este documento aprofunda os detalhes de sessao, MFA, e politicas de seguranca.
+Definir a estratégia de autenticação e autorização do HomeBanking Web. Nota: O fluxo básico OAuth já foi definido em DEF-05-arquitetura-bff.md. Este documento aprofunda os detalhes de sessão, MFA, e políticas de segurança.
 
 ## Perguntas a Responder
 
-### Autenticacao - Fluxos
-1. Quais metodos de autenticacao serao suportados?
+### Autenticação - Fluxos
+1. Quais métodos de autenticação serão suportados?
    - Username/Password? Somente no fluxo de fallback
    - Biometria (WebAuthn/FIDO2)? Requerido pelos fluxos de validação do QR Code de sessão pelo app
    - Certificado digital? Não
 
-2. O login sera unificado com a app mobile (mesmas credenciais)?
+2. O login será unificado com a app mobile (mesmas credenciais)?
     Sim
 
-3. Ha fluxo de primeiro acesso/registo especifico para web?
+3. Há fluxo de primeiro acesso/registo específico para web?
     Necessita aprofundamento
 
 ### MFA/SCA (Strong Customer Authentication)
-4. Qual o segundo fator obrigatorio (App push, SMS OTP, TOTP)?
+4. Qual o segundo fator obrigatório (App push, SMS OTP, TOTP)?
     Nos fluxos de leitura do QR Code, o app deverá requerer a biometria antes de aprovar e vincular a sessão ao utilizador logado na app. E no fluxo de fallback há a possibilidade de se utilizar SMS OTP e App push. A definição de quais dos quatro fluxos realmente serão utilizados ainda necessita de validação.
 
-5. Ha cenarios onde SCA pode ser dispensado (PSD2 exemptions)?
-    Até o momento não há cenários públicos. Todos os cenários de acesso à páginas restritas necessita de SCA.
+5. Há cenários onde SCA pode ser dispensado (PSD2 exemptions)?
+    Até o momento não há cenários públicos. Todos os cenários de acesso a páginas restritas necessitam de SCA.
 
-6. Como sera tratado o fallback se o metodo primario falhar?
-    Apos a tentativa de leitura do QR Code e informação de falha pelo utilizador, a aplicação deverá permitir o login com a opção via SMS OTP ou App push. Isso dependerá das opções habilitadas para o utilizador.
+6. Como será tratado o fallback se o método primário falhar?
+    Após a tentativa de leitura do QR Code e informação de falha pelo utilizador, a aplicação deverá permitir o login com a opção via SMS OTP ou App push. Isso dependerá das opções habilitadas para o utilizador.
 
 
-### Gestao de Sessoes
-7. Qual o tempo de vida da sessao (timeout por inatividade)?
+### Gestão de Sessões
+7. Qual o tempo de vida da sessão (timeout por inatividade)?
     10 minutos
 
-8. Qual o tempo maximo absoluto de sessao?
+8. Qual o tempo máximo absoluto de sessão?
     30 minutos
 
-9. A sessao e exclusiva (logout de outras sessoes ao fazer login)?
-    Desejavel, necessita aprovacao pelo cliente
+9. A sessão é exclusiva (logout de outras sessões ao fazer login)?
+    Desejável, necessita aprovação pelo cliente
 
-10. Como sera comunicado ao utilizador que a sessao vai expirar?
-    Popup na aplicacao com temporizador
+10. Como será comunicado ao utilizador que a sessão vai expirar?
+    Popup na aplicação com temporizador
 
-### Sessao Multi-Canal (NOVO)
+### Sessão Multi-Canal (NOVO)
 
-11. Como a sessao web se relaciona com a sessao mobile (mesmo utilizador)?
-    Necessita aprofundamento. Considerar: sessoes independentes ou sincronizadas
+11. Como a sessão web se relaciona com a sessão mobile (mesmo utilizador)?
+    Necessita aprofundamento. Considerar: sessões independentes ou sincronizadas
 
-12. Ha limite de sessoes ativas por utilizador?
-    Necessita aprofundamento. Sugestao: 1 sessao web + 1 sessao mobile
+12. Há limite de sessões ativas por utilizador?
+    Necessita aprofundamento. Sugestão: 1 sessão web + 1 sessão mobile
 
-### Estrategia de Tokens
+### Estratégia de Tokens
 13. Qual o tempo de vida do access token?
     15 minutos
 
 14. Qual o tempo de vida do refresh token?
     7 dias
 
-15. Onde serao armazenados os tokens?
+15. Onde serão armazenados os tokens?
     Backend tokens (Access/Refresh): BFF cache
     Session tokens: Cookie HttpOnly Secure
 
-16. Como sera tratada a renovacao de tokens?
+16. Como será tratada a renovação de tokens?
     Refresh silencioso conforme atividade do utilizador
 
-### Autorizacao
-17. Qual o modelo de autorizacao (RBAC, ABAC)?
-    ABAC hibrido com RBAC. Roles como atributo do sujeito.
+### Autorização
+17. Qual o modelo de autorização (RBAC, ABAC)?
+    ABAC híbrido com RBAC. Roles como atributo do sujeito.
 
-18. Ha permissoes especificas por tipo de operacao?
-    Sim (consulta vs transacao)
+18. Há permissões específicas por tipo de operação?
+    Sim (consulta vs transação)
 
-### Politicas de Password
-19. Quais os requisitos minimos de password?
-    Seguira requisitos preexistentes da App. Necessita aprofundamento
+### Políticas de Password
+19. Quais os requisitos mínimos de password?
+    Seguirá requisitos preexistentes da App. Necessita aprofundamento
 
-20. Ha bloqueio apos tentativas falhadas?
+20. Há bloqueio após tentativas falhadas?
     Necessita aprofundamento
 
-### Anti-automation e Revogacao (Simplificado)
-21. Sera implementado CAPTCHA ou rate limiting em login?
+### Anti-automation e Revogação (Simplificado)
+21. Será implementado CAPTCHA ou rate limiting em login?
     Necessita aprofundamento. Rate limiting no Gateway.
 
-22. Ha mecanismo de logout de todos os dispositivos?
-    Necessita aprofundamento. Essencial para seguranca.
+22. Há mecanismo de logout de todos os dispositivos?
+    Necessita aprofundamento. Essencial para segurança.
 
-## Decisoes
+## Decisões
 
-### Metodos de Autenticacao
-- **Decisao:** _A preencher_
-- **Justificacao:**
+### Métodos de Autenticação
+- **Decisão:** _A preencher_
+- **Justificação:**
 - **Alternativas consideradas:**
 
 ### MFA/SCA
-- **Decisao:** _A preencher_
-- **Justificacao:**
+- **Decisão:** _A preencher_
+- **Justificação:**
 - **Alternativas consideradas:**
 
-### Gestao de Sessoes
-- **Decisao:** _A preencher_
-- **Justificacao:**
+### Gestão de Sessões
+- **Decisão:** _A preencher_
+- **Justificação:**
 - **Alternativas consideradas:**
 
 ### Tokens
-- **Decisao:** _A preencher_
-- **Justificacao:**
+- **Decisão:** _A preencher_
+- **Justificação:**
 - **Alternativas consideradas:**
 
-### Autorizacao
-- **Decisao:** _A preencher_
-- **Justificacao:**
+### Autorização
+- **Decisão:** _A preencher_
+- **Justificação:**
 - **Alternativas consideradas:**
 
 ### Anti-automation
-- **Decisao:** _A preencher_
-- **Justificacao:**
+- **Decisão:** _A preencher_
+- **Justificação:**
 - **Alternativas consideradas:**
 
-## Restricoes Conhecidas
+## Restrições Conhecidas
 
-- SCA obrigatorio conforme PSD2
-- Integracao com servico de autenticacao existente do banco
-- Cookies HttpOnly para sessao (definido em DEF-05)
+- SCA obrigatório conforme PSD2
+- Integração com serviço de autenticação existente do banco
+- Cookies HttpOnly para sessão (definido em DEF-05)
 - OAuth 2.0 como base (definido em DEF-05)
 
-## Decisoes Relacionadas
+## Decisões Relacionadas
 
-- [DEC-001-estrategia-autenticacao-web.md](../decisions/DEC-001-estrategia-autenticacao-web.md) - Estrategia de autenticacao
-- [DEC-002-gestao-sessoes-tokens.md](../decisions/DEC-002-gestao-sessoes-tokens.md) - Gestao de sessoes e tokens
-- [DEC-003-modelo-autorizacao-abac.md](../decisions/DEC-003-modelo-autorizacao-abac.md) - Modelo de autorizacao ABAC
+- [DEC-001-estrategia-autenticacao-web.md](../decisions/DEC-001-estrategia-autenticacao-web.md) - Estratégia de autenticação
+- [DEC-002-gestao-sessoes-tokens.md](../decisions/DEC-002-gestao-sessoes-tokens.md) - Gestão de sessões e tokens
+- [DEC-003-modelo-autorizacao-abac.md](../decisions/DEC-003-modelo-autorizacao-abac.md) - Modelo de autorização ABAC
 
-## Referencias
+## Referências
 
-- [DEF-05-arquitetura-bff.md](DEF-05-arquitetura-bff.md) - Fluxo OAuth basico
+- [DEF-05-arquitetura-bff.md](DEF-05-arquitetura-bff.md) - Fluxo OAuth básico
 - [DEF-08-seguranca-conformidade.md](DEF-08-seguranca-conformidade.md) - PSD2
 - PSD2 - Payment Services Directive 2
 - OWASP Authentication Cheat Sheet

@@ -19,15 +19,15 @@ status: completed
 
 # DEF-10: Arquitetura Operacional
 
-> **Secao relacionada:** [SEC-10 - Arquitetura Operacional](../sections/SEC-10-arquitetura-operacional.md)
+> **Secção relacionada:** [SEC-10 - Arquitetura Operacional](../sections/SEC-10-arquitetura-operacional.md)
 
 ## Contexto
 
-Definir a arquitetura operacional do HomeBanking Web, incluindo infraestrutura, ambientes, pipelines CI/CD, estrategia de deploy, gestao de secrets e disaster recovery. O canal web sera deployado em OpenShift (DEC-006), reutilizando a infraestrutura existente.
+Definir a arquitetura operacional do HomeBanking Web, incluindo infraestrutura, ambientes, pipelines CI/CD, estratégia de deploy, gestão de secrets e disaster recovery. O canal web será deployado em OpenShift (DEC-006), reutilizando a infraestrutura existente.
 
 ---
 
-## Visao Geral da Infraestrutura
+## Visão Geral da Infraestrutura
 
 ```plantuml
 @startuml
@@ -89,27 +89,27 @@ bff_prod --> elk : logs
 
 ### Plataforma de Containers
 
-| Aspecto | Especificacao |
+| Aspecto | Especificação |
 |---------|---------------|
 | Plataforma atual | Azure Kubernetes Service (AKS) |
-| Plataforma futura | Red Hat OpenShift (em homologacao) |
-| Abordagem | Imagens OpenShift-compliant desde o inicio |
+| Plataforma futura | Red Hat OpenShift (em homologação) |
+| Abordagem | Imagens OpenShift-compliant desde o início |
 | Load Balancer | F5 BIG-IP (externo) |
 | Ingress Controller | NGINX Ingress / OpenShift Routes |
 
-> **Nota:** OpenShift em homologacao. Desenvolvimento inicia em AKS com imagens compliant para facilitar migracao futura.
+> **Nota:** OpenShift em homologação. Desenvolvimento inicia em AKS com imagens compliant para facilitar migração futura.
 
 ### Requisitos de Imagens Container
 
 Para garantir compatibilidade OpenShift, as imagens devem:
 
-| Requisito | Descricao |
+| Requisito | Descrição |
 |-----------|-----------|
-| Usuario nao-root | Container executa como usuario arbitrario (UID > 1000) |
-| Filesystem read-only | Volumes temporarios montados explicitamente |
-| Portas > 1024 | Nao utilizar portas privilegiadas |
+| Utilizador não-root | Container executa como utilizador arbitrário (UID > 1000) |
+| Filesystem read-only | Volumes temporários montados explicitamente |
+| Portas > 1024 | Não utilizar portas privilegiadas |
 | Base image | Red Hat UBI (Universal Base Image) recomendado |
-| Health checks | Liveness e Readiness probes obrigatorios |
+| Health checks | Liveness e Readiness probes obrigatórios |
 
 ---
 
@@ -117,21 +117,21 @@ Para garantir compatibilidade OpenShift, as imagens devem:
 
 ### Topologia de Ambientes
 
-| Ambiente | Proposito | Namespace | Promocao |
+| Ambiente | Propósito | Namespace | Promoção |
 |----------|-----------|-----------|----------|
-| **dev** | Desenvolvimento e integracao | `homebanking-dev` | Automatica (CI) |
-| **qa** | Testes integrados e UAT | `homebanking-qa` | Automatica (apos dev OK) |
-| **prod** | Producao | `homebanking-prod` | Manual (aprovacao) |
+| **dev** | Desenvolvimento e integração | `homebanking-dev` | Automática (CI) |
+| **qa** | Testes integrados e UAT | `homebanking-qa` | Automática (após dev OK) |
+| **prod** | Produção | `homebanking-prod` | Manual (aprovação) |
 
-> **Nota:** Nao ha ambiente de DR dedicado. Disaster recovery via replica do cluster.
+> **Nota:** Não há ambiente de DR dedicado. Disaster recovery via réplica do cluster.
 
-### Fluxo de Promocao
+### Fluxo de Promoção
 
 ```plantuml
 @startuml
 skinparam backgroundColor white
 
-title Fluxo de Promocao entre Ambientes
+title Fluxo de Promoção entre Ambientes
 
 |Developer|
 start
@@ -143,16 +143,16 @@ start
 :SAST Scan;
 if (Quality Gate OK?) then (sim)
     :Push Image para ACR;
-    :Deploy automatico em DEV;
-else (nao)
+    :Deploy automático em DEV;
+else (não)
     :Pipeline falha;
     stop
 endif
 
-:Testes de integracao em DEV;
+:Testes de integração em DEV;
 if (Testes OK?) then (sim)
-    :Promocao automatica para QA;
-else (nao)
+    :Promoção automática para QA;
+else (não)
     :Notificar equipa;
     stop
 endif
@@ -161,13 +161,13 @@ endif
 :Testes manuais e UAT;
 if (Aprovado?) then (sim)
     :Criar Release;
-else (nao)
+else (não)
     :Reportar issues;
     stop
 endif
 
 |Azure Pipelines|
-:Aguardar aprovacao manual;
+:Aguardar aprovação manual;
 
 |Approver|
 :Aprovar deploy PROD;
@@ -180,13 +180,13 @@ stop
 @enduml
 ```
 
-### Segregacao de Ambientes
+### Segregação de Ambientes
 
 | Tipo | Mecanismo |
 |------|-----------|
-| Logica | Namespaces Kubernetes separados |
+| Lógica | Namespaces Kubernetes separados |
 | Rede | Network Policies por namespace |
-| Secrets | Key Vault com politicas por ambiente |
+| Secrets | Key Vault com políticas por ambiente |
 | RBAC | Service accounts distintos por ambiente |
 
 ---
@@ -195,21 +195,21 @@ stop
 
 ### Stack de Ferramentas
 
-| Funcao | Ferramenta |
+| Função | Ferramenta |
 |--------|------------|
-| Repositorio | Azure Repos (Git) |
+| Repositório | Azure Repos (Git) |
 | CI/CD | Azure Pipelines |
 | Container Registry | Azure Container Registry (ACR) |
 | Secrets | Azure Key Vault |
 | IaC | Helm Charts + Terraform |
 
-### Estrategia de Branching (GitFlow)
+### Estratégia de Branching (GitFlow)
 
 ```plantuml
 @startuml
 skinparam backgroundColor white
 
-title GitFlow - Estrategia de Branching
+title GitFlow - Estratégia de Branching
 
 concise "main" as main
 concise "develop" as develop
@@ -246,13 +246,13 @@ main is "v1.1.1"
 @enduml
 ```
 
-| Branch | Proposito | Deploy Automatico |
+| Branch | Propósito | Deploy Automático |
 |--------|-----------|-------------------|
-| `feature/*` | Desenvolvimento de features | Nao |
-| `develop` | Integracao continua | DEV |
-| `release/*` | Preparacao de release | QA |
-| `main` | Producao | PROD (c/ aprovacao) |
-| `hotfix/*` | Correcoes urgentes | PROD (c/ aprovacao) |
+| `feature/*` | Desenvolvimento de features | Não |
+| `develop` | Integração contínua | DEV |
+| `release/*` | Preparação de release | QA |
+| `main` | Produção | PROD (c/ aprovação) |
+| `hotfix/*` | Correções urgentes | PROD (c/ aprovação) |
 
 ### Quality Gates
 
@@ -266,15 +266,15 @@ main is "v1.1.1"
 
 ---
 
-## Estrategia de Deploy
+## Estratégia de Deploy
 
 ### Rolling Update (Zero Downtime)
 
-| Parametro | Valor | Descricao |
+| Parâmetro | Valor | Descrição |
 |-----------|-------|-----------|
 | `maxSurge` | 25% | Pods adicionais durante update |
-| `maxUnavailable` | 0 | Nenhum pod indisponivel |
-| Replicas minimas | 2 | Garantir disponibilidade |
+| `maxUnavailable` | 0 | Nenhum pod indisponível |
+| Réplicas mínimas | 2 | Garantir disponibilidade |
 
 ```plantuml
 @startuml
@@ -299,7 +299,7 @@ rectangle "Progresso" {
     node "Pod v1.1" as p3c #lightgreen
 }
 
-rectangle "Apos Deploy" {
+rectangle "Após Deploy" {
     node "Pod v1.1" as p4a #lightgreen
     node "Pod v1.1" as p4b #lightgreen
 }
@@ -310,7 +310,7 @@ rectangle "Apos Deploy" {
 ### Health Checks
 
 ```yaml
-# Exemplo de configuracao
+# Exemplo de configuração
 livenessProbe:
   httpGet:
     path: /health/live
@@ -328,17 +328,17 @@ readinessProbe:
   failureThreshold: 3
 ```
 
-### Aprovacoes por Ambiente
+### Aprovações por Ambiente
 
-| Ambiente | Aprovacao | Aprovadores |
+| Ambiente | Aprovação | Aprovadores |
 |----------|-----------|-------------|
-| DEV | Automatica | - |
-| QA | Automatica | - |
+| DEV | Automática | - |
+| QA | Automática | - |
 | PROD | Manual | Tech Lead + PO |
 
 ---
 
-## Gestao de Secrets
+## Gestão de Secrets
 
 ### Azure Key Vault + CSI Driver
 
@@ -346,7 +346,7 @@ readinessProbe:
 @startuml
 skinparam backgroundColor white
 
-title Injecao de Secrets via CSI Driver
+title Injeção de Secrets via CSI Driver
 
 rectangle "Azure Key Vault" as kv {
     file "db-connection-string" as s1
@@ -368,18 +368,18 @@ csi --> pod : mount as volume
 @enduml
 ```
 
-| Aspecto | Configuracao |
+| Aspecto | Configuração |
 |---------|--------------|
 | Ferramenta | Azure Key Vault |
-| Injecao | Secret Store CSI Driver |
+| Injeção | Secret Store CSI Driver |
 | Acesso | Managed Identity por namespace |
-| Rotacao | Suportada (CSI driver faz refresh) |
+| Rotação | Suportada (CSI driver faz refresh) |
 
-### Politica de Rotacao
+### Política de Rotação
 
-| Tipo de Secret | Frequencia | Responsavel |
+| Tipo de Secret | Frequência | Responsável |
 |----------------|------------|-------------|
-| API Keys | 90 dias | Automatico |
+| API Keys | 90 dias | Automático |
 | Certificados TLS | Anual | Infra |
 | DB Credentials | 180 dias | DBA |
 
@@ -387,45 +387,45 @@ csi --> pod : mount as volume
 
 ## Container Registry
 
-| Aspecto | Configuracao |
+| Aspecto | Configuração |
 |---------|--------------|
 | Registry | Azure Container Registry (ACR) |
-| Autenticacao | Managed Identity |
+| Autenticação | Managed Identity |
 | Scanning | Microsoft Defender for Containers |
-| Retencao | 90 dias para tags nao-latest |
+| Retenção | 90 dias para tags não-latest |
 | Naming | `acr.azurecr.io/homebanking/{component}:{version}` |
 
 ### Tagging Strategy
 
 | Tag | Uso |
 |-----|-----|
-| `{semver}` | Versao semantica (ex: `1.2.3`) |
+| `{semver}` | Versão semântica (ex: `1.2.3`) |
 | `{branch}-{sha}` | Feature branches (ex: `develop-abc1234`) |
-| `latest` | Ultima versao de producao |
+| `latest` | Última versão de produção |
 
 ---
 
 ## Disaster Recovery
 
-### Estrategia
+### Estratégia
 
-| Aspecto | Configuracao |
+| Aspecto | Configuração |
 |---------|--------------|
-| Tipo | Cluster replica (standby passivo) |
+| Tipo | Cluster réplica (standby passivo) |
 | RTO | 30 minutos (DEF-02) |
 | RPO | 5 minutos (DEF-02) |
-| Failover | Manual (decisao de negocio) |
+| Failover | Manual (decisão de negócio) |
 
-> **Nota:** Canal web e stateless. Dados estao no backend existente com DR proprio. DR do canal web foca na disponibilidade da aplicacao.
+> **Nota:** Canal web é stateless. Dados estão no backend existente com DR próprio. DR do canal web foca na disponibilidade da aplicação.
 
 ### Componentes com Backup
 
-| Componente | Backup | Frequencia | Retencao |
+| Componente | Backup | Frequência | Retenção |
 |------------|--------|------------|----------|
-| Configuracoes (IaC) | Git | Cada commit | Infinito |
-| Secrets | Key Vault | Automatico | 90 dias |
+| Configurações (IaC) | Git | Cada commit | Infinito |
+| Secrets | Key Vault | Automático | 90 dias |
 | Imagens Container | ACR | Cada build | 90 dias |
-| Dados de aplicacao | N/A | N/A | Backend existente |
+| Dados de aplicação | N/A | N/A | Backend existente |
 
 ---
 
@@ -433,12 +433,12 @@ csi --> pod : mount as volume
 
 ### Runbooks Essenciais
 
-| Runbook | Trigger | Responsavel |
+| Runbook | Trigger | Responsável |
 |---------|---------|-------------|
-| Deploy para Producao | Release aprovada | DevOps |
-| Rollback de Emergencia | Incidente P1 | DevOps |
-| Escalacao de Pods | Alerta de carga | DevOps / Auto |
-| Rotacao de Secrets | Schedule / Incidente | SecOps |
+| Deploy para Produção | Release aprovada | DevOps |
+| Rollback de Emergência | Incidente P1 | DevOps |
+| Escalação de Pods | Alerta de carga | DevOps / Auto |
+| Rotação de Secrets | Schedule / Incidente | SecOps |
 | Failover DR | Indisponibilidade > RTO | Infra |
 
 ### Procedimento de Rollback
@@ -453,21 +453,21 @@ start
 :Detectar problema em PROD;
 :Avaliar severidade;
 if (Severidade P1/P2?) then (sim)
-    :Decisao de rollback;
+    :Decisão de rollback;
     :Executar rollback via kubectl/oc;
     note right
     kubectl rollout undo deployment/bff-web
     kubectl rollout undo deployment/frontend-web
     end note
     :Verificar health checks;
-    if (Servico restaurado?) then (sim)
+    if (Serviço restaurado?) then (sim)
         :Comunicar stakeholders;
         :Abrir post-mortem;
-    else (nao)
+    else (não)
         :Escalar para Infra;
-        :Ativar DR se necessario;
+        :Ativar DR se necessário;
     endif
-else (nao)
+else (não)
     :Investigar root cause;
     :Planear hotfix;
 endif
@@ -478,52 +478,52 @@ stop
 
 ---
 
-## Questoes Pendentes de Confirmacao
+## Questões Pendentes de Confirmação
 
-| ID | Questao | Responsavel | Prioridade |
+| ID | Questão | Responsável | Prioridade |
 |----|---------|-------------|------------|
-| Q-10-001 | Versao especifica do OpenShift | Infra | Media |
-| Q-10-002 | Topologia de rede detalhada (DMZ) | Infra | Media |
-| Q-10-003 | Politica de rotacao de secrets | SecOps | Media |
-| Q-10-004 | Localizacao do site de DR | Infra | Baixa |
+| Q-10-001 | Versão específica do OpenShift | Infra | Média |
+| Q-10-002 | Topologia de rede detalhada (DMZ) | Infra | Média |
+| Q-10-003 | Política de rotação de secrets | SecOps | Média |
+| Q-10-004 | Localização do site de DR | Infra | Baixa |
 | Q-10-005 | Limites de recursos (CPU/Mem) | DevOps | Alta |
 
 ---
 
-## Decisoes
+## Decisões
 
 ### Plataforma de Infraestrutura
-- **Decisao:** AKS com imagens OpenShift-compliant
-- **Justificacao:** AKS disponivel, OpenShift em homologacao. Imagens compliant facilitam migracao.
+- **Decisão:** AKS com imagens OpenShift-compliant
+- **Justificação:** AKS disponível, OpenShift em homologação. Imagens compliant facilitam migração.
 - **Alternativas consideradas:** VMs tradicionais (descartado), Kubernetes vanilla (descartado)
 
-### Estrategia CI/CD
-- **Decisao:** Azure DevOps com GitFlow
-- **Justificacao:** Ferramentas ja em uso no banco, integracao nativa com Azure
+### Estratégia CI/CD
+- **Decisão:** Azure DevOps com GitFlow
+- **Justificação:** Ferramentas já em uso no banco, integração nativa com Azure
 - **Alternativas consideradas:** GitLab CI, Jenkins
 
-### Estrategia de Deploy
-- **Decisao:** Rolling Update com zero downtime
-- **Justificacao:** Minimo impacto em utilizadores, rollback rapido
+### Estratégia de Deploy
+- **Decisão:** Rolling Update com zero downtime
+- **Justificação:** Mínimo impacto em utilizadores, rollback rápido
 - **Alternativas consideradas:** Blue-Green (mais complexo), Canary (overkill para MVP)
 
-### Gestao de Secrets
-- **Decisao:** Azure Key Vault com CSI Driver
-- **Justificacao:** Integracao nativa, rotacao automatica, auditoria
+### Gestão de Secrets
+- **Decisão:** Azure Key Vault com CSI Driver
+- **Justificação:** Integração nativa, rotação automática, auditoria
 - **Alternativas consideradas:** Kubernetes Secrets (menos seguro), HashiCorp Vault (complexidade)
 
 ---
 
-## Decisoes Relacionadas
+## Decisões Relacionadas
 
-- [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Estrategia de containers
+- [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Estratégia de containers
 - [DEC-008-stack-observabilidade-elk.md](../decisions/DEC-008-stack-observabilidade-elk.md) - Stack de observabilidade
-- [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack tecnologica backend
+- [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack tecnológica backend
 
-## Referencias
+## Referências
 
 - [DEF-02-requisitos-nao-funcionais.md](DEF-02-requisitos-nao-funcionais.md) - RTO/RPO
-- [DEF-03-principios-arquitetura.md](DEF-03-principios-arquitetura.md) - Principios de arquitetura
+- [DEF-03-principios-arquitetura.md](DEF-03-principios-arquitetura.md) - Princípios de arquitetura
 - OpenShift Documentation
 - 12-Factor App Methodology
 - Azure DevOps Documentation

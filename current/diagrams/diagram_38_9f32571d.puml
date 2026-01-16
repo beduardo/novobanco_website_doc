@@ -1,0 +1,37 @@
+@startuml
+skinparam backgroundColor white
+
+title Quality Gates no Pipeline
+
+start
+:Commit;
+:Build;
+:Unit Tests;
+if (Pass?) then (sim)
+    :Coverage Check;
+    if (>= 80%?) then (sim)
+        :SAST Scan;
+        if (0 Critical?) then (sim)
+            :E2E Tests;
+            if (Critical pass?) then (sim)
+                :Deploy to DEV;
+            else (não)
+                :BLOCK;
+                stop
+            endif
+        else (não)
+            :BLOCK;
+            stop
+        endif
+    else (não)
+        :BLOCK;
+        stop
+    endif
+else (não)
+    :BLOCK;
+    stop
+endif
+
+stop
+
+@enduml

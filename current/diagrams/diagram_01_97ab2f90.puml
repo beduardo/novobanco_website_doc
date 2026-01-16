@@ -1,0 +1,37 @@
+@startuml
+!define RECTANGLE class
+
+skinparam backgroundColor #FEFEFE
+skinparam componentStyle rectangle
+
+package "Canal Web" {
+    [HomeBanking Web\n(SPA)] as WEB
+}
+
+package "Canal Mobile" {
+    [App Mobile Nativa\n(Existente)] as MOBILE
+}
+
+package "Camada de Serviços" {
+    [API Gateway] as APIGW
+    [Backend Services\n(Reutilizados)] as BACKEND
+}
+
+package "Infraestrutura Existente" {
+    [Core Banking] as CORE
+    [Serviços Terceiros] as THIRD
+    database "Base de Dados" as DB
+}
+
+WEB --> APIGW : HTTPS
+MOBILE --> APIGW : HTTPS
+APIGW --> BACKEND
+BACKEND --> CORE
+BACKEND --> THIRD
+BACKEND --> DB
+
+note right of WEB
+  Tecnologias 100% Web
+  Reutilização de APIs existentes
+end note
+@enduml

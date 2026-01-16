@@ -1,0 +1,23 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+
+rectangle "Estratégia de Cache" {
+    rectangle "Browser Cache" #LightBlue {
+        [Dados Públicos]
+        [Preferências UI]
+        [Notícias]
+    }
+
+    rectangle "BFF Cache" #LightGreen {
+        [Sessões]
+        [Tokens OAuth]
+        [Dados SSR] #Yellow
+    }
+
+    note bottom of [Dados SSR]
+        Se SSR completo
+        for implementado
+    end note
+}
+
+@enduml

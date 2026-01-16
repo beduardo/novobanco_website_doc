@@ -1,0 +1,39 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam componentStyle rectangle
+
+package "Frontend Stack" {
+    package "Core" {
+        [React 18+] as REACT
+        [TypeScript] as TS
+        [Vite] as VITE
+    }
+
+    package "State & Data" {
+        [Zustand] as STATE
+        [TanStack Query] as QUERY
+        [i18next] as I18N
+    }
+
+    package "UI" {
+        [Tailwind CSS] as TAILWIND
+        [Design System] as DS
+    }
+
+    package "Testing" {
+        [Vitest] as VITEST
+        [Playwright] as PLAYWRIGHT
+    }
+}
+
+REACT --> TS
+TS --> VITE
+REACT --> STATE
+REACT --> QUERY
+REACT --> I18N
+REACT --> TAILWIND
+TAILWIND --> DS
+REACT --> VITEST
+REACT --> PLAYWRIGHT
+
+@enduml

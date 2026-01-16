@@ -1,0 +1,14 @@
+@startuml
+skinparam componentStyle rectangle
+skinparam backgroundColor white
+
+title Injeção de Secrets via CSI Driver
+
+[Azure Key Vault] as KV
+[Secret Store CSI Driver] as CSI
+[BFF Pod] as BFF
+
+KV --> CSI : Sync
+CSI --> BFF : Mount as volume
+
+@enduml

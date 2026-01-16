@@ -1,0 +1,22 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+
+title Ciclo de Vida da Sessão
+
+[*] --> Ativa : Login bem sucedido
+
+Ativa --> Ativa : Atividade do utilizador\n(reset timeout inatividade)
+Ativa --> Aviso : 9 min inatividade
+Aviso --> Ativa : Utilizador interage
+Aviso --> Expirada : 10 min inatividade
+Ativa --> Expirada : 30 min absolutos
+Ativa --> Terminada : Logout manual
+Expirada --> [*]
+Terminada --> [*]
+
+note right of Aviso
+    Popup com temporizador
+    Avisa utilizador
+end note
+
+@enduml

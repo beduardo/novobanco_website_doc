@@ -1,0 +1,21 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+
+rectangle "Armazenamento por Camada" {
+    rectangle "Frontend" #LightBlue {
+        [localStorage] #LightGreen
+        note bottom : Dados não sensíveis apenas
+    }
+
+    rectangle "BFF" #LightBlue {
+        [Cache Distribuído] #LightGreen
+        note bottom : Sessões e tokens\nSem base de dados própria
+    }
+
+    rectangle "Backend" #LightGreen {
+        [Databases Existentes]
+        note bottom : Dados transacionais\nReutilizados da app mobile
+    }
+}
+
+@enduml

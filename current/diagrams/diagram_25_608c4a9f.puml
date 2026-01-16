@@ -1,0 +1,61 @@
+@startuml
+skinparam componentStyle rectangle
+skinparam backgroundColor white
+
+title Arquitetura de Integração - HomeBanking Web
+
+package "Canal Web" {
+  [Frontend SPA\nReact + TypeScript] as FE
+  [BFF\n.NET 8] as BFF
+}
+
+package "Integração" {
+  [Azure API Gateway] as GW
+}
+
+package "Backend Services" {
+  [Backend API\n(Facade)] as FACADE
+
+  package "Core Systems" {
+    [Core Banking] as CB
+    [Autenticação] as AUTH
+    [Cartões] as CARDS
+  }
+
+  package "Serviços" {
+    [Notificações] as NOTIF
+    [KYC/AML] as KYC
+  }
+}
+
+package "Terceiros" #LightGray {
+  [SMS Gateway] as SMS
+  [Push Service] as PUSH
+  [Email Service] as EMAIL
+}
+
+FE --> BFF : REST/HTTPS\n(Session Cookie)
+BFF --> GW : REST/HTTPS\n(User Token)
+GW --> FACADE : REST
+FACADE --> CB
+FACADE --> AUTH
+FACADE --> CARDS
+FACADE --> NOTIF
+FACADE --> KYC
+NOTIF --> SMS
+NOTIF --> PUSH
+NOTIF --> EMAIL
+
+note right of FACADE
+  Ponto único de acesso
+  ao Core Banking
+end note
+
+note right of BFF
+  - Agregação de dados
+  - Transformação
+  - Cache de sessão
+  - Gestão de tokens
+end note
+
+@enduml

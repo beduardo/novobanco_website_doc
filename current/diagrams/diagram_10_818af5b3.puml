@@ -1,0 +1,46 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam componentStyle rectangle
+
+title Decomposição de Serviços - HomeBanking Web
+
+package "Novos Componentes" #LightBlue {
+    [Frontend Web\n(React SPA)] as FE
+    [BFF Web\n(.NET 8)] as BFF
+}
+
+package "Componentes Existentes" #LightGreen {
+    [API Gateway] as APIGW
+
+    package "Backend Services" {
+        [Auth Service] as AUTH
+        [Account Service] as ACCOUNT
+        [Payment Service] as PAYMENT
+        [Investment Service] as INVEST
+        [Document Service] as DOC
+    }
+
+    [Core Banking] as CORE
+}
+
+package "Infraestrutura" {
+    [ELK Stack] as ELK
+    database "Redis Cluster\n(Sessão)" as CACHE
+}
+
+FE --> BFF : HTTPS/REST
+BFF --> APIGW : REST
+BFF --> CACHE : Tokens
+APIGW --> AUTH
+APIGW --> ACCOUNT
+APIGW --> PAYMENT
+APIGW --> INVEST
+APIGW --> DOC
+AUTH --> CORE
+ACCOUNT --> CORE
+PAYMENT --> CORE
+
+FE ..> ELK : Logs
+BFF ..> ELK : Logs/Métricas
+
+@enduml

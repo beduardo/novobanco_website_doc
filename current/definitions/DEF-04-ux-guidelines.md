@@ -18,129 +18,129 @@ status: completed
 
 # DEF-04: UX Guidelines
 
-> **Secao relacionada:** [4 - Experiencia do Utilizador & Arquitetura Frontend](../sections/SEC-04-experiencia-utilizador-frontend.md)
+> **Secção relacionada:** [4 - Experiência do Utilizador & Arquitetura Frontend](../sections/SEC-04-experiencia-utilizador-frontend.md)
 
 ## Contexto
 
-Definir as diretrizes de experiencia do utilizador para o HomeBanking Web, garantindo uma experiencia consistente, intuitiva e alinhada com as melhores praticas do sector bancario.
+Definir as diretrizes de experiência do utilizador para o HomeBanking Web, garantindo uma experiência consistente, intuitiva e alinhada com as melhores práticas do setor bancário.
 
 ## Perguntas a Responder
 
 ### Jornadas do Utilizador
-1. Quais sao as jornadas de utilizador prioritarias?
+1. Quais são as jornadas de utilizador prioritárias?
     Jornadas ainda a validar, mas serão baseadas nos requisitos funcionais.
 
 2. Existem fluxos documentados da app mobile que devem ser replicados?
-    Sim. Os fluxos da app mobible devem ser replicados na web
+    Sim. Os fluxos da app mobile devem ser replicados na web
 
-3. Ha pontos de dor conhecidos na app mobile a evitar?
+3. Há pontos de dor conhecidos na app mobile a evitar?
     Necessita aprofundamento
 
-### Navegacao
-4. Qual sera a estrutura de navegacao (sidebar, top nav, bottom nav)?
+### Navegação
+4. Qual será a estrutura de navegação (sidebar, top nav, bottom nav)?
     SideBar.
 
-5. Ha requisitos de breadcrumbs ou navegacao contextual?
+5. Há requisitos de breadcrumbs ou navegação contextual?
     Sim. O utilizador precisa se localizar rapidamente e haverá momentos que a navegação dependerá da origem.
 
 ### Feedback ao Utilizador
-6. Quais padroes de feedback serao utilizados (toasts, modais, inline)?
+6. Quais padrões de feedback serão utilizados (toasts, modais, inline)?
     Toasts para avisos não bloqueantes e modais para avisos que necessitem de uma resposta do utilizador.
 
-7. Ha requisitos especificos para mensagens de erro?
+7. Há requisitos específicos para mensagens de erro?
     Não
 
 ### Performance Percebida
-8. Ha requisitos de skeleton screens ou loading states?
+8. Há requisitos de skeleton screens ou loading states?
     Sim. O utilizador deve sentir que a aplicação está responsiva 100% do tempo.
 
-9. Qual e a estrategia de pre-fetching de dados?
+9. Qual é a estratégia de pre-fetching de dados?
     Pre-fetch com Vite + dados com TanStack
 
 ### PWA e Offline (Consolidado)
 
-> **Nota:** Esta e a definicao principal para requisitos de PWA/Offline do projeto.
+> **Nota:** Esta é a definição principal para requisitos de PWA/Offline do projeto.
 
-10. Ha requisitos de funcionamento offline?
-    Necessita aprofundamento. Considerar: visualizacao de saldos em cache, filas de operacoes
+10. Há requisitos de funcionamento offline?
+    Necessita aprofundamento. Considerar: visualização de saldos em cache, filas de operações
 
-11. Sera implementado como PWA instalavel?
-    Necessita aprofundamento. Beneficios: install prompt, icone na home, experiencia app-like
+11. Será implementado como PWA instalável?
+    Necessita aprofundamento. Benefícios: install prompt, ícone na home, experiência app-like
 
-12. Quais funcionalidades devem estar disponiveis offline (se aplicavel)?
-    Necessita aprofundamento. Sugestao: consultas em cache, sem operacoes transacionais
+12. Quais funcionalidades devem estar disponíveis offline (se aplicável)?
+    Necessita aprofundamento. Sugestão: consultas em cache, sem operações transacionais
 
-### Seguranca UX
+### Segurança UX
 
-13. Como sera comunicada a seguranca ao utilizador?
+13. Como será comunicada a segurança ao utilizador?
     Necessita aprofundamento (indicadores visuais, certificado, etc.)
 
-14. Ha requisitos de timeout de sessao com aviso previo?
-    Sim. Popup na aplicacao com temporizador antes de expirar.
+14. Há requisitos de timeout de sessão com aviso prévio?
+    Sim. Popup na aplicação com temporizador antes de expirar.
     Timeout por inatividade: 10 minutos (ver DEF-07)
 
-## Decisoes
+## Decisões
 
-### Jornadas Prioritarias
-- **Decisao:** Jornadas baseadas nos requisitos funcionais, a validar em detalhe
-- **Justificacao:** Paridade com fluxos da app mobile
+### Jornadas Prioritárias
+- **Decisão:** Jornadas baseadas nos requisitos funcionais, a validar em detalhe
+- **Justificação:** Paridade com fluxos da app mobile
 - **Alternativas consideradas:** N/A
 
-### Replicacao de Fluxos Mobile
-- **Decisao:** Fluxos da app mobile devem ser replicados na web
-- **Justificacao:** Consistencia de experiencia entre canais
+### Replicação de Fluxos Mobile
+- **Decisão:** Fluxos da app mobile devem ser replicados na web
+- **Justificação:** Consistência de experiência entre canais
 - **Alternativas consideradas:** Fluxos otimizados para web (descartado por requisito de paridade)
 
 ### Pontos de Dor Mobile
-- **Decisao:** _A definir_ - Necessita aprofundamento
-- **Justificacao:** Identificar e evitar problemas conhecidos da app mobile
+- **Decisão:** _A definir_ - Necessita aprofundamento
+- **Justificação:** Identificar e evitar problemas conhecidos da app mobile
 - **Alternativas consideradas:** N/A
 
-### Estrutura de Navegacao
-- **Decisao:** SideBar com breadcrumbs e navegacao contextual
-- **Justificacao:** Utilizador precisa se localizar rapidamente; navegacao pode depender da origem
+### Estrutura de Navegação
+- **Decisão:** SideBar com breadcrumbs e navegação contextual
+- **Justificação:** Utilizador precisa se localizar rapidamente; navegação pode depender da origem
 - **Alternativas consideradas:** Top nav, Bottom nav (descartados)
 
-### Padroes de Feedback
-- **Decisao:**
-  - Toasts: Avisos nao bloqueantes
+### Padrões de Feedback
+- **Decisão:**
+  - Toasts: Avisos não bloqueantes
   - Modais: Avisos que requerem resposta do utilizador
-- **Justificacao:** Separacao clara entre informacao e acao requerida
-- **Alternativas consideradas:** Inline feedback, Notificacoes push
+- **Justificação:** Separação clara entre informação e ação requerida
+- **Alternativas consideradas:** Inline feedback, Notificações push
 
 ### Loading States
-- **Decisao:** Skeleton screens obrigatorios para percepcao de responsividade 100%
-- **Justificacao:** Experiencia de utilizador fluida, reducao de percepcao de lentidao
+- **Decisão:** Skeleton screens obrigatórios para perceção de responsividade 100%
+- **Justificação:** Experiência de utilizador fluida, redução de perceção de lentidão
 - **Alternativas consideradas:** Spinners simples (descartado por UX inferior)
 
 ### Pre-fetching
-- **Decisao:** Pre-fetch com Vite + cache de dados com TanStack Query
-- **Justificacao:** Carregamento antecipado de dados para navegacao fluida
+- **Decisão:** Pre-fetch com Vite + cache de dados com TanStack Query
+- **Justificação:** Carregamento antecipado de dados para navegação fluida
 - **Alternativas consideradas:** Fetch on demand apenas
 
 ### PWA/Offline
-- **Decisao:** _A definir_ - Necessita aprofundamento
-- **Justificacao:** Avaliar requisitos de instalacao e funcionamento offline
-- **Alternativas consideradas:** PWA instalavel, Service Workers para cache
+- **Decisão:** _A definir_ - Necessita aprofundamento
+- **Justificação:** Avaliar requisitos de instalação e funcionamento offline
+- **Alternativas consideradas:** PWA instalável, Service Workers para cache
 
-### Seguranca UX
-- **Decisao:** _A definir_ - Necessita aprofundamento
-- **Justificacao:** Definir comunicacao de seguranca e timeout de sessao
+### Segurança UX
+- **Decisão:** _A definir_ - Necessita aprofundamento
+- **Justificação:** Definir comunicação de segurança e timeout de sessão
 - **Alternativas consideradas:** N/A
 
-## Restricoes Conhecidas
+## Restrições Conhecidas
 
 - Paridade funcional com app mobile
-- SCA obrigatorio para todo o acesso
+- SCA obrigatório para todo o acesso
 - Design responsivo
 - Suporte multi-idioma (PT, EN, ES)
 
-## Decisoes Relacionadas
+## Decisões Relacionadas
 
-- [DEC-009-stack-tecnologica-frontend.md](../decisions/DEC-009-stack-tecnologica-frontend.md) - Stack tecnologica frontend
+- [DEC-009-stack-tecnologica-frontend.md](../decisions/DEC-009-stack-tecnologica-frontend.md) - Stack tecnológica frontend
 
-## Referencias
+## Referências
 
 - Fluxos da app mobile (a fornecer)
-- Best practices UX bancario
+- Best practices UX bancário
 - Nielsen Norman Group guidelines
