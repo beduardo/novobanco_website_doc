@@ -18,6 +18,8 @@ status: in-progress
 
 # 6. Arquitetura de Dados
 
+## Definições e Decisões
+
 > **Definições requeridas:**
 > - [DEF-06-arquitetura-dados.md](../definitions/DEF-06-arquitetura-dados.md) - Status: completed
 >

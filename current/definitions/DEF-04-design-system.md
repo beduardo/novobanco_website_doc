@@ -57,13 +57,16 @@ Definir o design system a ser utilizado no HomeBanking Web, garantindo consistê
 > **Nota:** Esta é a definição principal para requisitos de acessibilidade do projeto.
 
 9. Quais níveis de WCAG devem ser atingidos?
-    Necessita aprofundamento. Referência de indústria: WCAG 2.1 AA
+    **WCAG 2.1 AA** - Confirmado pelo cliente.
 
 10. Há requisitos específicos de contraste ou tamanho de fonte?
-    Ainda não definidos - seguir WCAG 2.1 AA como baseline
+    Necessita aprofundamento. Seguir WCAG 2.1 AA como baseline até esclarecimento.
 
 11. Será utilizada ferramenta automatizada de verificação de acessibilidade?
     Necessita aprofundamento (ex: axe-core, Lighthouse)
+
+12. Será necessária auditoria de acessibilidade externa?
+    Necessita aprofundamento.
 
 ## Decisões
 
@@ -98,9 +101,9 @@ Definir o design system a ser utilizado no HomeBanking Web, garantindo consistê
 - **Alternativas consideradas:** Apenas Figma, apenas Storybook
 
 ### Acessibilidade
-- **Decisão:** _A definir_ - Nível WCAG a determinar
-- **Justificação:** Necessita aprofundamento com stakeholders
-- **Alternativas consideradas:** WCAG 2.1 AA (referência de indústria)
+- **Decisão:** WCAG 2.1 AA obrigatório
+- **Justificação:** Confirmado pelo cliente. Nível AA é o padrão de indústria para aplicações bancárias.
+- **Alternativas consideradas:** WCAG 2.1 AAA (descartado por requisitos excessivos)
 
 ## Restrições Conhecidas
 

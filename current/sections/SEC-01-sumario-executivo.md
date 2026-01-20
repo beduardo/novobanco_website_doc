@@ -16,6 +16,7 @@ status: in-progress
 
 # 1. Sumário Executivo
 
+## Definições e Decisões
 > **Definições requeridas:**
 > - [DEF-01-objetivos-documento.md](../definitions/DEF-01-objetivos-documento.md) - Status: completed
 >

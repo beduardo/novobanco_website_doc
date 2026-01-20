@@ -17,6 +17,8 @@ status: in-progress
 
 # 3. Visão Geral da Solução
 
+## Definições e Decisões
+
 > **Definições requeridas:**
 > - [DEF-03-principios-arquitetura.md](../definitions/DEF-03-principios-arquitetura.md) - Status: completed
 > - [DEF-03-casos-uso-principais.md](../definitions/DEF-03-casos-uso-principais.md) - Status: completed

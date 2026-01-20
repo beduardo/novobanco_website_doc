@@ -18,6 +18,8 @@ status: in-progress
 
 # 4. Experiência do Utilizador & Arquitetura Frontend
 
+## Definições e Decisões
+
 > **Definições requeridas:**
 > - [DEF-04-stack-frontend.md](../definitions/DEF-04-stack-frontend.md) - Status: completed
 > - [DEF-04-design-system.md](../definitions/DEF-04-design-system.md) - Status: completed
@@ -130,9 +132,11 @@ As jornadas serão baseadas nos 35 requisitos funcionais definidos, com foco em:
 
 | Requisito | Status | Observação |
 |-----------|--------|------------|
-| PWA Instalável | _A definir_ | Necessita aprofundamento |
-| Funcionamento Offline | _A definir_ | Necessita aprofundamento |
-| Service Workers | _A definir_ | Para cache de assets |
+| PWA Instalável | **Não** | Cliente confirmou que não será PWA |
+| Funcionamento Offline | **Não** | Sem requisitos de funcionamento offline |
+| Service Workers | **N/A** | Não aplicável |
+
+**Decisão:** A aplicação será uma aplicação web tradicional, sem funcionalidades PWA ou offline. Esta decisão foi confirmada pelo cliente.
 
 ### 4.6 Stack Frontend
 
@@ -377,8 +381,9 @@ end note
 
 | Item | Documento | Responsável |
 |------|-----------|-------------|
-| PWA/Offline requirements | DEF-04-ux-guidelines | Arquitetura |
+| ~~PWA/Offline requirements~~ | ~~DEF-04-ux-guidelines~~ | ~~Arquitetura~~ | **Decidido: Não será PWA** |
 | Comunicação de segurança ao utilizador | DEF-04-ux-guidelines | UX + Segurança |
-| WCAG level | DEF-04-design-system | UX |
+| ~~WCAG level~~ | ~~DEF-04-design-system~~ | ~~UX~~ | **Decidido: WCAG 2.1 AA** |
 | Bundle size limits | DEF-04-stack-frontend | Performance |
 | Pontos de dor app mobile | DEF-04-ux-guidelines | UX |
+| Comportamento em conectividade intermitente | DEF-04-ux-guidelines | UX |

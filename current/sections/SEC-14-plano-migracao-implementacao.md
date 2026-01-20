@@ -19,6 +19,8 @@ status: completed
 
 # 14. Plano de Migracao & Implementacao
 
+## Definições e Decisões
+
 > **Definicao:** [DEF-14-plano-migracao-implementacao.md](../definitions/DEF-14-plano-migracao-implementacao.md)
 
 ## Proposito

@@ -19,6 +19,8 @@ status: completed
 
 # 10. Arquitetura Operacional
 
+## Definições e Decisões
+
 > **Definição:** [DEF-10-arquitetura-operacional.md](../definitions/DEF-10-arquitetura-operacional.md)
 
 ## Propósito

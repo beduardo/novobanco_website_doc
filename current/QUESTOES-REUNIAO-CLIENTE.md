@@ -12,55 +12,79 @@
 ### 1. PWA e Funcionamento Offline (DEF-04-ux-guidelines)
 
 - O HomeBanking Web deve funcionar como PWA instalavel?
+    Não
 - Ha requisitos de funcionamento offline? Se sim, quais funcionalidades?
+    Não
 - Qual o comportamento esperado em conectividade intermitente?
+    (Quais as opções?)
 
 ### 2. Sessao Multi-Canal (DEF-07-autenticacao-autorizacao)
 
 - Como a sessao web se relaciona com a sessao mobile (mesmo utilizador)?
+    Não há relação
 - Ha limite de sessoes ativas por utilizador?
+    (A questionar)
 - O login web deve fazer logout automatico de outras sessoes?
+    (A questionar)
 
-### 3. Fluxos de Autenticacao Fallback (DEF-07-autenticacao-autorizacao) [NOVO]
+### 3. Fluxos de Autenticacao Fallback (DEF-07-autenticacao-autorizacao)
 
 - Quais combinacoes de segundo fator estarao disponiveis no fallback (SMS OTP, App Push, ambos)?
+    (O cliente não entendeu a pergunta)
 - A disponibilidade depende de configuracao por utilizador ou e uniforme?
+    Uniforme
 - Ha prioridade entre os metodos de fallback?
+    Não
 
-### 4. Primeiro Acesso / Registo Web (DEF-07-autenticacao-autorizacao) [NOVO]
+### 4. Primeiro Acesso / Registo Web (DEF-07-autenticacao-autorizacao)
 
 - Existe fluxo de primeiro acesso/registo especifico para o canal web?
+    Sim
 - Se sim, como funciona a validacao de identidade inicial?
+    É feita com a mesma API de Login
 - O utilizador pode registar-se apenas pelo web ou necessita da app mobile primeiro?
+    Pela Web ou pela APP. São processos semelhantes mas necessários em cada dispositivo.
 
-### 5. Politicas de Password (DEF-07-autenticacao-autorizacao) [NOVO]
+### 5. Politicas de Password (DEF-07-autenticacao-autorizacao)
+(Resposta geral do cliente: Todo este processo é gerido pelas API. Não estou a ver a necessidade de abordar este tema no front.)
+- Quais os requisitos minimos de password (comprimento, complexidade)? 
+    Sim, gerido pela API
+- Ha politica de expiracao de password? Se sim, qual o periodo? 
+    Sim, gerido pela API
+- Ha mecanismo de bloqueio apos tentativas falhadas? Quantas tentativas? 
+    Sim, gerido pela API
+- Como funciona o fluxo de recuperacao/reset de password? 
+    Sim, gerido pela API
 
-- Quais os requisitos minimos de password (comprimento, complexidade)?
-- Ha politica de expiracao de password? Se sim, qual o periodo?
-- Ha mecanismo de bloqueio apos tentativas falhadas? Quantas tentativas?
-- Como funciona o fluxo de recuperacao/reset de password?
-
-### 6. Anti-automacao e Revogacao (DEF-07-autenticacao-autorizacao) [NOVO]
+### 6. Anti-automacao e Revogacao (DEF-07-autenticacao-autorizacao)
 
 - Sera implementado CAPTCHA em algum fluxo (login, recuperacao password)?
+    (A questionar)
 - Ha mecanismo de logout de todos os dispositivos (panic button)?
+    (A questionar)
 - Como funciona a revogacao de tokens em caso de comprometimento?
+    (A questionar)
 
 ### 7. Acessibilidade - WCAG (DEF-04-design-system)
 
 - Qual o nivel de WCAG obrigatorio (A, AA, AAA)?
+    Já respondido, AA
 - Ha requisitos especificos de contraste ou tamanho de fonte?
+    (A questionar)
 - Sera necessaria auditoria de acessibilidade externa?
+    (A questionar)
 
 ### 8. CDN para Assets Estaticos (DEF-04-stack-frontend)
 
 - Sera utilizado CDN para assets estaticos?
+    Deve ser uma decisão sua. Decida e informe os motivos.
 - Se sim, qual provider (Azure CDN, Cloudflare, outro)?
+    Decida.
 
 ---
 
 ## Prioridade Alta - Seguranca e Conformidade
-
+(Resposta geral do cliente: Todo este processo é gerido pelas API. Não estou a ver a necessidade de abordar este tema no front.)
 ### 9. RGPD (DEF-08-seguranca-conformidade)
 
 - Qual a base legal para tratamento de dados dos utilizadores?
@@ -143,19 +167,19 @@
 - Existe message broker em uso (RabbitMQ, Kafka, Azure Service Bus)?
 - Quais eventos sao publicados/consumidos pelo canal web?
 
-### 23. HSM - Hardware Security Module (DEF-09-integracao-interfaces) [NOVO]
+### 23. HSM - Hardware Security Module (DEF-09-integracao-interfaces)
 
 - Qual HSM e utilizado pelo banco (Thales, AWS CloudHSM, Azure Dedicated HSM)?
 - Quais operacoes do canal web requerem HSM (assinatura digital, encriptacao)?
 - A integracao HSM ja esta disponivel via Backend API?
 
-### 24. Identity Provider / SSO (DEF-09-integracao-interfaces) [NOVO]
+### 24. Identity Provider / SSO (DEF-09-integracao-interfaces)
 
 - Existe Identity Provider corporativo (Azure AD, Okta, outro)?
 - Ha requisitos de SSO entre o canal web e outros sistemas internos?
 - O Identity Provider e o mesmo utilizado pela app mobile?
 
-### 25. Document Management System (DEF-09-integracao-interfaces) [NOVO]
+### 25. Document Management System (DEF-09-integracao-interfaces)
 
 - Existe DMS centralizado para extratos e comprovativos?
 - Os documentos sao gerados em tempo real ou pre-gerados?
@@ -237,7 +261,7 @@
 
 ---
 
-## Inconsistencias e Clarificacoes Necessarias [NOVO]
+## Inconsistencias e Clarificacoes Necessarias
 
 As seguintes inconsistencias foram identificadas no cruzamento entre definicoes e decisoes:
 

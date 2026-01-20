@@ -37,7 +37,9 @@ Definir a estratégia de autenticação e autorização do HomeBanking Web. Nota
     Sim
 
 3. Há fluxo de primeiro acesso/registo específico para web?
-    Necessita aprofundamento
+    **Sim.** Existe fluxo de primeiro acesso/registo específico para o canal web.
+    - Validação de identidade: Utiliza a mesma API de Login
+    - Registo: Pode ser feito pela Web ou pela APP. São processos semelhantes mas necessários em cada dispositivo (independentes).
 
 ### MFA/SCA (Strong Customer Authentication)
 4. Qual o segundo fator obrigatório (App push, SMS OTP, TOTP)?
@@ -63,80 +65,104 @@ Definir a estratégia de autenticação e autorização do HomeBanking Web. Nota
 10. Como será comunicado ao utilizador que a sessão vai expirar?
     Popup na aplicação com temporizador
 
-### Sessão Multi-Canal (NOVO)
+### Sessão Multi-Canal
 
 11. Como a sessão web se relaciona com a sessão mobile (mesmo utilizador)?
-    Necessita aprofundamento. Considerar: sessões independentes ou sincronizadas
+    **Não há relação.** As sessões web e mobile são completamente independentes.
 
 12. Há limite de sessões ativas por utilizador?
-    Necessita aprofundamento. Sugestão: 1 sessão web + 1 sessão mobile
+    Necessita aprofundamento.
+
+13. O login web deve fazer logout automático de outras sessões?
+    Necessita aprofundamento.
 
 ### Estratégia de Tokens
-13. Qual o tempo de vida do access token?
+14. Qual o tempo de vida do access token?
     15 minutos
 
-14. Qual o tempo de vida do refresh token?
+15. Qual o tempo de vida do refresh token?
     7 dias
 
-15. Onde serão armazenados os tokens?
+16. Onde serão armazenados os tokens?
     Backend tokens (Access/Refresh): BFF cache
     Session tokens: Cookie HttpOnly Secure
 
-16. Como será tratada a renovação de tokens?
+17. Como será tratada a renovação de tokens?
     Refresh silencioso conforme atividade do utilizador
 
 ### Autorização
-17. Qual o modelo de autorização (RBAC, ABAC)?
+18. Qual o modelo de autorização (RBAC, ABAC)?
     ABAC híbrido com RBAC. Roles como atributo do sujeito.
 
-18. Há permissões específicas por tipo de operação?
+19. Há permissões específicas por tipo de operação?
     Sim (consulta vs transação)
 
 ### Políticas de Password
-19. Quais os requisitos mínimos de password?
-    Seguirá requisitos preexistentes da App. Necessita aprofundamento
+20. Quais os requisitos mínimos de password?
+    **Gerido pela API.** Cliente indicou que toda a lógica de políticas de password é gerida pelo backend/API. Não é responsabilidade do frontend definir estas regras.
 
-20. Há bloqueio após tentativas falhadas?
-    Necessita aprofundamento
+21. Há política de expiração de password?
+    **Gerido pela API.**
 
-### Anti-automation e Revogação (Simplificado)
-21. Será implementado CAPTCHA ou rate limiting em login?
+22. Há bloqueio após tentativas falhadas?
+    **Gerido pela API.**
+
+23. Como funciona o fluxo de recuperação/reset de password?
+    **Gerido pela API.** O frontend apenas apresenta os formulários; a validação e lógica é do backend.
+
+### Anti-automation e Revogação
+24. Será implementado CAPTCHA ou rate limiting em login?
     Necessita aprofundamento. Rate limiting no Gateway.
 
-22. Há mecanismo de logout de todos os dispositivos?
+25. Há mecanismo de logout de todos os dispositivos (panic button)?
     Necessita aprofundamento. Essencial para segurança.
+
+26. Como funciona a revogação de tokens em caso de comprometimento?
+    Necessita aprofundamento.
+
+### Fallback de MFA
+27. A disponibilidade de métodos de fallback depende de configuração por utilizador ou é uniforme?
+    **Uniforme.** Todos os utilizadores têm acesso aos mesmos métodos de fallback.
+
+28. Há prioridade entre os métodos de fallback?
+    **Não.** Sem prioridade entre métodos.
 
 ## Decisões
 
 ### Métodos de Autenticação
-- **Decisão:** _A preencher_
-- **Justificação:**
-- **Alternativas consideradas:**
+- **Decisão:** Login unificado (mesmas credenciais web/mobile) com fluxo de registo independente por canal
+- **Justificação:** Utilizadores podem registar-se pela Web ou APP separadamente. Validação usa mesma API de Login.
+- **Alternativas consideradas:** Registo obrigatório via APP primeiro (descartado pelo cliente)
 
 ### MFA/SCA
-- **Decisão:** _A preencher_
-- **Justificação:**
-- **Alternativas consideradas:**
+- **Decisão:** QR Code com biometria como método primário; SMS OTP e App Push como fallback
+- **Justificação:** Fallback uniforme para todos os utilizadores, sem prioridade entre métodos
+- **Alternativas consideradas:** Configuração por utilizador (descartado - será uniforme)
 
 ### Gestão de Sessões
-- **Decisão:** _A preencher_
-- **Justificação:**
-- **Alternativas consideradas:**
+- **Decisão:** Sessões web e mobile completamente independentes
+- **Justificação:** Cliente confirmou que não há relação entre sessões dos dois canais
+- **Alternativas consideradas:** Sessões sincronizadas (descartado)
 
 ### Tokens
-- **Decisão:** _A preencher_
-- **Justificação:**
-- **Alternativas consideradas:**
+- **Decisão:** Access token 15 min, Refresh token 7 dias, armazenados no BFF
+- **Justificação:** Segurança com renovação silenciosa conforme atividade
+- **Alternativas consideradas:** Tokens mais longos (descartado por segurança)
 
 ### Autorização
-- **Decisão:** _A preencher_
-- **Justificação:**
-- **Alternativas consideradas:**
+- **Decisão:** ABAC híbrido com RBAC (roles como atributo)
+- **Justificação:** Flexibilidade para permissões por tipo de operação
+- **Alternativas consideradas:** RBAC puro (descartado por falta de granularidade)
+
+### Políticas de Password
+- **Decisão:** Totalmente gerido pela API/Backend
+- **Justificação:** Cliente indicou que requisitos, expiração, bloqueio e recuperação são responsabilidade da API. Frontend apenas apresenta formulários.
+- **Alternativas consideradas:** Validação duplicada no frontend (descartado)
 
 ### Anti-automation
-- **Decisão:** _A preencher_
-- **Justificação:**
-- **Alternativas consideradas:**
+- **Decisão:** _A definir_ - Necessita aprofundamento
+- **Justificação:** CAPTCHA, rate limiting e revogação de tokens ainda pendentes de validação
+- **Alternativas consideradas:** N/A
 
 ## Restrições Conhecidas
 

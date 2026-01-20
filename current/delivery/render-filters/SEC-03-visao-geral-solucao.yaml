@@ -1,0 +1,14 @@
+apiVersion: devtool/v1
+kind: RenderDocument
+metadata:
+  name: SEC-03
+spec:
+  notWanted:
+    - heading: 3. Visão Geral da Solução
+      children:
+      - heading: Definições e Decisões
+      - heading: Entregáveis
+      - heading: Definições Utilizadas
+      - heading: Decisões Referenciadas
+      - heading: Itens Pendentes
+      - heading: Perguntas para o Utilizador

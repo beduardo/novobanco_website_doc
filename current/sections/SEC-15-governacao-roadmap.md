@@ -19,6 +19,8 @@ status: completed
 
 # 15. Governação & Roadmap
 
+## Definições e Decisões
+
 > **Definição:** [DEF-15-governacao-roadmap.md](../definitions/DEF-15-governacao-roadmap.md)
 
 ## Propósito

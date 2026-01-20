@@ -1,0 +1,106 @@
+apiVersion: devtool/v1
+kind: Pipeline
+metadata:
+    name: novobancoword.yaml
+spec:
+    steps:
+        - name: section-01-render
+          command: document.render
+          params:
+            destination: ./rendered/SEC-01-sumario-executivo-rendered.md
+            filter: ./render-filters/SEC-01-sumario-executivo.yaml
+            source: ../sections/SEC-01-sumario-executivo.md
+        - name: section-02-render
+          command: document.render
+          params:
+            destination: ./rendered/SEC-02-contexto-negocio-requisitos-rendered.md
+            filter: ./render-filters/SEC-02-contexto-negocio-requisitos.yaml
+            source: ../sections/SEC-02-contexto-negocio-requisitos.md
+        - name: section-03-render
+          command: document.render
+          params:
+            destination: ./rendered/SEC-03-visao-geral-solucao-rendered.md
+            filter: ./render-filters/SEC-03-visao-geral-solucao.yaml
+            source: ../sections/SEC-03-visao-geral-solucao.md
+        - name: section-04-render
+          command: document.render
+          params:
+            destination: ./rendered/SEC-04-experiencia-utilizador-frontend-rendered.md
+            filter: ./render-filters/SEC-04-experiencia-utilizador-frontend.yaml
+            source: ../sections/SEC-04-experiencia-utilizador-frontend.md
+        - name: section-05-render
+          command: document.render
+          params:
+            destination: ./rendered/SEC-05-arquitetura-backend-servicos-rendered.md
+            filter: ./render-filters/SEC-05-arquitetura-backend-servicos.yaml
+            source: ../sections/SEC-05-arquitetura-backend-servicos.md
+        - name: section-06-render
+          command: document.render
+          params:
+            destination: ./rendered/SEC-06-arquitetura-dados-rendered.md
+            filter: ./render-filters/SEC-06-arquitetura-dados.yaml
+            source: ../sections/SEC-06-arquitetura-dados.md
+        - name: section-07-render
+          command: document.render
+          params:
+            destination: ./rendered/SEC-07-autenticacao-autorizacao-rendered.md
+            filter: ./render-filters/SEC-07-autenticacao-autorizacao.yaml
+            source: ../sections/SEC-07-autenticacao-autorizacao.md
+        - name: section-08-render
+          command: document.render
+          params:
+            destination: ./rendered/SEC-08-seguranca-conformidade-rendered.md
+            filter: ./render-filters/SEC-08-seguranca-conformidade.yaml
+            source: ../sections/SEC-08-seguranca-conformidade.md
+        - name: section-09-render
+          command: document.render
+          params:
+            destination: ./rendered/SEC-09-integracao-interfaces-externas-rendered.md
+            filter: ./render-filters/SEC-09-integracao-interfaces-externas.yaml
+            source: ../sections/SEC-09-integracao-interfaces-externas.md
+        - name: section-10-render
+          command: document.render
+          params:
+            destination: ./rendered/SEC-10-arquitetura-operacional-rendered.md
+            filter: ./render-filters/SEC-10-arquitetura-operacional.yaml
+            source: ../sections/SEC-10-arquitetura-operacional.md
+        - name: section-11-render
+          command: document.render
+          params:
+            destination: ./rendered/SEC-11-observabilidade-operacoes-rendered.md
+            filter: ./render-filters/SEC-11-observabilidade-operacoes.yaml
+            source: ../sections/SEC-11-observabilidade-operacoes.md
+        - name: section-12-render
+          command: document.render
+          params:
+            destination: ./rendered/SEC-12-desempenho-fiabilidade-rendered.md
+            filter: ./render-filters/SEC-12-desempenho-fiabilidade.yaml
+            source: ../sections/SEC-12-desempenho-fiabilidade.md
+        - name: section-13-render
+          command: document.render
+          params:
+            destination: ./rendered/SEC-13-estrategia-testes-rendered.md
+            filter: ./render-filters/SEC-13-estrategia-testes.yaml
+            source: ../sections/SEC-13-estrategia-testes.md
+        - name: section-14-render
+          command: document.render
+          params:
+            destination: ./rendered/SEC-14-plano-migracao-implementacao-rendered.md
+            filter: ./render-filters/SEC-14-plano-migracao-implementacao.yaml
+            source: ../sections/SEC-14-plano-migracao-implementacao.md
+        - name: section-15-render
+          command: document.render
+          params:
+            destination: ./rendered/SEC-15-governacao-roadmap-rendered.md
+            filter: ./render-filters/SEC-15-governacao-roadmap.yaml
+            source: ../sections/SEC-15-governacao-roadmap.md
+        - name: document-join
+          command: document.join
+          params:
+            filename: novobanco-joined.md
+            folder: ./rendered/
+        - name: document-word-generate
+          command: document.word.generate
+          params:
+            destination: novobanco-final.docx
+            source: novobanco-joined.md 

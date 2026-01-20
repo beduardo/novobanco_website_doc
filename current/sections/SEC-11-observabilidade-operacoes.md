@@ -19,6 +19,8 @@ status: completed
 
 # 11. Observabilidade & Operações
 
+## Definições e Decisões
+
 > **Definição:** [DEF-11-observabilidade-operacoes.md](../definitions/DEF-11-observabilidade-operacoes.md)
 
 ## Propósito

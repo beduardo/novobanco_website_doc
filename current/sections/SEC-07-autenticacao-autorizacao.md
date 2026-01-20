@@ -18,6 +18,8 @@ status: in-progress
 
 # 7. Autenticação & Autorização
 
+## Definições e Decisões
+
 > **Definições requeridas:**
 > - [DEF-07-autenticacao-autorizacao.md](../definitions/DEF-07-autenticacao-autorizacao.md) - Status: completed
 > - [DEF-05-arquitetura-bff.md](../definitions/DEF-05-arquitetura-bff.md) - Status: completed
@@ -69,6 +71,8 @@ rectangle "Métodos de Autenticação" {
 | Certificado Digital | Não | Não suportado |
 
 **Login unificado:** Sim, mesmas credenciais da app mobile.
+
+**Registo:** O utilizador pode registar-se pela Web ou pela APP. São processos semelhantes mas necessários em cada dispositivo (independentes). A validação de identidade no primeiro acesso utiliza a mesma API de Login.
 
 ### 7.2 Fluxos de Autenticação
 
@@ -152,7 +156,7 @@ FE --> USER : Acesso concedido
 | **Segundo fator fallback** | SMS OTP ou App Push |
 | **Isenções SCA** | Nenhuma |
 
-**Fluxo de fallback:** Após o utilizador informar falha na leitura do QR Code, a aplicação permite login com SMS OTP ou App Push, dependendo das opções habilitadas para o utilizador.
+**Fluxo de fallback:** Após o utilizador informar falha na leitura do QR Code, a aplicação permite login com SMS OTP ou App Push. A disponibilidade dos métodos é **uniforme** para todos os utilizadores (não configurável por utilizador) e **sem prioridade** entre os métodos.
 
 ### 7.4 Gestão de Sessões
 
@@ -187,6 +191,8 @@ end note
 | **Timeout absoluto** | 30 minutos |
 | **Sessão exclusiva** | Desejável (pendente aprovação cliente) |
 | **Aviso de expiração** | Popup com temporizador |
+| **Relação sessão web/mobile** | **Independentes** - Não há relação entre sessões |
+| **Limite de sessões** | _A definir_ |
 
 ### 7.5 Estratégia de Tokens
 
@@ -253,12 +259,14 @@ package "Backend Services" {
 
 ### 7.7 Políticas de Password
 
+> **Nota do Cliente:** Todo o processo de políticas de password é gerido pela API. O frontend apenas apresenta os formulários; a validação e lógica são responsabilidade do backend.
+
 | Aspeto | Decisão |
 |---------|---------|
-| Requisitos mínimos | Seguirá requisitos da app (a aprofundar) |
-| Expiração | _A definir_ |
-| Recuperação | _A definir_ |
-| Bloqueio por tentativas | _A definir_ |
+| Requisitos mínimos | **Gerido pela API** |
+| Expiração | **Gerido pela API** |
+| Recuperação | **Gerido pela API** |
+| Bloqueio por tentativas | **Gerido pela API** |
 
 ### 7.8 Anti-automation
 
@@ -300,16 +308,17 @@ package "Backend Services" {
 
 ## Itens Pendentes
 
-| Item | Documento | Responsável |
-|------|-----------|-------------|
-| Fluxo de primeiro acesso/registo web | DEF-07-autenticacao-autorizacao | Arquitetura |
-| Validação fluxos fallback (SMS/Push) | DEF-07-autenticacao-autorizacao | Produto |
-| Sessão exclusiva (aprovação cliente) | DEF-07-autenticacao-autorizacao | Produto |
-| Requisitos de password | DEF-07-autenticacao-autorizacao | Segurança |
-| Política de expiração password | DEF-07-autenticacao-autorizacao | Segurança |
-| Fluxo de recuperação password | DEF-07-autenticacao-autorizacao | UX |
-| Bloqueio por tentativas | DEF-07-autenticacao-autorizacao | Segurança |
-| Estratégia CAPTCHA | DEF-07-autenticacao-autorizacao | Segurança |
-| Rate limiting login | DEF-07-autenticacao-autorizacao | Arquitetura |
-| Deteção de bots | DEF-07-autenticacao-autorizacao | Segurança |
-| Procedimentos de revogação | DEF-07-autenticacao-autorizacao | Segurança |
+| Item | Documento | Responsável | Status |
+|------|-----------|-------------|--------|
+| ~~Fluxo de primeiro acesso/registo web~~ | ~~DEF-07~~ | ~~Arquitetura~~ | **Decidido: Web ou APP independentes** |
+| ~~Validação fluxos fallback (SMS/Push)~~ | ~~DEF-07~~ | ~~Produto~~ | **Decidido: Uniforme, sem prioridade** |
+| ~~Sessão web/mobile~~ | ~~DEF-07~~ | ~~Produto~~ | **Decidido: Independentes** |
+| ~~Políticas de password~~ | ~~DEF-07~~ | ~~Segurança~~ | **Decidido: Gerido pela API** |
+| Sessão exclusiva (aprovação cliente) | DEF-07-autenticacao-autorizacao | Produto | Pendente |
+| Limite de sessões ativas | DEF-07-autenticacao-autorizacao | Segurança | Pendente |
+| Logout automático outras sessões | DEF-07-autenticacao-autorizacao | Segurança | Pendente |
+| Estratégia CAPTCHA | DEF-07-autenticacao-autorizacao | Segurança | Pendente |
+| Rate limiting login | DEF-07-autenticacao-autorizacao | Arquitetura | Pendente |
+| Deteção de bots | DEF-07-autenticacao-autorizacao | Segurança | Pendente |
+| Logout de todos dispositivos | DEF-07-autenticacao-autorizacao | Segurança | Pendente |
+| Revogação de tokens | DEF-07-autenticacao-autorizacao | Segurança | Pendente |

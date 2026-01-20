@@ -18,6 +18,8 @@ status: completed
 
 # 13. Estratégia de Testes
 
+## Definições e Decisões
+
 > **Definição:** [DEF-13-estrategia-testes.md](../definitions/DEF-13-estrategia-testes.md)
 
 ## Propósito

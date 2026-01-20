@@ -88,31 +88,37 @@ Definir os requisitos de segurança e conformidade regulatória do HomeBanking W
     TLS 1.2+ obrigatório
 
 ### Conformidade RGPD (Consolidado)
+
+> **Nota do Cliente:** Todo este processo de conformidade é gerido pelas API. A responsabilidade de RGPD não é do frontend.
+
 15. Qual a base legal para tratamento de dados?
-    Necessita aprofundamento junto a DPO
+    **Gerido pela API.** A gestão de conformidade RGPD é responsabilidade do backend.
 
 16. Há DPO (Data Protection Officer) designado?
-    Necessita aprofundamento
+    **Gerido pela API.** Questão organizacional/backend.
 
 ### PCI-DSS
+
+> **Nota do Cliente:** Todo este processo é gerido pelas API. A tokenização e processamento de dados de cartão não são responsabilidade do frontend.
+
 17. O canal web processará dados de cartão (PAN)?
-    Necessita aprofundamento. Se sim, definir nível de conformidade.
+    **Gerido pela API.** Frontend não processa PAN diretamente.
 
 18. Há tokenização de dados de cartão?
-    Necessita aprofundamento
+    **Gerido pela API.** Tokenização é feita no backend.
 
 ### Banco de Portugal
 19. Quais requisitos regulatórios específicos do BdP se aplicam?
-    Necessita aprofundamento
+    **Gerido pela API.** Conformidade regulatória é responsabilidade do backend.
 
 ### Registo de Auditoria (Consolidado)
 > **Nota:** Retenção de logs em [DEF-11-observabilidade-operacoes.md](DEF-11-observabilidade-operacoes.md)
 
 20. Quais eventos devem ser registados para auditoria?
-    Necessita aprofundamento. Mínimo: logins, transações, alterações de dados
+    **Gerido pela API.** Backend é responsável pelo registo de auditoria. Frontend pode enviar eventos para o backend registar.
 
 21. Há requisitos de imutabilidade dos logs?
-    Necessita aprofundamento
+    **Gerido pela API.**
 
 ### Resposta a Incidentes e Vulnerabilidades (Simplificado)
 22. Existe plano de resposta a incidentes de segurança?
@@ -150,19 +156,24 @@ Definir os requisitos de segurança e conformidade regulatória do HomeBanking W
 - **Alternativas consideradas:**
 
 ### RGPD Compliance
-- **Decisão:** _A preencher_
-- **Justificação:**
-- **Alternativas consideradas:**
+- **Decisão:** Conformidade RGPD gerida integralmente pela API/Backend
+- **Justificação:** Cliente confirmou que toda a gestão de conformidade RGPD é responsabilidade do backend. Frontend apenas consome dados já tratados.
+- **Alternativas consideradas:** Gestão parcial no frontend (descartado por requisito do cliente)
+
+### PCI-DSS Compliance
+- **Decisão:** Conformidade PCI-DSS gerida integralmente pela API/Backend
+- **Justificação:** Cliente confirmou que tokenização e processamento de dados de cartão são responsabilidade da API. Frontend não processa PAN diretamente.
+- **Alternativas consideradas:** Integração direta com gateway de pagamentos (descartado)
 
 ### Audit Logging
-- **Decisão:** _A preencher_
-- **Justificação:**
-- **Alternativas consideradas:**
+- **Decisão:** Registo de auditoria gerido pela API/Backend
+- **Justificação:** Backend é responsável pelo registo. Frontend envia eventos para o backend registar.
+- **Alternativas consideradas:** Logging no frontend (descartado por segurança e centralização)
 
 ### Vulnerability Management
-- **Decisão:** _A preencher_
-- **Justificação:**
-- **Alternativas consideradas:**
+- **Decisão:** _A definir_ - Necessita aprofundamento
+- **Justificação:** Pentest e SLAs de correção ainda pendentes de validação
+- **Alternativas consideradas:** N/A
 
 ## Restrições Conhecidas
 

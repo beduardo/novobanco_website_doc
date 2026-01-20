@@ -62,20 +62,23 @@ Definir as diretrizes de experiência do utilizador para o HomeBanking Web, gara
 > **Nota:** Esta é a definição principal para requisitos de PWA/Offline do projeto.
 
 10. Há requisitos de funcionamento offline?
-    Necessita aprofundamento. Considerar: visualização de saldos em cache, filas de operações
+    **Não.** O cliente confirmou que não há requisitos de funcionamento offline.
 
 11. Será implementado como PWA instalável?
-    Necessita aprofundamento. Benefícios: install prompt, ícone na home, experiência app-like
+    **Não.** A aplicação não será uma PWA instalável.
 
 12. Quais funcionalidades devem estar disponíveis offline (se aplicável)?
-    Necessita aprofundamento. Sugestão: consultas em cache, sem operações transacionais
+    **N/A.** Sem requisitos de offline.
+
+13. Qual o comportamento esperado em conectividade intermitente?
+    Necessita aprofundamento. Apresentar opções ao cliente (retry automático, mensagem de erro, etc.)
 
 ### Segurança UX
 
-13. Como será comunicada a segurança ao utilizador?
+14. Como será comunicada a segurança ao utilizador?
     Necessita aprofundamento (indicadores visuais, certificado, etc.)
 
-14. Há requisitos de timeout de sessão com aviso prévio?
+15. Há requisitos de timeout de sessão com aviso prévio?
     Sim. Popup na aplicação com temporizador antes de expirar.
     Timeout por inatividade: 10 minutos (ver DEF-07)
 
@@ -119,9 +122,9 @@ Definir as diretrizes de experiência do utilizador para o HomeBanking Web, gara
 - **Alternativas consideradas:** Fetch on demand apenas
 
 ### PWA/Offline
-- **Decisão:** _A definir_ - Necessita aprofundamento
-- **Justificação:** Avaliar requisitos de instalação e funcionamento offline
-- **Alternativas consideradas:** PWA instalável, Service Workers para cache
+- **Decisão:** Não será PWA instalável e não haverá funcionamento offline
+- **Justificação:** Cliente confirmou que não há requisitos de PWA nem offline. Aplicação web tradicional.
+- **Alternativas consideradas:** PWA instalável, Service Workers para cache (descartados por requisito do cliente)
 
 ### Segurança UX
 - **Decisão:** _A definir_ - Necessita aprofundamento

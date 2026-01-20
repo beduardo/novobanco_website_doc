@@ -19,6 +19,8 @@ status: in-progress
 
 # 8. Segurança & Conformidade
 
+## Definições e Decisões
+
 > **Definições requeridas:**
 > - [DEF-08-seguranca-conformidade.md](../definitions/DEF-08-seguranca-conformidade.md) - Status: completed
 >
@@ -190,36 +192,48 @@ rectangle "Requisitos PSD2" {
 
 ### 8.6 Conformidade RGPD
 
+> **Nota do Cliente:** Todo o processo de conformidade RGPD é gerido pelas API. A responsabilidade não é do frontend.
+
 | Aspeto | Status |
 |---------|--------|
-| Base legal para tratamento | _A definir_ |
-| Consentimento | _A definir_ |
-| DPO designado | _A definir_ |
-| ROPA | _A definir_ |
+| Base legal para tratamento | **Gerido pela API** |
+| Consentimento | **Gerido pela API** |
+| DPO designado | **Gerido pela API** (questão organizacional) |
+| ROPA | **Gerido pela API** |
+
+**Decisão:** O frontend apenas consome dados já tratados. A conformidade RGPD é integralmente responsabilidade do backend.
 
 ### 8.7 PCI-DSS
 
+> **Nota do Cliente:** Todo o processo de tokenização e processamento de cartões é gerido pelas API. O frontend não processa PAN diretamente.
+
 | Aspeto | Status |
 |---------|--------|
-| Processamento de PAN | _A definir_ |
-| Nível de conformidade | _A definir_ |
-| Tokenização de cartões | _A definir_ |
+| Processamento de PAN | **Gerido pela API** - Frontend não processa |
+| Nível de conformidade | **Gerido pela API** |
+| Tokenização de cartões | **Gerido pela API** |
+
+**Decisão:** O frontend não lida diretamente com dados de cartão. Toda a conformidade PCI-DSS é responsabilidade do backend.
 
 ### 8.8 Banco de Portugal
 
 | Aspeto | Status |
 |---------|--------|
-| Requisitos regulatórios BdP | _A definir_ |
-| Requisitos de reporte | _A definir_ |
+| Requisitos regulatórios BdP | **Gerido pela API** |
+| Requisitos de reporte | **Gerido pela API** |
 
 ### 8.9 Registo de Auditoria
 
+> **Nota do Cliente:** O registo de auditoria é gerido pela API. O frontend pode enviar eventos para o backend registar.
+
 | Aspeto | Status |
 |---------|--------|
-| Eventos a registar | _A definir_ |
-| Formato de logs | _A definir_ |
-| Período de retenção | _A definir_ |
-| Imutabilidade | _A definir_ |
+| Eventos a registar | **Gerido pela API** |
+| Formato de logs | **Gerido pela API** |
+| Período de retenção | **Gerido pela API** |
+| Imutabilidade | **Gerido pela API** |
+
+**Decisão:** O backend é responsável pelo registo de auditoria. O frontend envia eventos para o backend registar centralmente.
 
 ### 8.10 Resposta a Incidentes
 
@@ -267,23 +281,22 @@ rectangle "Requisitos PSD2" {
 
 ## Itens Pendentes
 
-| Item | Documento | Responsável |
-|------|-----------|-------------|
-| Threat modeling | DEF-08-seguranca-conformidade | Segurança |
-| Metodologia threat modeling | DEF-08-seguranca-conformidade | Segurança |
-| max-age HSTS | DEF-08-seguranca-conformidade | Segurança |
-| WAF (definição) | DEF-08-seguranca-conformidade | Infraestrutura |
-| Controlos OWASP Top 10 | DEF-08-seguranca-conformidade | Segurança |
-| SAST/DAST no pipeline | DEF-08-seguranca-conformidade | DevOps |
-| Frequência de scans | DEF-08-seguranca-conformidade | Segurança |
-| Dynamic Linking (aprofundar) | DEF-08-seguranca-conformidade | Arquitetura |
-| Base legal RGPD | DEF-08-seguranca-conformidade | DPO |
-| Consentimento RGPD | DEF-08-seguranca-conformidade | DPO |
-| DPO designado | DEF-08-seguranca-conformidade | Legal |
-| ROPA | DEF-08-seguranca-conformidade | DPO |
-| PCI-DSS avaliação | DEF-08-seguranca-conformidade | Compliance |
-| Requisitos BdP | DEF-08-seguranca-conformidade | Compliance |
-| Audit logging | DEF-08-seguranca-conformidade | Arquitetura |
-| Resposta a incidentes | DEF-08-seguranca-conformidade | Segurança |
-| Gestão de vulnerabilidades | DEF-08-seguranca-conformidade | Segurança |
-| Segregação de ambientes | DEF-08-seguranca-conformidade | Infraestrutura |
+| Item | Documento | Responsável | Status |
+|------|-----------|-------------|--------|
+| Threat modeling | DEF-08-seguranca-conformidade | Segurança | Pendente |
+| Metodologia threat modeling | DEF-08-seguranca-conformidade | Segurança | Pendente |
+| max-age HSTS | DEF-08-seguranca-conformidade | Segurança | Pendente |
+| WAF (definição) | DEF-08-seguranca-conformidade | Infraestrutura | Pendente |
+| Controlos OWASP Top 10 | DEF-08-seguranca-conformidade | Segurança | Pendente |
+| SAST/DAST no pipeline | DEF-08-seguranca-conformidade | DevOps | Pendente |
+| Frequência de scans | DEF-08-seguranca-conformidade | Segurança | Pendente |
+| Dynamic Linking (aprofundar) | DEF-08-seguranca-conformidade | Arquitetura | Pendente |
+| ~~Base legal RGPD~~ | ~~DEF-08~~ | ~~DPO~~ | **Decidido: Gerido pela API** |
+| ~~Consentimento RGPD~~ | ~~DEF-08~~ | ~~DPO~~ | **Decidido: Gerido pela API** |
+| ~~DPO designado~~ | ~~DEF-08~~ | ~~Legal~~ | **Decidido: Gerido pela API** |
+| ~~PCI-DSS avaliação~~ | ~~DEF-08~~ | ~~Compliance~~ | **Decidido: Gerido pela API** |
+| ~~Requisitos BdP~~ | ~~DEF-08~~ | ~~Compliance~~ | **Decidido: Gerido pela API** |
+| ~~Audit logging~~ | ~~DEF-08~~ | ~~Arquitetura~~ | **Decidido: Gerido pela API** |
+| Resposta a incidentes | DEF-08-seguranca-conformidade | Segurança | Pendente |
+| Gestão de vulnerabilidades | DEF-08-seguranca-conformidade | Segurança | Pendente |
+| Segregação de ambientes | DEF-08-seguranca-conformidade | Infraestrutura | Pendente |

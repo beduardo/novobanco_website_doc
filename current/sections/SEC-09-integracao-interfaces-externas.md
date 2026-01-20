@@ -20,6 +20,8 @@ status: in-progress
 
 # 9. Integracao & Interfaces Externas
 
+## Definições e Decisões
+
 > **Required definitions:** [DEF-09-integracao-interfaces.md](../definitions/DEF-09-integracao-interfaces.md)
 > **Related decisions:**
 > - [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - Status: accepted

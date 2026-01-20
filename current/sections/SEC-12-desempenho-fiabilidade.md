@@ -19,6 +19,8 @@ status: completed
 
 # 12. Desempenho & Fiabilidade
 
+## Definições e Decisões
+
 > **Definição:** [DEF-12-desempenho-fiabilidade.md](../definitions/DEF-12-desempenho-fiabilidade.md)
 
 ## Propósito

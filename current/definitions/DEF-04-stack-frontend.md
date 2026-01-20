@@ -71,7 +71,20 @@ Definir a stack tecnológica do frontend do HomeBanking Web, considerando os req
     BFF disponível para SSR protegendo client_secret no fluxo de login.
 
 13. Será utilizado CDN para assets estáticos?
-    Necessita aprofundamento. Considerar: Azure CDN, Cloudflare
+    **Sim.** Cliente delegou a decisão. Recomendação: Azure CDN (integração nativa com infraestrutura existente).
+
+    **Justificação técnica:**
+    - Redução de latência para utilizadores geograficamente distribuídos
+    - Offload de tráfego dos servidores de aplicação
+    - Cache de assets estáticos (JS, CSS, imagens)
+    - Compressão automática (gzip/brotli)
+    - Proteção contra picos de tráfego
+
+    **Provider recomendado:** Azure CDN
+    - Integração nativa com Azure (infraestrutura já existente)
+    - Configuração via IaC (Terraform/Bicep)
+    - Regras de cache granulares
+    - Suporte a custom domains e HTTPS
 
 ## Decisões
 
@@ -134,6 +147,11 @@ Definir a stack tecnológica do frontend do HomeBanking Web, considerando os req
 - **Decisão:** _A definir_ - Necessita consulta ao cliente
 - **Justificação:** Definir limites de bundle para garantir performance
 - **Alternativas consideradas:** N/A
+
+### CDN para Assets Estáticos
+- **Decisão:** Azure CDN para distribuição de assets estáticos
+- **Justificação:** Cliente delegou decisão. Azure CDN oferece integração nativa com infraestrutura existente, redução de latência, offload de servidores e cache eficiente.
+- **Alternativas consideradas:** Cloudflare (descartado por preferência de ecossistema Azure), sem CDN (descartado por impacto em performance)
 
 ## Restrições Conhecidas
 

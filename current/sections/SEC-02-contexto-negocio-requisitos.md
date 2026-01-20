@@ -17,6 +17,8 @@ status: in-progress
 
 # 2. Contexto de Negócio & Requisitos
 
+## Definições e Decisões
+
 > **Definições requeridas:**
 > - [DEF-02-stakeholders.md](../definitions/DEF-02-stakeholders.md) - Status: completed
 > - [DEF-02-requisitos-funcionais.md](../definitions/DEF-02-requisitos-funcionais.md) - Status: completed
