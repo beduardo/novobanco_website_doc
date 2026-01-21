@@ -26,62 +26,28 @@ Definir a decomposicao de servicos, arquitetura de API, comunicacao, modelo de d
 
 ### 5.1 Decomposicao de Servicos
 
-```plantuml
-@startuml
-skinparam backgroundColor #FEFEFE
-skinparam componentStyle rectangle
+> **Diagrama de Arquitetura:** Ver [Secção 3.2 - Diagrama Conceptual](SEC-03-visao-geral-solucao.md#32-diagrama-conceptual) para a visão geral da arquitetura.
 
-title Decomposicao de Servicos - HomeBanking Web
-
-package "Novos Componentes" #LightBlue {
-    [Frontend Web\n(React SPA)] as FE
-    [BFF Web\n(.NET 8)] as BFF
-}
-
-package "Componentes Existentes" #LightGreen {
-    [API Gateway] as APIGW
-
-    package "Backend Services" {
-        [Auth Service] as AUTH
-        [Account Service] as ACCOUNT
-        [Payment Service] as PAYMENT
-        [Investment Service] as INVEST
-        [Document Service] as DOC
-    }
-
-    [Core Banking] as CORE
-}
-
-package "Infraestrutura" {
-    [ELK Stack] as ELK
-    database "Redis Cluster\n(Sessao)" as CACHE
-}
-
-FE --> BFF : HTTPS/REST
-BFF --> APIGW : REST
-BFF --> CACHE : Tokens
-APIGW --> AUTH
-APIGW --> ACCOUNT
-APIGW --> PAYMENT
-APIGW --> INVEST
-APIGW --> DOC
-AUTH --> CORE
-ACCOUNT --> CORE
-PAYMENT --> CORE
-
-FE ..> ELK : Logs
-BFF ..> ELK : Logs/Metricas
-
-@enduml
-```
+A decomposição de serviços segue a arquitectura de referência definida na secção 3.2:
 
 | Componente | Tipo | Acao | Tecnologia |
 |------------|------|------|------------|
 | Frontend Web | Novo | Desenvolver | React + TypeScript |
 | BFF Web | Novo | Desenvolver | C# .NET 8 |
-| API Gateway | Existente | Reutilizar | - |
-| Backend Services | Existente | Reutilizar | - |
-| Core Banking | Existente | Reutilizar | - |
+| API Gateway | Existente | Reutilizar | IBM |
+| Siebel (Backend Principal) | Existente | Reutilizar | Valida tokens |
+| Outros Backend Services | Existente | Reutilizar | A identificar |
+| Serviços Azure | Existente | Reutilizar | Acesso direto pelo BFF |
+| Core Banking | Existente | Reutilizar | Via Siebel |
+
+#### Notas de Integração
+
+| Fluxo | Autenticação | Observação |
+|-------|--------------|------------|
+| Frontend → BFF | Cookie de sessão | HttpOnly, Secure |
+| BFF → API Gateway (IBM) | ClientID + ClientSecret | Para serviços via Siebel |
+| BFF → Serviços Azure | Direto | Serviços a identificar |
+| API Gateway → Siebel | Bearer Token | **Siebel valida o token** |
 
 ### 5.2 Arquitetura BFF
 
@@ -142,7 +108,7 @@ SVC --> LOG : ELK
 | **Estilo** | REST |
 | **Formato** | JSON |
 | **Compressao** | gzip |
-| **Especificacao** | OpenAPI 3.0 |
+| **Especificacao** | OpenAPI 3.1 |
 
 #### 5.3.2 Versionamento
 
@@ -184,27 +150,29 @@ skinparam backgroundColor #FEFEFE
 
 participant "Frontend" as FE
 participant "BFF" as BFF
-participant "API Gateway" as GW
-participant "Backend Services" as BE
+participant "API Gateway\n(IBM)" as GW
+participant "Siebel" as SIEBEL
 participant "Core Banking" as CORE
 
 FE -> BFF : REST/HTTPS\n(Cookie sessao)
 activate BFF
 
 BFF -> BFF : Validar sessao\n(Cache lookup)
-BFF -> GW : REST\n(Bearer token)
+BFF -> GW : REST\n(clientid + secret)
 activate GW
+note right of GW: Autentica BFF\ncom clientid+secret
 
-GW -> BE : REST
-activate BE
+GW -> SIEBEL : REST\n(Bearer token)
+activate SIEBEL
+note right of SIEBEL: **Valida o Token**
 
-BE -> CORE : Protocolo interno
+SIEBEL -> CORE : Protocolo interno
 activate CORE
-CORE --> BE : Response
+CORE --> SIEBEL : Response
 deactivate CORE
 
-BE --> GW : JSON
-deactivate BE
+SIEBEL --> GW : JSON
+deactivate SIEBEL
 
 GW --> BFF : JSON
 deactivate GW
@@ -216,11 +184,14 @@ deactivate BFF
 @enduml
 ```
 
-| Comunicacao | Protocolo | Autenticacao |
-|-------------|-----------|--------------|
-| Frontend -> BFF | REST/HTTPS | Cookie de sessao |
-| BFF -> Gateway | REST | Bearer token (OAuth) |
-| Gateway -> Services | REST | Token propagado |
+| Comunicacao | Protocolo | Autenticacao | Observação |
+|-------------|-----------|--------------|------------|
+| Frontend → BFF | REST/HTTPS | Cookie de sessao (HttpOnly, Secure) | - |
+| BFF → API Gateway (IBM) | REST | ClientID + ClientSecret | Gateway autentica o BFF |
+| API Gateway → Siebel | REST | Bearer Token (propagado) | **Siebel valida o token** |
+| Siebel → Core Banking | Protocolo interno | - | - |
+
+> **Nota:** O BFF não tem API Gateway à frente. O API Gateway (IBM) é utilizado apenas para acesso aos Backend Services (Siebel e outros).
 
 #### 5.4.1 Comunicacao Assincrona
 
@@ -244,9 +215,13 @@ O modelo de dominio segue as entidades ja existentes nos backend services da app
 
 | Aspecto | Decisao |
 |---------|---------|
-| **Responsabilidade** | API Gateway (nao BFF) |
+| **Responsabilidade** | API Gateway IBM (para chamadas aos Backend Services) |
+| **No BFF** | Não implementado (BFF não tem APIGW à frente) |
 | **Limites** | _A definir_ |
+| **Resubmissões** | _A definir_ - Estratégia para pedidos duplicados |
 | **Comunicacao** | Mensagem de erro informando necessidade de aguardar |
+
+> **Nota:** O BFF não tem API Gateway à frente, pelo que o rate limiting é aplicado apenas nas chamadas do BFF para os Backend Services através do API Gateway IBM.
 
 ### 5.7 Resiliencia
 
@@ -271,7 +246,7 @@ O modelo de dominio segue as entidades ja existentes nos backend services da app
 
 | Aspecto | Decisao |
 |---------|---------|
-| **Formato** | OpenAPI 3.0 |
+| **Formato** | OpenAPI 3.1 |
 | **Geracao** | Automatizada via Pipeline |
 | **Publicacao** | Swagger UI / ReDoc |
 
@@ -339,3 +314,4 @@ BFF --> FE : Account data
 
 - [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - BFF Pattern
 - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack Backend
+- [DEC-011-diagrama-arquitetura-unico.md](../decisions/DEC-011-diagrama-arquitetura-unico.md) - Diagrama de referência único

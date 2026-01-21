@@ -97,10 +97,10 @@ spec:
         - name: document-join
           command: document.join
           params:
-            filename: novobanco-joined.md
+            filename: ./joined/novobanco-joined.md
             folder: ./rendered/
         - name: document-word-generate
           command: document.word.generate
           params:
-            destination: novobanco-final.docx
-            source: novobanco-joined.md 
+            destination: ./final/novobanco-final.docx
+            source: ./joined/novobanco-joined.md 

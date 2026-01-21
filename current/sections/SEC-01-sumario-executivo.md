@@ -21,7 +21,7 @@ status: in-progress
 > - [DEF-01-objetivos-documento.md](../definitions/DEF-01-objetivos-documento.md) - Status: completed
 >
 > **Decisões relacionadas:**
-> - Nenhuma decisão arquitetural nesta secção (decisões de documento/escopo)
+> - [DEC-011-diagrama-arquitetura-unico.md](../decisions/DEC-011-diagrama-arquitetura-unico.md) - Status: accepted
 
 ## Propósito
 
@@ -73,50 +73,22 @@ O HomeBanking Web incluirá **35 funcionalidades** da aplicação mobile, organi
 
 ### 1.4 Visão Geral da Arquitetura
 
-```plantuml
-@startuml
-!define RECTANGLE class
+> **Diagrama:** Ver [Secção 3.2 - Diagrama Conceptual](SEC-03-visao-geral-solucao.md#32-diagrama-conceptual) para a arquitetura completa do sistema.
 
-skinparam backgroundColor #FEFEFE
-skinparam componentStyle rectangle
+A arquitetura do HomeBanking Web segue o padrão **BFF (Backend for Frontend)**, onde:
 
-package "Canal Web" {
-    [HomeBanking Web\n(SPA)] as WEB
-}
-
-package "Canal Mobile" {
-    [App Mobile Nativa\n(Existente)] as MOBILE
-}
-
-package "Camada de Serviços" {
-    [API Gateway] as APIGW
-    [Backend Services\n(Reutilizados)] as BACKEND
-}
-
-package "Infraestrutura Existente" {
-    [Core Banking] as CORE
-    [Serviços Terceiros] as THIRD
-    database "Base de Dados" as DB
-}
-
-WEB --> APIGW : HTTPS
-MOBILE --> APIGW : HTTPS
-APIGW --> BACKEND
-BACKEND --> CORE
-BACKEND --> THIRD
-BACKEND --> DB
-
-note right of WEB
-  Tecnologias 100% Web
-  Reutilização de APIs existentes
-end note
-@enduml
-```
+| Componente | Descrição |
+|------------|-----------|
+| **Frontend Web (SPA)** | Aplicação React executada no browser do cliente |
+| **BFF Web (.NET 8)** | Camada de agregação e transformação específica para o canal web |
+| **API Gateway (IBM)** | Gateway existente para acesso aos Backend Services |
+| **Backend Services (Siebel)** | Serviços de negócio existentes que validam tokens e acedem ao Core Banking |
 
 **Princípios Fundamentais:**
-- Reutilização da infraestrutura e serviços da aplicação mobile nativa existente
+- Reutilização da infraestrutura e serviços existentes através do BFF
 - Tecnologias 100% Web (sem dependências de componentes nativos)
 - Conformidade com regulamentações bancárias portuguesas
+- Isolamento do frontend de complexidades dos sistemas legados via BFF
 
 ### 1.5 Princípios Orientadores
 
@@ -130,14 +102,14 @@ end note
 
 ## Diagramas
 
-Ver diagrama conceptual na secção 1.4.
+Ver diagrama de arquitetura de referência na [Secção 3.2](SEC-03-visao-geral-solucao.md#32-diagrama-conceptual).
 
 ## Entregáveis
 
 - [x] Declaração clara dos objetivos do documento
 - [x] Identificação do público-alvo
 - [x] Definição do escopo (in-scope e out-of-scope)
-- [x] Diagrama conceptual de alto nível
+- [x] Referência ao diagrama de arquitetura (secção 3.2)
 - [x] Lista de princípios arquiteturais
 
 ## Definições Utilizadas
@@ -146,7 +118,7 @@ Ver diagrama conceptual na secção 1.4.
 
 ## Decisões Referenciadas
 
-_Nenhuma decisão arquitetural nesta secção. As decisões documentadas em DEF-01 são decisões de documento (objetivo, público-alvo, nível de detalhe) e escopo, não decisões arquiteturais que requeiram ADRs._
+- [x] [DEC-011-diagrama-arquitetura-unico.md](../decisions/DEC-011-diagrama-arquitetura-unico.md) - Status: accepted (diagrama único de referência)
 
 ## Perguntas para o Utilizador
 

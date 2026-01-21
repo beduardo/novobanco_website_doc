@@ -35,71 +35,20 @@ Definir a arquitetura de integracao do HomeBanking Web com sistemas externos, in
 
 ### 9.1 Visao Geral de Integracoes
 
+> **Diagrama de Arquitetura:** Ver [Secção 3.2 - Diagrama Conceptual](SEC-03-visao-geral-solucao.md#32-diagrama-conceptual) para a visão completa da arquitetura do sistema.
+
 O HomeBanking Web segue uma arquitetura de integracao em camadas, onde o **BFF (Backend for Frontend)** atua como ponto unico de integracao entre o frontend e todos os sistemas backend. Nao ha acesso direto do frontend a sistemas externos.
 
-```plantuml
-@startuml
-skinparam componentStyle rectangle
-skinparam backgroundColor white
+**Fluxo de Integracao:**
 
-title Arquitetura de Integracao - HomeBanking Web
-
-package "Canal Web" {
-  [Frontend SPA\nReact + TypeScript] as FE
-  [BFF\n.NET 8] as BFF
-}
-
-package "Integracao" {
-  [Azure API Gateway] as GW
-}
-
-package "Backend Services" {
-  [Backend API\n(Facade)] as FACADE
-
-  package "Core Systems" {
-    [Core Banking] as CB
-    [Autenticacao] as AUTH
-    [Cartoes] as CARDS
-  }
-
-  package "Servicos" {
-    [Notificacoes] as NOTIF
-    [KYC/AML] as KYC
-  }
-}
-
-package "Terceiros" #LightGray {
-  [SMS Gateway] as SMS
-  [Push Service] as PUSH
-  [Email Service] as EMAIL
-}
-
-FE --> BFF : REST/HTTPS\n(Session Cookie)
-BFF --> GW : REST/HTTPS\n(User Token)
-GW --> FACADE : REST
-FACADE --> CB
-FACADE --> AUTH
-FACADE --> CARDS
-FACADE --> NOTIF
-FACADE --> KYC
-NOTIF --> SMS
-NOTIF --> PUSH
-NOTIF --> EMAIL
-
-note right of FACADE
-  Ponto unico de acesso
-  ao Core Banking
-end note
-
-note right of BFF
-  - Agregacao de dados
-  - Transformacao
-  - Cache de sessao
-  - Gestao de tokens
-end note
-
-@enduml
-```
+| Origem | Destino | Autenticacao | Observacao |
+|--------|---------|--------------|------------|
+| Frontend → BFF | REST/HTTPS | Cookie de sessao | HttpOnly, Secure |
+| BFF → API Gateway (IBM) | REST/HTTPS | ClientID + ClientSecret | Para acesso ao Siebel |
+| BFF → Servicos Azure | REST/HTTPS | Direto | Servicos a identificar |
+| API Gateway → Siebel | REST | Bearer Token | **Siebel valida o token** |
+| Siebel → Core Banking | Interno | - | Protocolo interno |
+| Siebel → Terceiros | REST | - | KYC/AML, Cartoes, Notificacoes |
 
 #### Principios de Integracao
 
@@ -114,7 +63,7 @@ end note
 
 #### Arquitetura de Acesso
 
-O canal web **nao acede diretamente** ao Core Banking. A integracao e feita atraves de uma camada de Facade denominada **Backend API**, que encapsula a complexidade dos sistemas legados.
+O canal web **nao acede diretamente** ao Core Banking. A integracao e feita atraves do **Siebel** (backend principal), que encapsula a complexidade dos sistemas legados e **valida os tokens de autenticacao**.
 
 ```plantuml
 @startuml
@@ -122,30 +71,30 @@ skinparam sequenceMessageAlign center
 
 participant "Frontend" as FE
 participant "BFF" as BFF
-participant "Azure API\nGateway" as GW
-participant "Backend API\n(Facade)" as API
+participant "API Gateway\n(IBM)" as GW
+participant "Siebel" as SIEBEL
 participant "Core\nBanking" as CB
 
 FE -> BFF : GET /api/accounts\n(Session Cookie)
 activate BFF
 
-BFF -> BFF : Valida sessao\nObtem user token do cache
+BFF -> BFF : Valida sessao\nObtem token do cache
 
-BFF -> GW : GET /v1/accounts\n(Bearer Token)
+BFF -> GW : GET /v1/accounts\n(clientid + secret)
 activate GW
+note right of GW: Autentica BFF\ncom clientid+secret
 
-GW -> GW : Rate limiting\nValidacao
+GW -> SIEBEL : GET /v1/accounts\n(Bearer Token)
+activate SIEBEL
+note right of SIEBEL: **Valida o Token**
 
-GW -> API : GET /v1/accounts
-activate API
-
-API -> CB : Consulta contas
+SIEBEL -> CB : Consulta contas
 activate CB
-CB --> API : Dados raw
+CB --> SIEBEL : Dados raw
 deactivate CB
 
-API --> GW : Response JSON
-deactivate API
+SIEBEL --> GW : Response JSON
+deactivate SIEBEL
 
 GW --> BFF : Response
 deactivate GW
@@ -301,11 +250,13 @@ A tecnologia de Message Broker e os eventos a serem publicados/consumidos pelo c
 
 | Aspecto | Status |
 |---------|--------|
-| Tecnologia (RabbitMQ, Kafka, Azure Service Bus) | Necessita aprofundamento |
+| **Tecnologia** | Kafka ou JMS (a definir) |
 | Eventos publicados | Necessita aprofundamento |
 | Eventos consumidos | Necessita aprofundamento |
 | Ordenacao/Exactly-once | Necessita aprofundamento |
 | Dead-letter strategy | Necessita aprofundamento |
+
+> **Nota:** RabbitMQ e Azure Service Bus não são opções consideradas.
 
 ### 9.9 Tratamento de Erros
 
@@ -369,48 +320,17 @@ _O catalogo detalhado de integracoes sera documentado no assessment inicial do p
 
 ### 9.12 API Management
 
-#### Azure API Gateway
+#### IBM API Gateway
 
-O Azure API Gateway e utilizado como ponto central de gestao de APIs entre o BFF e o Backend API.
+O **IBM API Gateway** e utilizado como ponto central de gestao de APIs entre o BFF e os Backend Services (Siebel e outros).
 
-```plantuml
-@startuml
-skinparam componentStyle rectangle
-
-package "API Management" {
-  [Azure API Gateway] as GW
-
-  package "Policies" {
-    [Rate Limiting] as RL
-    [Authentication] as AUTH
-    [Logging] as LOG
-    [Transformation] as TRANS
-  }
-}
-
-[BFF] --> GW
-GW --> [Backend API]
-
-GW --> RL
-GW --> AUTH
-GW --> LOG
-GW --> TRANS
-
-note right of GW
-  - Centralizacao de trafego
-  - Aplicacao de policies
-  - Monitoring
-  - Versionamento
-end note
-
-@enduml
-```
-
-#### Funcionalidades
+> **Nota:** O BFF não tem API Gateway à frente. O API Gateway é utilizado apenas para as chamadas do BFF aos Backend Services.
 
 | Funcionalidade | Status |
 |----------------|--------|
-| **Gateway** | Azure API Gateway |
+| **Gateway** | IBM API Gateway |
+| **Autenticacao BFF** | ClientID + ClientSecret |
+| **Propagacao Token** | Bearer Token para Siebel |
 | **Rate limiting** | Necessita aprofundamento |
 | **Throttling diferenciado** | Necessita aprofundamento |
 | **Monitoring** | Necessita aprofundamento |
@@ -468,6 +388,7 @@ Rel(backend, cards, "Integra", "REST")
 
 - [x] [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - Status: accepted
 - [x] [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Status: accepted
+- [x] [DEC-011-diagrama-arquitetura-unico.md](../decisions/DEC-011-diagrama-arquitetura-unico.md) - Status: accepted
 
 ## Itens Pendentes
 

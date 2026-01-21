@@ -27,6 +27,7 @@ status: in-progress
 > - [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Status: accepted
 > - [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - Status: accepted
 > - [DEC-008-stack-observabilidade-elk.md](../decisions/DEC-008-stack-observabilidade-elk.md) - Status: accepted
+> - [DEC-011-diagrama-arquitetura-unico.md](../decisions/DEC-011-diagrama-arquitetura-unico.md) - Status: accepted
 
 ## Propósito
 
@@ -49,6 +50,8 @@ Apresentar os princípios de arquitetura, diagrama conceptual e casos de uso pri
 
 ### 3.2 Diagrama Conceptual
 
+> **Nota:** Este é o diagrama de referência principal da arquitetura. Todas as outras secções devem referenciar este diagrama em vez de duplicá-lo (ver [DEC-011](../decisions/DEC-011-diagrama-arquitetura-unico.md)).
+
 ```plantuml
 @startuml
 !define RECTANGLE class
@@ -59,10 +62,10 @@ skinparam linetype ortho
 
 title Arquitetura Conceptual - HomeBanking Web (C4 Level 1)
 
-actor "Cliente Individual" as USER
+actor "Cliente" as USER
 
-package "Canal Web" {
-    [HomeBanking Web\n(SPA)] as WEB
+package "Canal Web" #LightBlue {
+    [HomeBanking Web\n(SPA React)] as WEB
     note right of WEB
       Container OpenShift
       Design Responsivo
@@ -70,50 +73,105 @@ package "Canal Web" {
     end note
 }
 
-package "Camada BFF" {
-    [BFF Web\n(Backend for Frontend)] as BFF
+package "Camada BFF" #LightBlue {
+    [BFF Web\n(.NET 8)] as BFF
     note right of BFF
       Container OpenShift
       Agregação/Transformação
-      Isolamento de Legados
+      Gestão de Sessão
     end note
 }
 
-package "Serviços Existentes" {
-    [API Gateway] as APIGW
-    [Backend Services] as BE
+package "Serviços Azure" #LightYellow {
+    [Serviços Azure\n(a detalhar)] as AZURE
+    note bottom of AZURE
+      Serviços acedidos
+      diretamente pelo BFF
+      **PENDENTE: Identificar**
+    end note
 }
 
-package "Infraestrutura Existente" {
+package "Gateway" #LightGreen {
+    [API Gateway\n(IBM)] as APIGW
+    note right of APIGW
+      Autenticação: clientid + secret
+      Rate Limiting
+      Routing
+    end note
+}
+
+package "Backend Services" #LightGreen {
+    [Siebel\n(Principal)] as SIEBEL
+    note right of SIEBEL
+      Validação de Token
+      Lógica de Negócio
+    end note
+    [Outros Serviços\n(a detalhar)] as OUTROS
+    note bottom of OUTROS
+      **PENDENTE: Identificar**
+    end note
+}
+
+package "Core Banking" #LightGreen {
     [Core Banking] as CORE
     database "Base de Dados" as DB
 }
 
-package "Terceiros" {
+package "Terceiros" #LightGreen {
     [KYC/AML] as KYC
     [Cartões] as CARDS
     [Notificações] as NOTIF
 }
 
-package "Observabilidade" {
+package "Observabilidade" #LightGray {
     [ELK Stack] as ELK
 }
 
+' Fluxo Principal
 USER --> WEB : HTTPS
-WEB --> BFF : HTTPS/REST
-BFF --> APIGW : Integração
-APIGW --> BE
-BE --> CORE
-BE --> DB
-BE --> KYC
-BE --> CARDS
-BE --> NOTIF
+WEB --> BFF : Cookie Sessão\n(HTTPS/REST)
+BFF --> APIGW : clientid + secret
+BFF --> AZURE : Direto
+APIGW --> SIEBEL : Bearer Token
+APIGW --> OUTROS : Bearer Token
+SIEBEL --> CORE
+SIEBEL --> DB
+SIEBEL --> KYC
+SIEBEL --> CARDS
+SIEBEL --> NOTIF
+OUTROS --> CORE
 
-WEB ..> ELK : Logs/Métricas
+' Observabilidade
+WEB ..> ELK : Logs
 BFF ..> ELK : Logs/Métricas
 
 @enduml
 ```
+
+#### Legenda
+
+| Cor | Significado |
+|-----|-------------|
+| Azul | Componentes novos (a desenvolver) |
+| Verde | Componentes existentes (reutilizar) |
+| Amarelo | Componentes a detalhar (pendente) |
+| Cinza | Infraestrutura transversal |
+
+#### Fluxo de Autenticação
+
+| Origem | Destino | Mecanismo |
+|--------|---------|-----------|
+| Frontend Web | BFF | Cookie de Sessão (HttpOnly, Secure) |
+| BFF | API Gateway | ClientID + ClientSecret |
+| API Gateway | Backend Services | Bearer Token (propagado) |
+| Siebel | - | **Validação do Token** |
+
+#### Pendências de Detalhe
+
+| Item | Descrição | Responsável |
+|------|-----------|-------------|
+| Serviços Azure | Identificar quais serviços Azure são acedidos diretamente pelo BFF | NovoBanco |
+| Outros Backend Services | Identificar serviços além do Siebel | NovoBanco |
 
 ### 3.3 Componentes Principais
 
@@ -206,52 +264,22 @@ end note
 
 ### 3.5 Integração com Infraestrutura Existente
 
-```plantuml
-@startuml
-skinparam backgroundColor #FEFEFE
+> **Diagrama:** Ver secção 3.2 (Diagrama Conceptual) para a visão completa da arquitetura.
 
-package "Novo (HomeBanking Web)" #LightBlue {
-    [Frontend Web] as FE
-    [BFF Web] as BFF
-}
+A integração segue o modelo definido no diagrama de referência (secção 3.2), com clara separação entre componentes novos e existentes:
 
-package "Existente (App Mobile)" #LightGreen {
-    [API Gateway] as APIGW
-    [Backend Services] as BE
-    [Core Banking] as CORE
-    [Integrações Terceiros] as THIRD
-    database "Base de Dados" as DB
-}
-
-FE --> BFF : Novo
-BFF --> APIGW : Reutiliza
-APIGW --> BE : Existente
-BE --> CORE : Existente
-BE --> THIRD : Existente
-BE --> DB : Existente
-
-note bottom of FE
-  Componentes novos
-  a desenvolver
-end note
-
-note bottom of APIGW
-  Componentes existentes
-  reutilizados
-end note
-
-@enduml
-```
-
-| Componente | Origem | Ação |
-|------------|--------|------|
-| Frontend Web | Novo | Desenvolver |
-| BFF Web | Novo | Desenvolver |
-| API Gateway | Existente | Reutilizar |
-| Backend Services | Existente | Reutilizar |
-| Core Banking | Existente | Reutilizar |
-| Integrações Terceiros | Existente | Reutilizar |
-| Base de Dados | Existente | Reutilizar |
+| Componente | Origem | Ação | Observação |
+|------------|--------|------|------------|
+| Frontend Web (SPA React) | Novo | Desenvolver | Container OpenShift |
+| BFF Web (.NET 8) | Novo | Desenvolver | Container OpenShift |
+| API Gateway (IBM) | Existente | Reutilizar | Autenticação clientid+secret |
+| Siebel | Existente | Reutilizar | Backend principal, valida token |
+| Outros Backend Services | Existente | Reutilizar | A identificar |
+| Core Banking | Existente | Reutilizar | Via Siebel |
+| Serviços Azure | Existente | Reutilizar | Acesso direto pelo BFF |
+| Integrações Terceiros | Existente | Reutilizar | KYC/AML, Cartões, Notificações |
+| Base de Dados | Existente | Reutilizar | Via Backend Services |
+| ELK Stack | Existente | Reutilizar | Logs e métricas |
 
 ## Entregáveis
 
