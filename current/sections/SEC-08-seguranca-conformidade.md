@@ -96,7 +96,7 @@ rectangle "Segurança em Camadas" {
 |---------|---------|
 | **Estratégia** | Bibliotecas servidas localmente |
 | **Atributos** | `integrity` e `crossorigin` em recursos externos |
-| **CDN** | Evitar; se necessário, atenção a atualizações de terceiros |
+| **CDN** | **Não usar** - Todos os recursos devem ser servidos localmente |
 
 #### 8.3.3 Proteção XSS
 
@@ -115,6 +115,7 @@ rectangle "SSR/BFF" #LightGreen {
 rectangle "Frontend React" #LightBlue {
     [React auto-escape]
     [innerHTML proibido]
+    [dangerouslySetInnerHTML proibido]
     [eval proibido]
 }
 
@@ -130,7 +131,7 @@ rectangle "Ferramentas" #Yellow {
 |--------|----------|
 | **SSR/BFF** | Escape de saída HTML, validação e sanitização de entrada |
 | **React** | Escape automático em JSX |
-| **Lint/SAST** | `innerHTML` e `eval` proibidos via lint e SonarQube |
+| **Lint/SAST** | `innerHTML`, `dangerouslySetInnerHTML` e `eval` proibidos via lint e SonarQube |
 
 #### 8.3.4 Proteção CSRF
 
@@ -147,6 +148,54 @@ rectangle "Ferramentas" #Yellow {
 |---------|--------|
 | Input validation | Detalhes no assessment inicial |
 | WAF | _A definir_ com equipa de infraestrutura |
+
+#### 8.3.6 Considerações de Segurança Web vs Mobile
+
+> **Nota Importante:** O ambiente web é **menos protegido** que o ambiente mobile nativo. Esta secção documenta as diferenças e mitigações específicas.
+
+##### Diferenças de Ambiente
+
+| Aspeto | Mobile Nativo | Web Browser |
+|--------|---------------|-------------|
+| **Ambiente de execução** | Sandboxed, controlado pelo OS | Aberto, partilhado com outras tabs/extensões |
+| **Armazenamento** | Keychain/Keystore seguro | LocalStorage/SessionStorage vulnerável a XSS |
+| **Código fonte** | Compilado, ofuscado | JavaScript visível, inspecionável |
+| **Comunicação** | Certificate pinning possível | Dependente de CA trust store do browser |
+| **Biometria** | APIs nativas seguras | WebAuthn (limitado) |
+| **Injeção de código** | Difícil (assinatura de apps) | Possível via extensões, XSS |
+
+##### Vetores de Ataque Específicos do Web
+
+| Vetor | Risco | Mitigação |
+|-------|-------|-----------|
+| **XSS (Cross-Site Scripting)** | Alto | CSP, escape de output, React auto-escape, proibição de innerHTML/eval/dangerouslySetInnerHTML |
+| **CSRF (Cross-Site Request Forgery)** | Alto | Tokens CSRF, SameSite cookies, validação de Origin |
+| **Clickjacking** | Médio | X-Frame-Options, CSP frame-ancestors |
+| **Man-in-the-Browser** | Alto | Não armazenar tokens sensíveis em JS, usar HttpOnly cookies |
+| **Session Hijacking** | Alto | Cookies Secure/HttpOnly/SameSite, renovação de sessão |
+| **Extensões maliciosas** | Médio | Não expor dados sensíveis no DOM, CSP restritivo |
+| **Keyloggers em browser** | Médio | Considerar teclado virtual para PIN (a avaliar) |
+| **Inspeção de tráfego** | Médio | TLS 1.2+, HSTS, considerar certificate pinning (limitado em web) |
+
+##### Dados Sensíveis - Tratamento Web
+
+| Dado | Armazenamento Web | Mitigação |
+|------|-------------------|-----------|
+| **Tokens de sessão** | Cookie HttpOnly, Secure, SameSite=Strict | Nunca em localStorage/sessionStorage |
+| **Access tokens** | **Apenas no BFF** (não no browser) | Arquitetura BFF isola tokens do frontend |
+| **Credenciais** | Nunca armazenadas | Transmitidas apenas no momento do login |
+| **Dados de negócio** | Memória apenas (não persistido) | Limpar ao sair/expirar sessão |
+
+##### Pendências de Revisão de Segurança
+
+| Item | Descrição | Responsável | Prioridade |
+|------|-----------|-------------|------------|
+| **Credenciais no login** | Revisar quais dados são retornados no login e avaliar risco de exposição em ambiente web | Segurança + Arquitetura | **Alta** |
+| **PIN em claro** | Avaliar se PIN/password devem ser cifrados antes de transmissão (além de TLS) | Segurança | Alta |
+| **Teclado virtual** | Avaliar necessidade de teclado virtual para entrada de PIN | Segurança + UX | Média |
+| **Certificate pinning** | Avaliar viabilidade de certificate pinning em ambiente web | Arquitetura | Média |
+
+> **Ação Requerida:** Antes do go-live, realizar revisão de segurança específica para o canal web, considerando que os controlos disponíveis são diferentes do ambiente mobile nativo.
 
 ### 8.4 OWASP Top 10
 

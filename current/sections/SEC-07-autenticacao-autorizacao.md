@@ -147,6 +147,49 @@ FE --> USER : Acesso concedido
 @enduml
 ```
 
+#### 7.2.3 Segurança na Transmissão de Credenciais
+
+> **Nota Importante:** O ambiente web requer atenção especial na transmissão e gestão de credenciais. Ver [Secção 8.3.6](SEC-08-seguranca-conformidade.md#836-considerações-de-segurança-web-vs-mobile) para diferenças de segurança web vs mobile.
+
+##### Transmissão de Credenciais
+
+| Aspeto | Especificação | Observação |
+|--------|---------------|------------|
+| **Canal** | HTTPS (TLS 1.2+) | Obrigatório |
+| **PIN/Password** | Transmitido em payload JSON | Protegido por TLS |
+| **Cifra adicional** | **A avaliar** | Avaliar necessidade de cifrar PIN antes de TLS |
+| **Método HTTP** | POST | Nunca em query string |
+
+##### Dados Retornados no Login
+
+| Dado | Destino | Formato | Observação |
+|------|---------|---------|------------|
+| **Session ID** | Cookie no browser | HttpOnly, Secure, SameSite=Strict | Único identificador exposto ao browser |
+| **Access Token** | Cache do BFF | Nunca enviado ao browser | Isolado pelo padrão BFF |
+| **Refresh Token** | Cache do BFF | Nunca enviado ao browser | Isolado pelo padrão BFF |
+| **Dados do utilizador** | Response JSON | Apenas dados não sensíveis | Nome, segmento, etc. |
+
+> **Pendência de Revisão:** Identificar exatamente quais dados são retornados pela API de login da app mobile e avaliar se todos são seguros para exposição no ambiente web. Ver comentário JGC #10.
+
+##### Cookies de Sessão
+
+| Atributo | Valor | Justificação |
+|----------|-------|--------------|
+| **HttpOnly** | `true` | Previne acesso via JavaScript (proteção XSS) |
+| **Secure** | `true` | Apenas transmitido via HTTPS |
+| **SameSite** | `Strict` | Previne CSRF |
+| **Path** | `/` | Aplicação inteira |
+| **Domain** | Domínio da aplicação | Sem subdomínios wildcard |
+| **Max-Age** | Sessão ou timeout | Conforme política de sessão |
+
+##### Pendências de Segurança de Credenciais
+
+| Item | Descrição | Prioridade |
+|------|-----------|------------|
+| **Revisão de dados no login** | Identificar todos os dados retornados no login e avaliar risco em ambiente web | **Alta** |
+| **Cifra de PIN** | Avaliar se PIN deve ser cifrado client-side antes de transmissão (além de TLS) | Alta |
+| **Credenciais do banco** | Avaliar risco de exposição de credenciais de acesso a sistemas backend | Alta |
+
 ### 7.3 MFA/SCA (Strong Customer Authentication)
 
 | Aspeto | Decisão |
@@ -314,6 +357,9 @@ package "Backend Services" {
 | ~~Validação fluxos fallback (SMS/Push)~~ | ~~DEF-07~~ | ~~Produto~~ | **Decidido: Uniforme, sem prioridade** |
 | ~~Sessão web/mobile~~ | ~~DEF-07~~ | ~~Produto~~ | **Decidido: Independentes** |
 | ~~Políticas de password~~ | ~~DEF-07~~ | ~~Segurança~~ | **Decidido: Gerido pela API** |
+| **Revisão dados retornados no login** | SEC-07 / SEC-08 | Segurança + Arquitetura | **Pendente - Alta prioridade** |
+| **Cifra de PIN (além de TLS)** | SEC-07 / SEC-08 | Segurança | **Pendente - Alta prioridade** |
+| **Credenciais do banco em ambiente web** | SEC-07 / SEC-08 | Segurança | **Pendente - Alta prioridade** |
 | Sessão exclusiva (aprovação cliente) | DEF-07-autenticacao-autorizacao | Produto | Pendente |
 | Limite de sessões ativas | DEF-07-autenticacao-autorizacao | Segurança | Pendente |
 | Logout automático outras sessões | DEF-07-autenticacao-autorizacao | Segurança | Pendente |
