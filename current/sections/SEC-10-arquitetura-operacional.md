@@ -31,7 +31,7 @@ Definir a arquitetura operacional do HomeBanking Web, incluindo infraestrutura d
 
 ### 10.1 Infraestrutura
 
-A aplicação será deployada em ambiente containerizado, com imagens **compliant com OpenShift** para futura migração.
+A aplicação será deployada em ambiente containerizado **OpenShift**.
 
 ```plantuml
 @startuml
@@ -46,26 +46,27 @@ package "DMZ" {
   [F5 BIG-IP] as LB
 }
 
-package "Azure" {
-  package "AKS Cluster" {
-    package "Namespace: prod" {
-      [Frontend\n(Nginx + React)] as FE
-      [BFF\n(.NET 8)] as BFF
-    }
+package "OpenShift Cluster" #LightBlue {
+  package "Namespace: best-web-prod" {
+    [Frontend\n(Nginx + React)] as FE
+    [BFF\n(.NET 8)] as BFF
   }
 
   [Redis Cache] as REDIS
-  [Key Vault] as KV
-  [Container Registry] as ACR
+}
+
+package "Serviços Partilhados" {
+  [Container Registry] as REG
+  [Secrets Management] as SEC
 }
 
 package "Observabilidade" {
   [ELK Stack] as ELK
 }
 
-package "Backend" {
-  [API Gateway] as GW
-  [Backend API] as API
+package "Backend (Existente)" #LightGreen {
+  [API Gateway\n(IBM)] as GW
+  [Siebel] as API
 }
 
 NET --> LB
@@ -82,11 +83,13 @@ BFF --> ELK : logs
 
 | Aspeto | Especificação |
 |---------|---------------|
-| **Plataforma atual** | Azure Kubernetes Service (AKS) |
-| **Plataforma futura** | OpenShift (em homologação) |
+| **Plataforma** | OpenShift |
 | **Load Balancer** | F5 BIG-IP |
-| **Ingress Controller** | NGINX Ingress / OpenShift Routes |
-| **Container Registry** | Azure Container Registry (ACR) |
+| **Ingress** | OpenShift Routes |
+| **Container Registry** | A validar com equipa de infra |
+| **Secrets** | A validar com equipa de infra |
+
+> **Nota:** Os detalhes específicos de infraestrutura (registry, secrets, networking) serão validados com a equipa de infraestrutura do NovoBanco, uma vez que reutilizam componentes existentes.
 
 #### Requisitos de Imagens Container (OpenShift-Compliant)
 
@@ -100,13 +103,15 @@ BFF --> ELK : logs
 
 ### 10.2 Ambientes
 
-A aplicação utiliza três ambientes, segregados por **namespaces** no cluster AKS.
+A aplicação utiliza três ambientes, segregados por **namespaces** no cluster OpenShift.
 
 | Ambiente | Propósito | Namespace | Promoção |
 |----------|-----------|-----------|----------|
-| **dev** | Desenvolvimento e integração | `homebanking-dev` | Automática (CI) |
-| **qa** | Testes integrados e UAT | `homebanking-qa` | Automática (após dev OK) |
-| **prod** | Produção | `homebanking-prod` | Manual (aprovação) |
+| **dev** | Desenvolvimento e integração | `best-web-dev` | Automática (CI) |
+| **qa** | Testes integrados e UAT | `best-web-qa` | Automática (após dev OK) |
+| **prod** | Produção | `best-web-prod` | Manual (aprovação) |
+
+> **Nota:** A nomenclatura dos namespaces segue o padrão do ecossistema BEST. A existência de F5 em cada ambiente será validada com a equipa de infraestrutura.
 
 #### Segregação de Ambientes
 
@@ -119,69 +124,29 @@ A aplicação utiliza três ambientes, segregados por **namespaces** no cluster 
 
 ### 10.3 CI/CD Pipeline
 
-#### Stack de CI/CD
+> **Nota:** O pipeline de CI/CD já se encontra implementado no NovoBanco e será **reutilizado** para este projeto. Os detalhes específicos serão validados com a equipa de infraestrutura.
 
-| Componente | Ferramenta |
-|------------|------------|
-| **Repositório** | Azure Repos (Git) |
-| **CI/CD Platform** | Azure Pipelines |
-| **Container Registry** | Azure Container Registry (ACR) |
-| **Secrets** | Azure Key Vault |
-| **IaC** | Helm Charts + Terraform |
-| **Branching** | GitFlow |
+#### Visão Geral
 
-#### Estratégia de Branching (GitFlow)
+O projeto reutiliza a infraestrutura de CI/CD existente no NovoBanco:
 
-| Branch | Propósito | Deploy Automático |
-|--------|-----------|-------------------|
-| `feature/*` | Desenvolvimento de features | Não |
-| `develop` | Integração contínua | DEV |
-| `release/*` | Preparação de release | QA |
-| `main` | Produção | PROD (c/ aprovação) |
-| `hotfix/*` | Correções urgentes | PROD (c/ aprovação) |
+| Aspeto | Abordagem |
+|--------|-----------|
+| **Pipeline** | Reutilização do pipeline existente |
+| **Branching** | GitFlow (padrão NB) |
+| **Quality Gates** | Conforme políticas existentes |
+| **Deploy** | Integrado com OpenShift |
 
-#### Pipeline Overview
+#### Quality Gates (Requisitos Mínimos)
 
-```plantuml
-@startuml
-skinparam backgroundColor white
+| Gate | Requisito |
+|------|-----------|
+| Unit Tests | 100% pass |
+| Code Coverage | >= 80% |
+| SAST | 0 Critical, 0 High |
+| Lint | 0 errors |
 
-title Pipeline CI/CD
-
-rectangle "Build" as B #LightBlue {
-  rectangle "Compile"
-  rectangle "Unit Tests"
-  rectangle "SAST Scan"
-  rectangle "Coverage"
-}
-
-rectangle "Test" as T #LightGreen {
-  rectangle "Integration Tests"
-  rectangle "Deploy DEV"
-  rectangle "Deploy QA"
-}
-
-rectangle "Release" as R #LightYellow {
-  rectangle "Approval"
-  rectangle "Deploy Prod"
-  rectangle "Smoke Tests"
-}
-
-B --> T : Quality Gate
-T --> R : Approval Gate
-
-@enduml
-```
-
-#### Quality Gates
-
-| Gate | Ferramenta | Threshold | Bloqueante |
-|------|------------|-----------|------------|
-| Unit Tests | Vitest / xUnit | 100% pass | Sim |
-| Code Coverage | Istanbul / Coverlet | >= 80% | Sim |
-| SAST | SonarQube / Checkmarx | 0 Critical, 0 High | Sim |
-| Lint | ESLint / .NET Analyzers | 0 errors | Sim |
-| Build | Azure Pipelines | Success | Sim |
+> **Pendência:** Agendar sessão com equipa de infraestrutura para validar integração com pipeline existente.
 
 ### 10.4 Estratégia de Deploy
 
@@ -205,48 +170,22 @@ T --> R : Approval Gate
 
 ### 10.5 Secrets Management
 
+> **Nota:** A gestão de secrets reutiliza a infraestrutura existente no NovoBanco. Os detalhes serão validados com a equipa de infraestrutura.
+
 | Aspeto | Especificação |
 |---------|---------------|
-| **Ferramenta** | Azure Key Vault |
-| **Injeção** | Secret Store CSI Driver |
-| **Acesso** | Managed Identity por namespace |
-| **Rotação** | Suportada (CSI driver faz refresh) |
+| **Ferramenta** | A validar com equipa de infra |
 | **Secrets geridos** | Connection strings, API keys, certificados |
-
-```plantuml
-@startuml
-skinparam componentStyle rectangle
-skinparam backgroundColor white
-
-title Injeção de Secrets via CSI Driver
-
-[Azure Key Vault] as KV
-[Secret Store CSI Driver] as CSI
-[BFF Pod] as BFF
-
-KV --> CSI : Sync
-CSI --> BFF : Mount as volume
-
-@enduml
-```
-
-#### Política de Rotação
-
-| Tipo de Secret | Frequência | Responsável |
-|----------------|------------|-------------|
-| API Keys | 90 dias | Automático |
-| Certificados TLS | Anual | Infra |
-| DB Credentials | 180 dias | DBA |
+| **Rotação** | Conforme políticas existentes |
 
 ### 10.6 Container Registry
 
+> **Nota:** O container registry reutiliza a infraestrutura existente no NovoBanco.
+
 | Aspeto | Configuração |
 |---------|--------------|
-| Registry | Azure Container Registry (ACR) |
-| Autenticação | Managed Identity |
-| Scanning | Microsoft Defender for Containers |
-| Retenção | 90 dias para tags não-latest |
-| Naming | `acr.azurecr.io/homebanking/{component}:{version}` |
+| **Registry** | A validar com equipa de infra |
+| **Scanning** | Conforme políticas existentes |
 
 #### Tagging Strategy
 
@@ -288,6 +227,19 @@ O canal web **não requer backup dedicado**:
 | Escalação de Pods | Alerta de carga | DevOps / Auto |
 | Rotação de Secrets | Schedule / Incidente | SecOps |
 | Failover DR | Indisponibilidade > RTO | Infra |
+
+## Itens Pendentes - Validação com Equipa de Infraestrutura
+
+> **Ação Requerida:** Agendar sessão com equipa de infraestrutura do NovoBanco para validar os seguintes pontos.
+
+| Item | Descrição | Prioridade |
+|------|-----------|------------|
+| **Container Registry** | Qual registry será utilizado? Políticas de scanning? | Alta |
+| **Secrets Management** | Qual ferramenta? Como injetar secrets nos pods? | Alta |
+| **CI/CD Pipeline** | Integração com pipeline existente | Alta |
+| **F5 por ambiente** | Existe F5 em todos os ambientes (dev/qa/prod)? | Média |
+| **Nomenclatura namespaces** | Confirmar `best-web-*` como padrão | Média |
+| **Networking** | Network policies, ingress configuration | Média |
 
 ## Decisões Referenciadas
 
