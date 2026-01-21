@@ -1,0 +1,57 @@
+title Fluxo web + Sucesso (para já não considera funcionalidades web a correr em contexto app)
+ 
+participant SPA
+participant BFF
+participant ApiPsd2
+ 
+ 
+note right of BFF:Instalado com\naccess_token_anonimo\nconsumer_key\nsecret_key\nguardados em configs (secrets)
+ 
+group primeiro acesso
+note over SPA:Há alguma coisa que seja usada para garantir a origem do login?\nExiste essa possibilidade?\nidentificador "unico" para o PC que está a aceder.
+group login
+SPA-->BFF: Login(user,pass)\nhttpheader:x-nb-channel=best.spa
+note over BFF:cria GUID, timestamp
+note over BFF:version=1.1
+note over BFF:assinatura=SHA256(consumer_key&GUID&timestamp&version&secret_key)
+note over BFF: token=token anónimo
+note over BFF: faz sentido passar o user-agent como deviceid ou outro? e a versão do react como app_version?\ncria-se um login especifico para web?
+BFF-->ApiPsd2:Authentication_checkLogin\nAUT_004(user,pass,access_token_anonimo,encrypt,device_id,app_version,so_id)\nAuthorization: OAuth access_token={{acess_token_anonimo}},\n                        oauth_consumer_key={{client_token}},\n                        oauth_timestamp={{timestamp}},\n                        oauth_version={{version}},\n                        oauth_signature={{assinatura}},\n                        oauth_guid={{GUID}}\n{\n    "user":"5.9.85.7.4.0.5.82",\n    "pass":"",\n  "token":"null",\n  "encrypt":"Y",\n  "device_id":"Device Id 3",\n  "app_version":"1.0",\n  "so_id":"2"\n}
+BFF<--ApiPsd2:"returnCode":"0",\n"returnMsg":"Sucesso",\n"outputData":\n{\n    "apiToken":"914e55d8ea3b4e19b1aa63c9efbad2ba",\n    "mustChangePassword":"N",\n    "needStrongAuthentication":"N",\n    "otp_id":null,\n    "firstLogin":"N",\n    "sasToken":"8.74.19.10.0.7.4.82.26.85.94.26.4.7..."\n}
+ 
+note over BFF: - access_token=apiToken\n- mustchangepassword ativa a funcionalidade de alteração. \n- needStrongAutentication é para responder a otp e nesse caso virá o otp_id\n- o firstlogin é para ativar as preferências
+note over BFF: Cria sessão (token_sessao_spa) e guarda access_token, sasToken\nNo contexto Web o SasToken não faz sentido ser devolvido. As chaves necessárias para a WEB podem ser colocadas no BFF.\nSão chaves de acesso ao Backoffice de gestão Oauth2 - Client id , secret e scope.
+note over BFF: o que fica em cache/guardado para os pedidos subsequentes?
+SPA<--BFF: resposta login\nCookie:token_sessao_spa,httponly,secure\n"status":\n{\n    "code": "success",\n    "severity": "Success"\n}\n"data":\n{\n    "mustChangePassword":"N",\n    "needStrongAuthentication":"N",\n    "otp_id":null,\n    "firstLogin":"N"\n}
+SPA-->BFF:OTP
+end
+ 
+group AUT_004 Secure
+note over BFF:cria GUID, timestamp
+note over BFF:version=1.1
+note over BFF:assinatura=SHA256(consumer_key&GUID&timestamp&version&secret_key)
+BFF-->ApiPsd2:ReenviaOTP\AUT_001\nAuthorization: OAuth access_token={{acess_token}},\n                        oauth_consumer_key={{client_token}},\n                        oauth_timestamp={{timestamp}},\n                        oauth_version={{version}},\n                        oauth_signature={{assinatura}},\n                        oauth_guid={{GUID}}\n{\n    "device_name":"S20 DSI",\n    "device_os":"Android",\n    "device_os_version":"11",\n    "brand":"Samsung",\n    "brand_model":"S20"\n}
+BFF<--ApiPsd2:"returnCode":"0",\n"returnMsg":"Sucesso",\n"outputData":\n{\n    "authentication": "3",\n    "auth_seq": "",\n  "object_id": "1-4GWEX0"\n}
+end
+ 
+group DEV_005.2 - RegistarDispositivoSecure - EXISTE EQUIVALENTE???
+note over BFF:cria GUID, timestamp
+note over BFF:version=1.1
+note over BFF:assinatura=SHA256(consumer_key&GUID&timestamp&version&secret_key)
+note over BFF:Como é a resposta se o desafio for composto? por exemplo 1.2?
+BFF-->ApiPsd2:RegistarDispositivoSecure\DEV_005.2\nAuthorization: OAuth access_token={{acess_token}},\n                        oauth_consumer_key={{client_token}},\n                        oauth_timestamp={{timestamp}},\n                        oauth_version={{version}},\n                        oauth_signature={{assinatura}},\n                        oauth_guid={{GUID}}\n{\n    "object_id":"1-4GWEX0",\n    "auth_type":"3",\n    "auth_value":"4323"\n}
+BFF<--ApiPsd2:"returnCode":"0",\n"returnMsg":"Sucesso"
+end
+ 
+end
+ 
+group chamada subsequente (exemplo)
+SPA-->BFF: ConsultaCliente\nhttpheader:x-nb-channel=best.spa\nCookie:token_sessao_spa\n"data":\n{\n}
+note over BFF:vai buscar o acess_token à sessão\nvai buscar as chaves aos secrets
+note over BFF:cria GUID, timestamp
+note over BFF:version=1.1
+note over BFF:assinatura=SHA256(consumer_key&GUID&timestamp&version&secret_key)
+BFF-->ApiPsd2:ConsultaCliente\nCLI_005\nAuthorization: OAuth access_token={{acess_token}},\n                        oauth_consumer_key={{client_token}},\n                        oauth_timestamp={{timestamp}},\n                        oauth_version={{version}},\n                        oauth_signature={{assinatura}},\n                        oauth_guid={{GUID}}\n{\n}
+BFF<--ApiPsd2:"returnCode":"0",\n"returnMsg":"Sucesso",\n"outputData":\n{...\n}
+SPA<--BFF: resposta consultacliente\n"status":\n{\n    "code": "success",\n    "severity": "Success"\n}\n"data":\n{\n...\n}
+end

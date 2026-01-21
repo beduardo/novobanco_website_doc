@@ -1,0 +1,92 @@
+title Fluxo nativo Sucesso
+
+
+group login
+actor Utilizador
+Utilizador->App UI:Abre APP
+note over App UI:ecrã de login
+App UI-->App Business:Dados de acesso?
+note right of App Business:Dados no código da APP:\n-access_token_anonimo\n-consumer_key\n-secret_key\n
+App Business-->App cache:Dados de acesso?
+
+App cache --> App Business:Token Biométrico
+App Business-->App UI:Avança
+Utilizador->App UI:preenche pass ou usa biometria
+App UI-->App Business:Acesso com biometria
+note over App Business:Gera authorization anónimo  
+App Business--> ApiPsd2:Authentication_checkLogin - AUT_004\n(user,pass ou token bio,encrypt,device_id,app_version,so_id)\nAuthorization: OAuth access_token={{acess_token_anonimo}},\n                        oauth_consumer_key={{client_token}},\n                        oauth_timestamp={{timestamp}},\n                        oauth_version={{version}},\n                        oauth_signature={{assinatura}},\n                        oauth_guid={{GUID}}\n{\n    "user":"5.9.85.7.4.0.5.82",\n    "pass":"",\n  "token":"98.110.54.101.115.111",\n  "encrypt":"Y",\n  "device_id":"Device Id 3",\n  "app_version":"1.0",\n  "so_id":"2"\n}
+App Business<--ApiPsd2:"returnCode":"0",\n"returnMsg":"Sucesso",\n"outputData":\n{\n    "apiToken":"914e55d8ea3b4e19b1aa63c9efbad2ba",\n    "mustChangePassword":"N",\n    "needStrongAuthentication":"N",\n    "firstLogin":"N",\n"otp_id":null,\n    "sasToken":"8.74.19.10.0.7.4.82.26.85.94.26.4.7..."\n}\nnotas\n - access_token para os próximos pedidos=apiToken\n-O sasToken é utilizado para abrir cofre \nonde estão dados da acesso a serviços externos\nFalta todo o circuito de recolha das chaves do cofre\n e chamadas à API do Backoffice de gestão
+
+
+note over App Business: - mustchangepassword ativa a funcionalidade de alteração. \n- needStrongAutentication é para responder a otp e nesse caso virá o otp_id\n- o firstlogin é para ativar as preferências
+App Business-->App UI:Pede OTP
+App Business -->ApiPsd2:Login secure
+note left of App Business:Gera\n-GUID\n-timestamp\n-Assinatura "base_string": "access_token%26oauth_consumer_key%26oauth_guid%26oauth_timestamp%3D%26oauth_version%26oauth_consumer_secret"\n"signature_final1": "requestbodyhmacquerystring 'sha256', 'base64', _.consumer_secret, false,base_string"\n"signature_final2": "encodeURIComponent 'encode',signature_final1"\nHeader:\nAuthorization: \nOAuth access_token={{acess_token}},\noauth_consumer_key={{client_token}},\noauth_timestamp={{timestamp}},\noauth_version=1.1,\noauth_signature={{signature_final2}},\noauth_guid={{GUID}}\n
+ApiPsd2-->App Business:{\n"returnCode":"0",\n"returnMsg":"Sucesso"}
+
+App Business-->App cache:tens dados da home?
+App cache-->ApiPsd2:Client_getClientInformation(nome e dados do cliente)\nClient_getClientContact(Contactos)\nSIBS_getConsentStatus (PSD2)\nSIBS_getConsentAccount (PSD2)\nObjective_getClientObjectives(avisos de objetivos)\nDevices_getDevices(dispositivos registados)\nMIFID_getInvestorProfile(Perfil do investidor)\nSchedule_getSchedules(agendamentos)\nPermanent_getPermanentOrders(ordens Permanentes)\nCorpAction_getOngoingClosedCA(operações coorporativas)\nOperation_getOperationConfirmation(operações)\nAccount_getMovements(movimentos de contas)\nAccount_getAccounts(contas)\nCCards_getCreditCards(Cartões de crédito)\nDCards_getDebitCards(Cartões de débito)\nStatement_getUserStatement(património)\nMessage_getInboxMessage(mensagens)
+ApiPsd2-->App Business:Dados 
+App Business-->App UI:Dados
+note over App UI: Home\nFalta representar os \ndados do backoffice de gestão
+end
+
+
+
+group Transferência
+actor Utilizador
+note over App UI:mostra ecrã:\nIBAN ou Conta\nSPIN\nMBway
+Utilizador->App UI:Opção IBAN
+App Business-->ApiPsd2:API de beneficiários
+App Business<--ApiPsd2:Lista de beneficiários
+App Business-->App UI:Lista de beneficiários
+note over App UI:mostra ecrã:\nIBAN\nBeneficiário\nConta
+Utilizador->App UI:IBAN
+App UI-->App Business:IBAN ou Beneficiário
+note over App Business:Valida qual o tipo de IBAN
+note right of App Business:A confirmação se o IBAN é válido é \nfeita pela biblioteca integrada no código org.apache.IBAN Validador\n\nEscolha da API a usar:\nSe é PT500065 então Transf interna\n- Se PT50 então IBAN Português e não BEST então \ntransf Interbanc\nSe Internacional valida se é SEPA\n- se não é sepa o processo é muito mais complexo\n com vários ecrãs e chamadas de API\n\nLogo\nHá uma correspondencia entre IBAN e um logo/bandeira. \nSe for nacional então o logo é um link para o logo do banco\nSe não vai a uma lista interna com todos os logos. Exe:\n("AD", "Andorra", "+376", R.drawable.flag_ad, "EUR")\no IBAN de Andorra começa por AD\n\n
+App Business-->ApiPsd2:Se IBAN Nacional - API COPS
+App Business<--ApiPsd2:Resposta COPS -> Nome titular
+App UI<--App Business:Resposta COPS -> Nome titular
+note over App UI:Mostra Nome do titular\ne pede para confirmar o nome
+App Business-->ApiPsd2:Se IBAN internacional - API SEPA
+App Business<--ApiPsd2:Resposta API SEPA
+App UI-->App Business:Faz pedido de confirmação do nome
+App Business-->ApiPsd2:Chama API VOP
+App Business<--ApiPsd2:API VOP Confirma ou não o nome
+App UI<--App Business:Resposta VOP com Ok ou Aviso
+note over App UI:Pede Montante
+App UI-->App Business:Envia montante
+App Business-->ApiPsd2:Pede Simulação
+
+App Business<--ApiPsd2:Recebe valores de \nSimulação
+
+App UI<--App Business:Envia valores de \nSimulação
+
+
+note over App UI:Ecrã de sumário do pedido
+Utilizador-->App UI:Confirma transação
+App UI-->App Business:Confirma transação
+
+App Business-->ApiPsd2:API de transferência
+
+
+
+
+note right of App Business:home_account_number(dado pelo contexto do ecrã)\ndestination_iban\ndestination_name\namount\ndescription\ndestination_email\ndestination_phone\ntransfer_type\nbeneficiary_id
+
+App Business<--ApiPsd2:Retorno da API de transferência
+note left of ApiPsd2:\n{\n    "outputData": {\n        "authentication": "1,2,3",\n        "auth_seq": "136",\n        "object_id": "1-4EEJB0"\n    },\n    "returnCode": "0",\n    "returnMsg": "Sucesso"\n}\n
+App UI<--App Business:Pede OTP
+
+App UI-->App Business:devolve OTP
+
+
+
+App Business-->ApiPsd2:envia secure
+note right of App Business:{\n    "object_id":"1-4EEJB0",\n    "auth_type":"3",\n    "auth_value":"478946"\n}
+App Business<--ApiPsd2:Confirma operação
+
+note over App UI:Ecrã sucesso
+
+end

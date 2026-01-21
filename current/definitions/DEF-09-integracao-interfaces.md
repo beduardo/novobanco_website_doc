@@ -29,6 +29,9 @@ Definir as integrações do HomeBanking Web com sistemas internos e externos. O 
 
 | Sistema | Tipo | Proprietário | Criticidade | Status |
 |---------|------|--------------|-------------|--------|
+| **ApiPsd2** | Autenticação PSD2 | NovoBanco | Alta | Existente |
+| **ApiBBest** | APIs Bancárias | NovoBanco | Alta | Existente |
+| **Microservices** | Lógica de Negócio | NovoBanco | Alta | A desenvolver |
 | Core Banking APIs | Integração | NovoBanco | Alta | Existente |
 | App Mobile Nativa | Referência | NovoBanco | Média | Existente |
 | Azure Infrastructure | Plataforma | NovoBanco | Alta | Existente |
@@ -215,6 +218,91 @@ Definir as integrações do HomeBanking Web com sistemas internos e externos. O 
 
 47. Há requisitos de notificações em tempo real (WebSocket) para o canal web?
     Necessita aprofundamento
+
+## Catálogo de APIs - Backends do BFF
+
+> **Fonte:** Diagramas de sequência do cliente
+
+### APIs de Autenticação (ApiPsd2)
+
+| Código | API | Descrição | Criticidade |
+|--------|-----|-----------|-------------|
+| AUT_004 | Authentication_checkLogin | Validação de credenciais e início de sessão | Alta |
+| AUT_001 | ReenviaOTP | Solicita envio de OTP | Alta |
+| DEV_005.2 | RegistarDispositivoSecure | Valida OTP e regista dispositivo | Alta |
+
+### APIs de Dados do Cliente (ApiBBest)
+
+| API | Descrição | Dados Retornados |
+|-----|-----------|------------------|
+| Client_getClientInformation | Informação do cliente | Nome, dados pessoais |
+| Client_getClientContact | Contactos do cliente | Email, telefone, morada |
+| Devices_getDevices | Dispositivos registados | Lista de dispositivos |
+| MIFID_getInvestorProfile | Perfil de investidor | Perfil MIFID |
+| Message_getInboxMessage | Mensagens | Inbox do utilizador |
+
+### APIs de Contas e Movimentos (ApiBBest)
+
+| API | Descrição | Dados Retornados |
+|-----|-----------|------------------|
+| Account_getAccounts | Lista de contas | Contas do cliente |
+| Account_getMovements | Movimentos | Extracto de movimentos |
+| Statement_getUserStatement | Património | Posição patrimonial |
+
+### APIs de Cartões (ApiBBest)
+
+| API | Descrição | Dados Retornados |
+|-----|-----------|------------------|
+| CCards_getCreditCards | Cartões de crédito | Lista e detalhes |
+| DCards_getDebitCards | Cartões de débito | Lista e detalhes |
+
+### APIs de Operações (ApiBBest)
+
+| API | Descrição | Dados Retornados |
+|-----|-----------|------------------|
+| Operation_getOperationConfirmation | Confirmação de operações | Estado de operações |
+| Schedule_getSchedules | Agendamentos | Operações agendadas |
+| Permanent_getPermanentOrders | Ordens permanentes | Lista de ordens |
+| CorpAction_getOngoingClosedCA | Operações corporativas | Corporate actions |
+
+### APIs PSD2/SIBS (ApiBBest)
+
+| API | Descrição | Dados Retornados |
+|-----|-----------|------------------|
+| SIBS_getConsentStatus | Estado de consentimento PSD2 | Status |
+| SIBS_getConsentAccount | Contas com consentimento | Lista de contas |
+
+### APIs de Transferências (ApiBBest)
+
+| API | Descrição | Uso |
+|-----|-----------|-----|
+| API Beneficiários | Lista de beneficiários | Selecção de destinatário |
+| API COPS | Consulta de titular (IBAN nacional) | Validação PT50 |
+| API VOP | Verificação de nome | Confirmação de titular |
+| API Simulação | Simulação de transferência | Pré-cálculo de custos |
+| API Transferência | Execução de transferência | Operação efectiva |
+
+### APIs de Backoffice (CMS)
+
+| API | Descrição | Dados Retornados |
+|-----|-----------|------------------|
+| Notícias | Conteúdo noticioso | Lista de notícias |
+| Novidades | Novidades do banco | Lista de novidades |
+| Alertas | Alertas ao utilizador | Lista de alertas |
+| Publicidades | Cards promocionais | Estrutura de publicidade |
+
+> **Nota:** Este catálogo foi extraído dos diagramas de sequência. Solicitar documentação detalhada (contratos OpenAPI/Swagger) à equipa de backend.
+
+### Autenticação por Backend
+
+| Backend | Protocolo | Token Usado |
+|---------|-----------|-------------|
+| ApiPsd2 | OAuth + SHA256 | access_token_anonimo (pré-login) / apiToken (pós-login) |
+| ApiBBest | OAuth 1.1 HMAC | apiToken |
+| Microservices | Protocolo Omni | Token de sessão |
+| Siebel (via Gateway) | BEST | Bearer Token |
+
+---
 
 ## Decisões
 

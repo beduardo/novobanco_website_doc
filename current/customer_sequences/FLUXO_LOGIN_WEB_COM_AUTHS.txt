@@ -1,0 +1,28 @@
+title Login Web
+group login
+actor Utilizador
+Utilizador ->browser:URL
+note left of webserver:response_type=code\n&client_id=...\n&redirect_uri=...\n&scope=openid profile ...
+browser <- webserver:HTML
+browser -> API:API - avisos e alertas anónimos
+browser <- API:API - avisos e alertas anónimos
+note over browser:Landing page \ncom botão de login
+Utilizador->browser: click Login
+browser->>browser: Gera code_verifier (string aleatória segura)
+ browser->>browser: Calcula code_challenge = S256(code_verifier)
+browser -> Authorization Server:Authorization request with code challenge\nauthorize\nresponse_type=code\n&client_id=...\n&redirect_uri=...\n&code_challenge=...\n&code_challenge_method=S256\n&scope=openid profile ...
+note right of browser:Navegador muda para \no domínio do Authorization Server
+browser <- Authorization Server:HTML 
+note over browser:Página de User
+
+
+note over browser:Página de Pass
+browser -> Authorization Server:user +  pass
+BFF <-Authorization Server:Redirect para redirect_uri?code=AUTH_CODE
+BFF -> Authorization Server:Cookie com informação\nAuthorization code exchange with code verified\nPOST /token\ngrant_type=authorization_code\ncode=AUTH_CODE\nredirect_uri=...\nclient_id=...\ncode_verifier=...
+browser <- Authorization Server:cookie com informação
+note right of browser:React lê o parâmetro o cookie da URL
+browser->>browser:Guarda cookie (ex.: memória/estado da app)\nDecompõe o cookie para converter no Authorization aceite pelas API PSD2
+note over browser:Página OTP
+browser -> API:API Login secure\nContent-Type: application/json\nAuthorization: OAuth access_token,oauth_consumer_key,oauth_timestamp=,oauth_version,oauth_signature,oauth_guid\n
+browser <- API:resposta API Login secure

@@ -73,12 +73,26 @@ package "Canal Web" #LightBlue {
     end note
 }
 
+package "Infraestrutura de Entrada" #LightGreen {
+    [F5] as F5
+}
+
 package "Camada BFF" #LightBlue {
     [BFF Web\n(.NET 8)] as BFF
     note right of BFF
       Container OpenShift
       Agregação/Transformação
-      Gestão de Sessão
+      Gestão de Sessão (Redis)
+      Intermediário APIs
+    end note
+}
+
+package "Cache Distribuído" #LightBlue {
+    database "Redis Cluster" as REDIS
+    note bottom of REDIS
+      Sessões de utilizador
+      Tokens (apiToken, etc.)
+      Chave: token_sessao_spa
     end note
 }
 
@@ -91,24 +105,47 @@ package "Serviços Azure" #LightYellow {
     end note
 }
 
-package "Gateway" #LightGreen {
-    [API Gateway\n(IBM)] as APIGW
-    note right of APIGW
-      Autenticação: clientid + secret
-      Rate Limiting
-      Routing
+package "Microservices" #LightBlue {
+    [Microservices\n(Lógica de Negócio)] as MS
+    note right of MS
+      Containers OpenShift
+      Regras de Negócio
+      Protocolo Omni
     end note
 }
 
-package "Backend Services" #LightGreen {
+package "Backend Services - Autenticação" #LightGreen {
+    [ApiPsd2\n(Autenticação PSD2)] as APIPSD2
+    note right of APIPSD2
+      Acesso direto pelo BFF
+      OAuth + Assinatura SHA256
+      Operações: AUT_004, AUT_001
+    end note
+}
+
+package "Backend Services - APIs Bancárias" #LightGreen {
+    [ApiBBest\n(APIs Principais)] as APIBBEST
+    note right of APIBBEST
+      Acesso direto pelo BFF
+      OAuth 1.1 (HMAC-SHA256)
+      APIs de consulta e operações
+    end note
+}
+
+package "Gateway" #LightGreen {
+    [API Gateway\n(IBM)] as APIGW
+    note right of APIGW
+      **Apenas para Siebel**
+      Autenticação: clientid + secret
+      Rate Limiting
+    end note
+}
+
+package "Backend Services - Core" #LightGreen {
     [Siebel\n(Principal)] as SIEBEL
     note right of SIEBEL
       Validação de Token
-      Lógica de Negócio
-    end note
-    [Outros Serviços\n(a detalhar)] as OUTROS
-    note bottom of OUTROS
-      **PENDENTE: Identificar**
+      Lógica de Negócio Core
     end note
 }
 
@@ -129,21 +166,26 @@ package "Observabilidade" #LightGray {
 
 ' Fluxo Principal
 USER --> WEB : HTTPS
-WEB --> BFF : Cookie Sessão\n(HTTPS/REST)
-BFF --> APIGW : clientid + secret
+WEB --> F5 : Protocolo Omni
+F5 --> BFF : Protocolo Omni
+BFF --> REDIS : Lookup/Store\nTokens e Sessão
+BFF --> APIPSD2 : OAuth + SHA256\n(Autenticação)
+BFF --> APIBBEST : OAuth 1.1 HMAC\n(APIs Bancárias)
+BFF --> MS : Protocolo Omni\n(Lógica de Negócio)
+BFF --> APIGW : clientid + secret\n(Apenas Siebel)
 BFF --> AZURE : Direto
 APIGW --> SIEBEL : Bearer Token
-APIGW --> OUTROS : Bearer Token
+MS --> SIEBEL : Protocolo Siebel
 SIEBEL --> CORE
 SIEBEL --> DB
 SIEBEL --> KYC
 SIEBEL --> CARDS
 SIEBEL --> NOTIF
-OUTROS --> CORE
 
 ' Observabilidade
 WEB ..> ELK : Logs
 BFF ..> ELK : Logs/Métricas
+MS ..> ELK : Logs/Métricas
 
 @enduml
 ```
@@ -152,35 +194,53 @@ BFF ..> ELK : Logs/Métricas
 
 | Cor | Significado |
 |-----|-------------|
-| Azul | Componentes novos (a desenvolver) |
-| Verde | Componentes existentes (reutilizar) |
-| Amarelo | Componentes a detalhar (pendente) |
+| Azul | Componentes novos (a desenvolver): SPA, BFF, MS, Redis |
+| Verde | Componentes existentes (reutilizar): F5, ApiPsd2, ApiBBest, API Gateway, Siebel |
+| Amarelo | Componentes a detalhar (pendente): Serviços Azure |
 | Cinza | Infraestrutura transversal |
+
+#### Protocolos de Comunicação
+
+> **Nota sobre Protocolos:**
+> - **Protocolo Omni:** Padronização sobre REST utilizada para comunicação SPA↔F5↔BFF e BFF↔MS
+> - **OAuth + SHA256:** Utilizado para comunicação BFF↔ApiPsd2 (autenticação)
+> - **OAuth 1.1 HMAC:** Utilizado para comunicação BFF↔ApiBBest (APIs bancárias)
+> - **BEST:** Protocolo existente para comunicação BFF↔API Gateway
+> - **Siebel:** Protocolo existente para comunicação API Gateway/MS↔Siebel
 
 #### Fluxo de Autenticação
 
-| Origem | Destino | Mecanismo |
-|--------|---------|-----------|
-| Frontend Web | BFF | Cookie de Sessão (HttpOnly, Secure) |
-| BFF | API Gateway | ClientID + ClientSecret |
-| API Gateway | Backend Services | Bearer Token (propagado) |
-| Siebel | - | **Validação do Token** |
+| Origem | Destino | Mecanismo | Protocolo |
+|--------|---------|-----------|-----------|
+| SPA | F5 | Cookie de Sessão (token_sessao_spa, HttpOnly, Secure, SameSite=Strict) | Omni |
+| F5 | BFF | Cookie de Sessão (propagado) | Omni |
+| BFF | Redis | Lookup por token_sessao_spa → tokens do utilizador | - |
+| BFF | ApiPsd2 | OAuth + Assinatura SHA256 | REST |
+| BFF | ApiBBest | OAuth 1.1 (HMAC-SHA256) | REST |
+| BFF | MS | Token de Sessão | Omni |
+| BFF | API Gateway | ClientID + ClientSecret | BEST |
+| API Gateway | Siebel | Bearer Token (propagado) | Siebel |
 
 #### Pendências de Detalhe
 
 | Item | Descrição | Responsável |
 |------|-----------|-------------|
 | Serviços Azure | Identificar quais serviços Azure são acedidos diretamente pelo BFF | NovoBanco |
-| Outros Backend Services | Identificar serviços além do Siebel | NovoBanco |
+| Lista de Microservices | Identificar quais MS serão desenvolvidos e suas responsabilidades | NovoBanco/NextReality |
 
 ### 3.3 Componentes Principais
 
 | Componente | Tipo | Responsabilidade | Tecnologia |
 |------------|------|------------------|------------|
-| **HomeBanking Web** | Frontend SPA | Interface do utilizador, experiência web responsiva | _A definir (SEC-04)_ |
-| **BFF Web** | Backend | Agregação, transformação, orquestração para canal web | _A definir (SEC-05)_ |
-| **API Gateway** | Infraestrutura | Roteamento, rate limiting, autenticação | Existente |
-| **Backend Services** | Serviços | Lógica de negócio, integrações | Existente |
+| **HomeBanking Web** | Frontend SPA | Interface do utilizador, experiência web responsiva | React |
+| **F5** | Infraestrutura | Entrada de tráfego web | Existente |
+| **BFF Web** | Backend | Lógica de UI, agregação, transformação, orquestração | .NET 8 |
+| **Redis Cluster** | Cache | Sessões distribuídas, tokens | Existente |
+| **Microservices** | Backend | Lógica de Negócio, regras de domínio | .NET 8 |
+| **ApiPsd2** | Backend | Autenticação PSD2 | Existente |
+| **ApiBBest** | Backend | APIs bancárias principais | Existente |
+| **API Gateway** | Infraestrutura | Roteamento para Siebel | IBM (Existente) |
+| **Siebel** | Backend | Lógica de negócio core | Existente |
 | **ELK Stack** | Observabilidade | Logs centralizados, métricas, dashboards | Existente |
 
 ### 3.4 Casos de Uso Principais
@@ -272,9 +332,13 @@ A integração segue o modelo definido no diagrama de referência (secção 3.2)
 |------------|--------|------|------------|
 | Frontend Web (SPA React) | Novo | Desenvolver | Container OpenShift |
 | BFF Web (.NET 8) | Novo | Desenvolver | Container OpenShift |
-| API Gateway (IBM) | Existente | Reutilizar | Autenticação clientid+secret |
-| Siebel | Existente | Reutilizar | Backend principal, valida token |
-| Outros Backend Services | Existente | Reutilizar | A identificar |
+| Microservices (.NET 8) | Novo | Desenvolver | Container OpenShift, Protocolo Omni |
+| Redis Cluster | Novo | Desenvolver | Sessões e tokens |
+| F5 | Existente | Reutilizar | Entrada de tráfego web |
+| ApiPsd2 | Existente | Reutilizar | Autenticação PSD2, OAuth+SHA256 |
+| ApiBBest | Existente | Reutilizar | APIs bancárias, OAuth 1.1 HMAC |
+| API Gateway (IBM) | Existente | Reutilizar | Apenas para Siebel |
+| Siebel | Existente | Reutilizar | Backend principal, lógica core |
 | Core Banking | Existente | Reutilizar | Via Siebel |
 | Serviços Azure | Existente | Reutilizar | Acesso direto pelo BFF |
 | Integrações Terceiros | Existente | Reutilizar | KYC/AML, Cartões, Notificações |

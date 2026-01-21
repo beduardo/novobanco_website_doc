@@ -298,7 +298,26 @@ BFF --> FE : {status: "logged_out"}
 
 ---
 
-## Protocolo OAuth 1.1
+## Protocolos OAuth por Backend
+
+O BFF comunica com dois backends diferentes usando variantes de OAuth:
+
+| Backend | Protocolo | Assinatura | Propósito |
+|---------|-----------|------------|-----------|
+| **ApiPsd2** | OAuth + SHA256 | `SHA256(consumer_key & GUID & timestamp & version & secret_key)` | Autenticação PSD2 |
+| **ApiBBest** | OAuth 1.1 HMAC | `HMAC-SHA256(base_string, consumer_secret)` | APIs bancárias |
+
+### Header de Identificação de Canal
+
+Todas as chamadas ao backend devem incluir o header de identificação de canal:
+
+```http
+x-nb-channel: best.spa
+```
+
+---
+
+## Protocolo OAuth 1.1 (ApiBBest)
 
 ### Tokens Anónimos (Pré-Login)
 
@@ -347,7 +366,29 @@ stop
 
 ---
 
+## Códigos de Operação ApiPsd2
+
+| Código | Operação | Descrição | Token Usado |
+|--------|----------|-----------|-------------|
+| AUT_004 | Authentication_checkLogin | Validação de credenciais | access_token_anonimo |
+| AUT_001 | ReenviaOTP | Solicita envio de OTP | apiToken |
+| DEV_005.2 | RegistarDispositivoSecure | Valida OTP e regista dispositivo | apiToken |
+| CLI_005 | ConsultaCliente | Consulta dados do cliente (pós-login) | apiToken |
+
+---
+
 ## API Authentication_checkLogin (AUT_004)
+
+### Parâmetros do Login - Canal Web
+
+| Parâmetro | Descrição | Valor Web |
+|-----------|-----------|-----------|
+| `user` | Identificador do utilizador | Input do utilizador |
+| `pass` | Password (pode ser cifrada) | Input do utilizador |
+| `encrypt` | Indica se password está cifrada | "Y" ou "N" |
+| `device_id` | Identificador do dispositivo | User-Agent ou GUID gerado |
+| `app_version` | Versão da aplicação | Versão do SPA |
+| `so_id` | Sistema operativo | "SPA" |
 
 ### Request
 

@@ -149,7 +149,60 @@ FE --> USER : Acesso concedido
 @enduml
 ```
 
-#### 7.2.3 Segurança na Transmissão de Credenciais
+#### 7.2.3 Detalhes Técnicos do Fluxo Fallback (BFF ↔ ApiPsd2)
+
+O fluxo fallback utiliza a ApiPsd2 para autenticação. O BFF encapsula toda a complexidade:
+
+```plantuml
+@startuml
+skinparam backgroundColor #FEFEFE
+
+actor "Utilizador" as USER
+participant "Browser" as FE
+participant "BFF" as BFF
+database "Redis" as REDIS
+participant "ApiPsd2" as API
+
+USER -> FE : Insere Username/Password
+FE -> BFF : POST /auth/login\nx-nb-channel: best.spa
+
+note over BFF
+  Gera: GUID, timestamp
+  Calcula: assinatura SHA256
+  Token: access_token_anonimo
+end note
+
+BFF -> API : AUT_004 (Authentication_checkLogin)\nOAuth Authorization header\n{user, pass, encrypt, device_id, app_version, so_id}
+
+API --> BFF : returnCode: "0"\napiToken, mustChangePassword,\nneedStrongAuthentication, firstLogin
+
+alt needStrongAuthentication == "Y"
+    BFF -> API : AUT_001 (ReenviaOTP)
+    API --> BFF : authentication, auth_seq, object_id
+    BFF --> FE : Requer OTP
+    USER -> FE : Insere código OTP
+    FE -> BFF : POST /auth/verify-otp
+    BFF -> API : DEV_005.2 (RegistarDispositivoSecure)\n{object_id, auth_type, auth_value}
+    API --> BFF : Sucesso
+end
+
+BFF -> BFF : Gera token_sessao_spa (GUID)
+BFF -> REDIS : SET token_sessao_spa\n{apiToken, user_context, ...}
+BFF --> FE : Set-Cookie: token_sessao_spa\n(HttpOnly, Secure, SameSite=Strict)\n{mustChangePassword, firstLogin}
+
+@enduml
+```
+
+**Códigos de Operação ApiPsd2:**
+
+| Código | Operação | Descrição |
+|--------|----------|-----------|
+| AUT_004 | Authentication_checkLogin | Validação de credenciais |
+| AUT_001 | ReenviaOTP | Solicita envio de OTP |
+| DEV_005.2 | RegistarDispositivoSecure | Valida OTP e regista dispositivo |
+| CLI_005 | ConsultaCliente | Consulta dados do cliente (pós-login) |
+
+#### 7.2.4 Segurança na Transmissão de Credenciais
 
 > **Nota Importante:** O ambiente web requer atenção especial na transmissão e gestão de credenciais. Ver [Secção 8.3.6](SEC-08-seguranca-conformidade.md#836-considerações-de-segurança-web-vs-mobile) para diferenças de segurança web vs mobile.
 
@@ -202,6 +255,17 @@ FE --> USER : Acesso concedido
 | **Isenções SCA** | Nenhuma |
 
 **Fluxo de fallback:** Após o utilizador informar falha na leitura do QR Code, a aplicação permite login com SMS OTP ou App Push. A disponibilidade dos métodos é **uniforme** para todos os utilizadores (não configurável por utilizador) e **sem prioridade** entre os métodos.
+
+#### 7.3.1 SCA Condicional
+
+A ApiPsd2 retorna a flag `needStrongAuthentication` que indica se SCA é requerido:
+
+| Valor | Significado | Ação |
+|-------|-------------|------|
+| "Y" | SCA obrigatório | Prosseguir com OTP |
+| "N" | SCA não requerido | Login completo |
+
+> **Pendência:** Clarificar com o cliente em que cenários `needStrongAuthentication` retorna "N". Ver PENDENCIAS.md.
 
 ### 7.4 Gestão de Sessões
 

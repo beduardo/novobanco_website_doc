@@ -1,0 +1,95 @@
+title Fluxo Web
+participant SPA
+participant BFF
+participant MS
+participant ApiBBest
+participant API backoffice
+
+group login
+box over SPA,API backoffice:Autenticação cenário 1 e 2:\n\nCenário 1:\nuser + pass + otp por sms\n\nCenário 2:\nuser + pass + otp dentro app\n
+box over SPA:ecrã de login + pass
+SPA-->BFF:header SPA\nuser + pass
+note right of BFF:Chaves:\nAPI BEST\n-access_token_anonimo\n-consumer_key\n-secret_key\nBackoffice\n-Token_Endpoint\n-clientid\n-client_secret\n-ClientScopes\n-authorizationpoint
+note over BFF:Gera authorization com token anónimo \nAuthorization: OAuth access_token={{acess_token_anonimo}},\n                        oauth_consumer_key={{client_token}},\n                        oauth_timestamp={{timestamp}},\n                        oauth_version={{version}},\n                        oauth_signature={{assinatura}},\n                        oauth_guid={{GUID}}
+note right of BFF:Ver se faz sentido encriptar o user e pass(?)
+BFF-->ApiBBest:\nAuthentication_checkLogin - AUT_004\n(user,pass,encrypt,device_id,app_version,so_id)\nAuthorization\n{\n    "user":"5.9.85.7.4.0.5.82",\n    "pass":"2.25.265.25",\n  "token":"",\n  "encrypt":"N",\n  "device_id":" ",\n  "app_version":"SPA_version",\n  "so_id":"SPA"\n}
+BFF<--ApiBBest:"returnCode":"0",\n"returnMsg":"Sucesso",\n"outputData":\n{\n    "apiToken":"914e55d8ea3b4e19b1aa63c9efbad2ba",\n    "mustChangePassword":"N",\n    "needStrongAuthentication":"N",\n    "firstLogin":"N",\n"otp_id":null,\n    "sasToken":""\n}\nnotas\n - access_token para os próximos pedidos=apiToken\n-O sasToken não é necessário para o SPA
+
+
+BFF-->SPA:Pede OTP
+note over SPA:Ecrã de otp
+BFF<--SPA:Envia OTP
+box right of BFF:Gera authorization para API BBest\n-GUID\n-timestamp\n-Assinatura "base_string": \n"access_token%26oauth_consumer_key%2\n6oauth_guid%26oauth_timestamp%3D%26oauth_version%26oauth_consumer_secret"\n"signature_final1": "requestbodyhmacquerystring 'sha256', 'base64', _.consumer_secret, false,base_string"\n"signature_final2": "encodeURIComponent 'encode',signature_final1"\nHeader:\nAuthorization: \nOAuth access_token={{acess_token}},\noauth_consumer_key={{client_token}},\noauth_timestamp={{timestamp}},\noauth_version=1.1,\noauth_signature={{signature_final2}},\noauth_guid={{GUID}}\n
+ApiBBest<--BFF:Chamar API de secure
+ApiBBest-->BFF:retorno do secure
+
+note over BFF:modelo de gestão de cache: \nCache or API. Valida se tem dados na cache \ne se não pede à API e guarda na cache\nPara este cliente há dados em cache?
+note over BFF:Se sim, devolve os dados ao SPA
+BFF-->SPA:devolve "home"
+space
+note over BFF:Se não, pede dados às API's
+note over BFF:gera novo authorization
+BFF-->ApiBBest:Chama API's BBESt para a home\n\nExemplo APP:\nClient_getClientInformation(nome e dados do cliente)\nClient_getClientContact(Contactos)\nSIBS_getConsentStatus (PSD2)\nSIBS_getConsentAccount (PSD2)\nObjective_getClientObjectives(avisos de objetivos)\nDevices_getDevices(dispositivos registados)\nMIFID_getInvestorProfile(Perfil do investidor)\nSchedule_getSchedules(agendamentos)\nPermanent_getPermanentOrders(ordens Permanentes)\nCorpAction_getOngoingClosedCA(operações coorporativas)\nOperation_getOperationConfirmation(operações)\nAccount_getMovements(movimentos de contas)\nAccount_getAccounts(contas)\nCCards_getCreditCards(Cartões de crédito)\nDCards_getDebitCards(Cartões de débito)\nStatement_getUserStatement(património)\nMessage_getInboxMessage(mensagens)
+ApiBBest-->BFF:Dados para a home API BBESt
+note right of BFF:Gera access token para API Backoffice\nChamada ao oauth NR com:\nGrant Type: Client Credentials\nAccess Token URL\nClient ID\nClient Secret\nScope\n
+BFF-->API backoffice: Chama API API backoffice\nExemplo:\nNoticias\nnovidades\nalertas
+API backoffice-->BFF:Dados para a home API API backoffice\nexemplo publicidades\n{\n	"data": [\n		{\n			"labelTextColor": "#FFFFFF",\n			"title": ".",\n			"titleTextColor": "#1d19ff",\n			"subtitleTextColor": "#1d19ff",\n			"mainIMGURL": "https://bancobestcmstorage.blob.core.windows.net/proj-4/default/images/fe24ffad-0249-4041-9306-837d4354be9c.png",\n			"mainIMGMimeType": "image/png",\n			"startDate": "2025-02-20T12:07:05.000+00:00",\n			"buttonTextColor": "#1d19ff",\n			"page": "Home",\n			"type": "Card",\n			"profile": "Both",\n			"isMultipleLanguage": false,\n			"id": 113,\n			"activeStatus": "Active",\n			"friendlyId": "afdd745c-3875-acb4-787b-018e4d6f2871",\n			"order": 2,\n			"version": "8DD67AB1025CAD3"\n		}		}\n	],\n	"paging": {\n		"pageNumber": 1,\n		"pageSize": 15000,\n		"pageCount": 1,\n		"totalRecordCount": 46\n	}\n}
+note over BFF:Guarda dados em Cache
+BFF-->SPA:devolve os dados home
+note over SPA: Home
+end
+
+
+
+group Transferência
+note over SPA:mostra ecrã para\nseleção do tipo de transferência:\nIBAN ou Conta\nSPIN\n
+box over SPA,ApiBBest:cenário IBAN ou Conta
+BFF-->ApiBBest:API de beneficiários
+BFF<--ApiBBest:Lista de beneficiários
+BFF-->SPA:Lista de beneficiários
+note over SPA:mostra ecrã:\nIBAN\nBeneficiário\nConta
+SPA-->BFF:IBAN ou Beneficiário
+note over BFF:API de BFF valida qual o\ntipo de IBAN e se é válido.\n\nConfirmação se o IBAN é válido por biblioteca a escolher\n\nLogo/bandeira\nHá uma correspondencia entre IBAN e um logo/bandeira. \nSe for nacional então o logo é um link para o logo do banco\nSe não vai a uma lista interna com todos os logos. Exe:\n("AD", "Andorra", "+376", R.drawable.flag_ad, "EUR")\no IBAN de Andorra começa por AD\n\n
+SPA<--BFF:Resposta: link para o logo/bandeira
+SPA<--BFF:Resposta: IBAN válido ou não
+BFF-->ApiBBest:Se IBAN válido e Nacional - API COPS
+BFF<--ApiBBest:Resposta COPS -> Nome titular
+SPA<--BFF:Resposta COPS -> Nome titular
+note over SPA:Mostra Nome do titular\ne pede para confirmar o nome
+SPA-->BFF:Faz pedido de confirmação do nome
+BFF-->ApiBBest:Chama API VOP
+BFF<--ApiBBest:API VOP Confirma ou não o nome
+SPA<--BFF:Resposta VOP com Ok ou Aviso
+note over SPA:Pede Montante
+note over SPA:Compoem o pedido\nhome_account_number\ndestination_iban\ndestination_name\namount\ndescription\ndestination_email\ndestination_phone\ntransfer_type\nbeneficiary_id
+SPA-->BFF:Envia todos os dados da transferência
+note over BFF:BFF vai revalidar tudo e aplicar\nRegras para a escolha da API a usar:\nSe é PT500065 então Transf interna\n- Se PT50 então IBAN Português e não BEST então \ntransf Interbanc\nSe Internacional valida se é SEPA\n- se não é sepa o processo é muito mais complexo\n com vários ecrãs e chamadas de API\n
+
+BFF-->ApiBBest:Conforme as regras chama API Simulação
+BFF<--ApiBBest:Recebe valores de Simulação \ne id da transação
+
+SPA<--BFF:Envia valores de \nSimulação e id
+
+
+note over SPA:Ecrã de sumário do pedido\ncom possibiliade de adicionar dados\ndescrição, etc
+SPA-->BFF:Confirma transação + id
+
+
+
+
+
+
+BFF-->ApiBBest:Conforme as regras chama API de transferência
+BFF<--ApiBBest:Retorno da API de transferência\ncom secure
+SPA<--BFF:Pede OTP
+
+
+
+
+SPA-->BFF:devolve OTP
+BFF-->ApiBBest:envia otp
+
+BFF<--ApiBBest:Confirma operação
+note over SPA:Ecrã sucesso
+
+end

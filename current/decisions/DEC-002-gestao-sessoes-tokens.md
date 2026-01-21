@@ -63,14 +63,33 @@ Implementar **arquitetura de tokens em dois niveis**: tokens de sessao (Browser-
 - Refresh Token TTL: **7 dias**
 - Armazenamento: **BFF cache** (Redis ou similar)
 
-**Configuracao de Tokens de Sessao:**
-- Session Access Token: **Cookie HttpOnly, Secure, SameSite=Strict**
-- Session Refresh Token: **Cookie HttpOnly, Secure, SameSite=Strict**
-- Armazenamento: **Cookies** (browser -> BFF)
+**Configuracao de Sessao Web:**
+- Cookie: `token_sessao_spa`
+- Atributos: HttpOnly, Secure, SameSite=Strict
+- Geracao: GUID no BFF apos autenticacao bem-sucedida
+- Funcao: Chave de lookup no Redis
+
+**Armazenamento Redis:**
+- Chave: `session:{token_sessao_spa}`
+- Valor: JSON com apiToken, contexto de utilizador, flags
+- TTL: 30 minutos (timeout absoluto de sessao)
+- Tipo: Redis Cluster para alta disponibilidade
+
+**Dados Armazenados por Sessao:**
+
+| Dado | Descricao | Origem |
+|------|-----------|--------|
+| `apiToken` | Token de acesso a ApiPsd2 | Resposta AUT_004 |
+| `mustChangePassword` | Flag de alteracao obrigatoria | Resposta AUT_004 |
+| `needStrongAuthentication` | Flag SCA necessario | Resposta AUT_004 |
+| `firstLogin` | Flag primeiro acesso | Resposta AUT_004 |
+| `user_context` | Dados do utilizador (nao sensiveis) | Resposta login |
 
 **Renovacao:**
 - Refresh silencioso conforme atividade do utilizador
 - BFF renova tokens backend automaticamente antes de expiracao
+
+**Importante:** O `sasToken` retornado pela ApiPsd2 **nao e utilizado** no canal web. Este token e especifico para a app mobile.
 
 ## Alternatives Considered
 

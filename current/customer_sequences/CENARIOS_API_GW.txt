@@ -1,0 +1,150 @@
+title Possibilidades apigw
+
+
+
+participant App
+participant SPA #white #green;1;dashed
+participant F5 #white #green;1;dashed
+participant BFF #white #green;1;dashed
+participant ApiGw
+participant MS #white #green;1;dashed
+
+participant ApiPsd2
+
+lifelinestyle SPA #green;1;dashed
+lifelinestyle F5 #green;1;dashed
+lifelinestyle BFF #green;1;dashed
+lifelinestyle MS #green;1;dashed
+
+
+
+note over ApiPsd2:Middleware desenvolvido pelo BEST
+participant Siebel
+
+group cenário atual
+note over F5: passa por aqui?
+App-->ApiPsd2:Pedido (protocolo BEST)
+activate ApiPsd2
+ApiPsd2-->Siebel:Pedido (protocolo Siebel)
+activate Siebel
+ApiPsd2<--Siebel:Resposta (protocolo Siebel)
+deactivate Siebel
+App<--ApiPsd2:Resposta (protocolo BEST)
+deactivate ApiPsd2
+end
+
+group cenário apigw (pre omni)
+App-->ApiGw:Pedido (protocolo BEST)\n+client_id, client_secret
+activate ApiGw
+ApiGw-->Siebel:Pedido (protocolo Siebel)
+activate Siebel
+ApiGw<--Siebel:Resposta (protocolo Siebel)
+deactivate Siebel
+App<--ApiGw:Resposta (protocolo BEST)
+deactivate ApiGw
+end
+
+group cenário apigw + omni as is
+note over SPA: Neste cenário a logica\n que passar para o BFF\nnão será possivel de ser acedida\n pela app ou pelo PSD2\na lógica de negócio existente na app \npassa para o siebel
+App-->ApiGw:Pedido (protocolo BEST)\n+client_id, client_secret
+activate ApiGw
+ApiGw-->Siebel:Pedido (protocolo Siebel)
+activate Siebel
+ApiGw<--Siebel:Resposta (protocolo Siebel)
+deactivate Siebel
+App<--ApiGw:Resposta (protocolo BEST)
+deactivate ApiGw
+
+
+messagestyle <color:#green>
+SPA-[#green]->F5:Pedido (protocolo Omni)
+activate F5 #white #green
+F5-[#green]->BFF:Pedido (protocolo Omni)
+activate BFF #white #green
+BFF-[#green]->ApiGw:Pedido (protocolo BEST)
+activate ApiGw #white #green
+ApiGw-[#green]->Siebel:Pedido (protocolo Siebel)
+activate Siebel #white #green
+ApiGw<-[#green]-Siebel:Resposta (protocolo Siebel)
+deactivate Siebel
+BFF<-[#green]-ApiGw:Resposta (protocolo BEST)
+deactivate ApiGw
+F5<-[#green]-BFF:Resposta (protocolo Omni)
+deactivate BFF
+SPA<-[#green]-F5:Resposta (protocolo Omni)
+deactivate F5
+messagestyle <color:#black>
+end
+
+
+
+group cenário apigw + omni ALTERNATIVAS
+note over SPA: Existem mais combinações possíveis\n mas ficam para ser abordadas em discussão 
+
+alt MS - a lógica de negócio implementada numa camada à frente do siebel por questões de agilidade
+note over SPA: Neste cenário a logica de UI passa para o BFF\nA lógica de negócio para o MS\nVantagem: ambos os layers são na mesma tecnologia\nmas necessita de uma implementação omni para respeitar\no protocolo BEST atual na resposta\ne o siebel no pedido
+App-->ApiGw:Pedido (protocolo BEST)\n+client_id, client_secret
+activate ApiGw
+
+alt Serviço existe no siebel
+ApiGw-->Siebel:Pedido (protocolo Siebel)
+activate Siebel
+ApiGw<--Siebel:Resposta (protocolo Siebel)
+deactivate Siebel
+end
+alt Serviço implementado fora do siebel
+ApiGw-->MS:Pedido (protocolo BEST)
+activate MS
+MS-->Siebel:Pedido (protocolo Siebel)
+activate Siebel
+MS<--Siebel:Resposta (protocolo Siebel)
+deactivate Siebel
+ApiGw<--MS:Resposta (protocolo BEST)
+deactivate MS
+end
+
+App<--ApiGw:Resposta (protocolo BEST)
+deactivate ApiGw
+
+
+messagestyle <color:#green>
+
+SPA-[#green]->F5:Pedido (protocolo Omni)
+activate F5 #white #green
+F5-[#green]->BFF:Pedido (protocolo Omni)
+activate BFF #white #green
+BFF-[#green]->ApiGw:Pedido (protocolo BEST)\n+client_id, client_secret
+activate ApiGw #white #green
+
+alt#white #white #green Serviço existe no siebel
+ApiGw-[#green]->Siebel:Pedido (protocolo Siebel)
+activate Siebel #white #green
+ApiGw<-[#green]-Siebel:Resposta (protocolo Siebel)
+deactivate Siebel
+end
+alt#white #white #green Serviço implementado fora do siebel
+ApiGw-[#green]->MS:Pedido (protocolo BEST)
+activate MS #white #green
+MS-[#green]->Siebel:Pedido (protocolo Siebel)
+activate Siebel #white #green
+MS<-[#green]-Siebel:Resposta (protocolo Siebel)
+deactivate Siebel
+ApiGw<-[#green]-MS:Resposta (protocolo BEST)
+deactivate MS
+end
+
+BFF<-[#green]-ApiGw:Resposta (protocolo BEST)
+deactivate ApiGw
+F5<-[#green]-BFF:Resposta (protocolo Omni)
+deactivate BFF
+SPA<-[#green]-F5:Resposta (protocolo Omni)
+deactivate F5
+
+
+end
+end
+
+
+
+
+

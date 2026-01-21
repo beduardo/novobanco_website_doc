@@ -41,12 +41,18 @@ O HomeBanking Web segue uma arquitetura de integracao em camadas, onde o **BFF (
 
 **Fluxo de Integracao:**
 
-| Origem | Destino | Autenticacao | Observacao |
-|--------|---------|--------------|------------|
-| Frontend → BFF | REST/HTTPS | Cookie de sessao | HttpOnly, Secure |
-| BFF → API Gateway (IBM) | REST/HTTPS | ClientID + ClientSecret | Para acesso ao Siebel |
-| BFF → Servicos Azure | REST/HTTPS | Direto | Servicos a identificar |
-| API Gateway → Siebel | REST | Bearer Token | **Siebel valida o token** |
+| Origem | Destino | Protocolo | Autenticacao | Observacao |
+|--------|---------|-----------|--------------|------------|
+| Frontend → F5 | Omni | Cookie de sessao | HttpOnly, Secure, SameSite=Strict |
+| F5 → BFF | Omni | Cookie de sessao (propagado) | - |
+| BFF → Redis | - | - | Lookup/Store de sessao e tokens |
+| BFF → ApiPsd2 | REST | OAuth + SHA256 | Autenticacao PSD2 (directo) |
+| BFF → ApiBBest | REST | OAuth 1.1 HMAC | APIs bancarias (directo) |
+| BFF → Microservices | Omni | Token de sessao | Logica de negocio (directo) |
+| BFF → API Gateway (IBM) | BEST | ClientID + ClientSecret | **Apenas para Siebel** |
+| BFF → Servicos Azure | REST | Direto | Servicos a identificar |
+| API Gateway → Siebel | Siebel | Bearer Token | **Siebel valida o token** |
+| MS → Siebel | Siebel | - | Logica de negocio |
 | Siebel → Core Banking | Interno | - | Protocolo interno |
 | Siebel → Terceiros | REST | - | KYC/AML, Cartoes, Notificacoes |
 
@@ -233,29 +239,117 @@ O canal web permite operacoes de gestao de cartoes atraves da integracao com o p
 | Provider (emissao/processamento) | Necessita aprofundamento |
 | Integracao 3D Secure | Necessita aprofundamento |
 
-### 9.6 Servicos Fora do Middleware BEST
+### 9.6 ApiPsd2 - Interface de Autenticacao PSD2
+
+A ApiPsd2 e o servico de autenticacao PSD2 do backend existente, acedido **directamente pelo BFF** (sem API Gateway IBM).
+
+#### Caracteristicas
+
+| Aspecto | Valor |
+|---------|-------|
+| **Protocolo** | REST |
+| **Autenticacao** | OAuth com assinatura SHA256 |
+| **Acesso** | Directo pelo BFF |
+| **Documentacao** | A fornecer pelo NovoBanco |
+
+#### Operacoes Identificadas
+
+| Codigo | Nome | Descricao | Contexto |
+|--------|------|-----------|----------|
+| AUT_004 | Authentication_checkLogin | Autenticacao inicial | Login |
+| AUT_001 | ReenviaOTP | Solicita envio de OTP | MFA |
+| DEV_005.2 | RegistarDispositivoSecure | Valida OTP | MFA |
+| CLI_005 | ConsultaCliente | Dados do cliente | Pos-login |
+
+#### Estrutura do Header de Autorizacao
+
+```
+Authorization: OAuth access_token={{access_token}},
+                    oauth_consumer_key={{client_token}},
+                    oauth_timestamp={{timestamp}},
+                    oauth_version={{version}},
+                    oauth_signature={{assinatura}},
+                    oauth_guid={{GUID}}
+```
+
+#### Header de Identificacao de Canal
+
+```
+x-nb-channel: best.spa
+```
+
+### 9.7 ApiBBest - APIs Bancarias Principais
+
+A ApiBBest e o servico principal de APIs bancarias, acedido **directamente pelo BFF** (sem API Gateway IBM).
+
+#### Caracteristicas
+
+| Aspecto | Valor |
+|---------|-------|
+| **Protocolo** | REST |
+| **Autenticacao** | OAuth 1.1 (HMAC-SHA256) |
+| **Acesso** | Directo pelo BFF |
+| **Documentacao** | A fornecer pelo NovoBanco |
+
+#### Categorias de APIs
+
+| Categoria | Exemplos |
+|-----------|----------|
+| **Cliente** | Client_getClientInformation, Client_getClientContact |
+| **Contas** | Account_getAccounts, Account_getMovements |
+| **Cartoes** | CCards_getCreditCards, DCards_getDebitCards |
+| **Operacoes** | Operation_getOperationConfirmation, Schedule_getSchedules |
+| **Transferencias** | API Beneficiarios, API COPS, API VOP, API Simulacao |
+| **PSD2** | SIBS_getConsentStatus, SIBS_getConsentAccount |
+
+> **Catalogo completo:** Ver [DEF-09-integracao-interfaces.md](../definitions/DEF-09-integracao-interfaces.md#catálogo-de-apis---backends-do-bff)
+
+### 9.8 Microservices - Logica de Negocio
+
+Os Microservices sao uma camada de logica de negocio acedida **directamente pelo BFF** via Protocolo Omni.
+
+#### Caracteristicas
+
+| Aspecto | Valor |
+|---------|-------|
+| **Protocolo** | Omni (padronizacao sobre REST) |
+| **Tecnologia** | .NET 8 |
+| **Deploy** | Containers OpenShift |
+| **Status** | A desenvolver |
+
+#### Responsabilidades
+
+| Responsabilidade | Descricao |
+|------------------|-----------|
+| Logica de Negocio | Regras de dominio alem do Siebel |
+| Processamento | Operacoes que requerem processamento adicional |
+| Partilha | Servicos reutilizaveis entre canais (futuramente) |
+
+> **Pendencia:** Identificar quais MS serao desenvolvidos e suas responsabilidades especificas.
+
+### 9.9 Servicos Fora do Middleware BEST
 
 Existem servicos utilizados pela app mobile que nao passam pelo middleware BEST e sao acedidos diretamente. Estes servicos precisam ser identificados e avaliados para o canal web.
 
-> **Pendencia Critica:** Identificar todos os servicos fora do middleware BEST necessarios para a solucao.
+> **Nota:** Conforme arquitectura definida, o BFF acede directamente a ApiPsd2, ApiBBest e Microservices (sem API Gateway IBM). O API Gateway e utilizado **apenas** para Siebel.
 
 #### Servicos Identificados
 
-| Servico | Tipo | Funcao | Status |
+| Servico | Tipo | Funcao | Acesso |
 |---------|------|--------|--------|
-| Servicos Azure | Cloud | _A identificar_ | Pendente |
-
-> **Nota:** Conforme diagrama de arquitetura (SEC-03 3.2), o BFF acede diretamente a "Servicos Azure" sem passar pelo API Gateway IBM. E necessario identificar especificamente quais sao estes servicos.
+| ApiPsd2 | Autenticacao | Autenticacao PSD2 | Directo pelo BFF |
+| ApiBBest | APIs Bancarias | APIs principais | Directo pelo BFF |
+| Microservices | Logica de Negocio | Regras de dominio | Directo pelo BFF |
+| Servicos Azure | Cloud | _A identificar_ | Directo pelo BFF |
 
 #### Questoes a Resolver
 
 | Questao | Responsavel | Status |
 |---------|-------------|--------|
 | Lista completa de servicos Azure acedidos diretamente | Cliente | Pendente |
-| Como esses servicos transitam para o canal web? | Arquitetura | Pendente |
 | Abertura de conta - interacoes com terceiros? | Cliente | Pendente |
 
-### 9.7 Open Banking PSD2
+### 9.10 Open Banking PSD2
 
 A conformidade PSD2 e tratada a nivel do Backend API. Os detalhes de implementacao para o canal web necessitam aprofundamento.
 
@@ -266,11 +360,11 @@ A conformidade PSD2 e tratada a nivel do Backend API. Os detalhes de implementac
 | Gestao de consentimentos | Necessita aprofundamento |
 | Modelo de autorizacao | Necessita aprofundamento |
 
-### 9.8 Gestao de Consentimentos
+### 9.11 Gestao de Consentimentos
 
 _Necessita aprofundamento - dependente das decisoes de Open Banking PSD2_
 
-### 9.9 Message Broker
+### 9.12 Message Broker
 
 A tecnologia de Message Broker e os eventos a serem publicados/consumidos pelo canal web serao definidos no assessment inicial do projeto.
 
@@ -284,7 +378,7 @@ A tecnologia de Message Broker e os eventos a serem publicados/consumidos pelo c
 
 > **Nota:** RabbitMQ e Azure Service Bus não são opções consideradas.
 
-### 9.10 Tratamento de Erros
+### 9.13 Tratamento de Erros
 
 #### Estrategia de Retry
 
@@ -322,7 +416,7 @@ A tecnologia de Message Broker e os eventos a serem publicados/consumidos pelo c
 | Rate limiting | "Muitas tentativas. Por favor aguarde alguns segundos." | Registo de log |
 | Erro de negocio | Mensagem especifica da operacao | Orientacao ao utilizador |
 
-### 9.11 SLAs de Integracao
+### 9.14 SLAs de Integracao
 
 _Os SLAs de integracao dependem de informacoes dos sistemas backend e fornecedores terceiros._
 
@@ -336,7 +430,7 @@ _Os SLAs de integracao dependem de informacoes dos sistemas backend e fornecedor
 
 **Nota:** Janelas de manutencao programadas que afetam integracoes necessitam aprofundamento.
 
-### 9.12 Catalogo de Integracoes
+### 9.15 Catalogo de Integracoes
 
 _O catalogo detalhado de integracoes sera documentado no assessment inicial do projeto._
 
@@ -346,7 +440,7 @@ _O catalogo detalhado de integracoes sera documentado no assessment inicial do p
 | Ferramenta de documentacao | Necessita aprofundamento |
 | Ambiente de sandbox | Necessita aprofundamento |
 
-### 9.13 API Management
+### 9.16 API Management
 
 #### IBM API Gateway
 
