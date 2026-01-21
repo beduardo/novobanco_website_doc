@@ -124,7 +124,7 @@ As jornadas serão baseadas nos 35 requisitos funcionais definidos, com foco em:
 
 **Implementação:**
 - Biblioteca: **i18next** com react-i18next
-- Namespaces para lazy loading de traduções
+- Namespaces para lazy loading de traduções (interno à aplicação React, ficheiros JSON bundled)
 - Deteção automática de idioma do browser
 - Persistência de preferência do utilizador
 
@@ -138,7 +138,14 @@ As jornadas serão baseadas nos 35 requisitos funcionais definidos, com foco em:
 
 **Decisão:** A aplicação será uma aplicação web tradicional, sem funcionalidades PWA ou offline. Esta decisão foi confirmada pelo cliente.
 
+> **Nota - Tratamento de Falhas de Comunicação:** Embora não haja suporte a funcionamento offline, a aplicação deve tratar adequadamente falhas de comunicação com:
+> - Feedback visual ao utilizador em caso de perda de conectividade
+> - Retry automático com backoff exponencial para operações falhadas
+> - Mensagens de erro claras e acionáveis
+
 ### 4.6 Stack Frontend
+
+> **Pendência:** Stack frontend a finalizar em sessão específica de React com equipa NB. A framework do NB tem alternativas para alguns componentes. Base já alinhada com Havas.
 
 ```plantuml
 @startuml
@@ -218,9 +225,11 @@ REACT --> PLAYWRIGHT
 | Aspeto | Decisão |
 |---------|---------|
 | **Base** | Criado de raiz para o projeto |
-| **Componentes** | Avaliação de bibliotecas existentes, fallback para desenvolvimento interno |
-| **Documentação** | Figma (design) + Storybook (desenvolvimento) |
+| **Componentes** | Em desenvolvimento pela Havas (empresa de design) - âmbito inicial |
+| **Documentação** | Figma (design). Storybook a considerar em fase posterior |
 | **Temas** | Suporte a modo escuro |
+
+> **Nota:** Os componentes estão a ser desenvolvidos pela Havas (empresa responsável pelo design). O Storybook não está incluído no âmbito inicial. Secções 4.6.2, 4.6.3, 4.7 e 4.8 a validar em sessão específica de React.
 
 #### 4.7.2 Tokens de Design
 
@@ -265,6 +274,8 @@ stop
 
 ### 4.9 Segurança Frontend
 
+> **Nota:** Detalhes de segurança frontend a aprofundar em âmbito de implementação.
+
 | Controlo | Implementação |
 |----------|---------------|
 | **XSS Prevention** | React escaping automático, CSP headers |
@@ -299,7 +310,7 @@ stop
 | **Code Splitting** | React.Lazy por rotas |
 | **Lazy Loading** | Imagens, componentes pesados |
 | **Pre-fetching** | Vite + TanStack Query |
-| **Caching** | Service Workers (se PWA), HTTP cache |
+| **Caching** | HTTP cache, browser cache |
 | **Bundle Size** | Tree shaking, Tailwind purge |
 
 #### 4.10.3 Bundle Size
@@ -360,7 +371,7 @@ end note
 - [x] Diretrizes UI/UX definidas
 - [x] Jornadas do utilizador mapeadas (alto nível)
 - [x] Estratégia multi-idioma
-- [ ] Definição PWA/Offline (pendente)
+- [x] Definição PWA/Offline - **Decidido: Não será PWA nem offline**
 - [x] Stack frontend definida
 - [x] Design system especificado
 - [x] Estratégia de responsividade
@@ -387,3 +398,6 @@ end note
 | Bundle size limits | DEF-04-stack-frontend | Performance |
 | Pontos de dor app mobile | DEF-04-ux-guidelines | UX |
 | Comportamento em conectividade intermitente | DEF-04-ux-guidelines | UX |
+| **Sessão específica de React** | SEC-04 (4.6, 4.7, 4.8) | Arquitetura + NB |
+| Validar alternativas na framework NB | SEC-04 | Arquitetura + NB |
+| Alinhar componentes com Havas | SEC-04 (4.7) | UX + Havas |

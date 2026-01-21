@@ -37,6 +37,8 @@ Definir a estratégia completa de autenticação e autorização do HomeBanking 
 
 ### 7.1 Visão Geral de Autenticação
 
+> **Pendência:** Esta secção necessita de validação mais detalhada com equipa de autenticação do NovoBanco.
+
 ```plantuml
 @startuml
 skinparam backgroundColor #FEFEFE
@@ -228,14 +230,16 @@ end note
 @enduml
 ```
 
-| Parâmetro | Valor |
-|-----------|-------|
-| **Timeout por inatividade** | 10 minutos |
-| **Timeout absoluto** | 30 minutos |
-| **Sessão exclusiva** | Desejável (pendente aprovação cliente) |
-| **Aviso de expiração** | Popup com temporizador |
-| **Relação sessão web/mobile** | **Independentes** - Não há relação entre sessões |
-| **Limite de sessões** | _A definir_ |
+| Parâmetro | Valor | Observação |
+|-----------|-------|------------|
+| **Timeout por inatividade** | 10 minutos (sugestão) | Configurável |
+| **Timeout absoluto** | 30 minutos (sugestão) | Configurável |
+| **Sessão exclusiva** | Recomendado | Novo login invalida sessão anterior |
+| **Aviso de expiração** | Popup com temporizador | - |
+| **Relação sessão web/mobile** | **Independentes** | Não há relação entre sessões |
+| **Limite de sessões** | _A definir_ | - |
+
+> **Nota:** Os tempos de sessão são sugestões e devem ser configuráveis. O valor final será definido em conjunto com o cliente.
 
 ### 7.5 Estratégia de Tokens
 
@@ -285,9 +289,12 @@ package "Backend Services" {
 | Aspeto | Decisão |
 |---------|---------|
 | **Modelo** | ABAC híbrido com RBAC |
+| **Responsabilidade** | Backend Services (Siebel) |
 | **Role** | Atributo do sujeito (quando necessário) |
 | **Atributos** | Sujeito, Recurso, Ação, Ambiente |
 | **Permissões por operação** | Sim (consulta vs transação) |
+
+> **Nota - Responsabilidade:** A validação de autorização (ABAC/RBAC) é responsabilidade dos Backend Services (Siebel). O BFF propaga os tokens e não implementa lógica de autorização própria.
 
 **Atributos considerados:**
 

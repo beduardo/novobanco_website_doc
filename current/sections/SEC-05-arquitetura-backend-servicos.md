@@ -197,7 +197,9 @@ deactivate BFF
 
 | Aspecto | Status |
 |---------|--------|
-| Message Queues | _A definir_ - Necessita aprofundamento |
+| Message Queues | _A definir_ - Necessita casos de uso concretos |
+
+> **Nota:** Message Queues (Kafka/JMS) serão utilizadas apenas se houver casos de uso específicos que justifiquem comunicação assíncrona. A identificar durante a implementação.
 
 ### 5.5 Modelo de Dominio
 
@@ -232,7 +234,9 @@ O modelo de dominio segue as entidades ja existentes nos backend services da app
 | **Fallback** | Parcial | Apenas autenticacao |
 | **Health Checks** | Implementado | Liveness + Readiness probes |
 | **Circuit Breaker** | A definir | Proposta: Polly |
-| **Bulkhead** | Nao previsto | - |
+| **Bulkhead** | A avaliar | Depende da organização de serviços |
+
+> **Nota - Organização de Serviços:** A necessidade de Bulkhead depende de quantos serviços forem implementados. Opções a avaliar: um único "BEST" ou segregação por domínio (ex: serviço de negócio + serviços especializados para funcionalidades não cobertas pelo Siebel).
 
 ### 5.8 Versionamento API
 
@@ -260,6 +264,8 @@ O modelo de dominio segue as entidades ja existentes nos backend services da app
 | **Backend Services** | Externa | Servico inoperante |
 | **Cache Store** | Externa | Sessoes invalidas |
 | **ELK Stack** | Externa | Degradacao graceful (sem logs) |
+
+> **Pendência:** Validar com negócio se degradação graceful sem logs é aceitável ou se é necessário fallback alternativo.
 
 ### 5.11 Autenticacao e Sessao
 

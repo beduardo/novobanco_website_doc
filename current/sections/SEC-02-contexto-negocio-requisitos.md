@@ -77,11 +77,12 @@ O projeto HomeBanking Web visa disponibilizar aos clientes do Novo Banco uma pla
 | **Outros** | Outros Bancos, Eventos Corporativos, Seguros de Proteção, Área do Viajante, Bea, Wishlist, Notícias Externas | 7 |
 | **TOTAL** | | **35** |
 
-#### 2.3.2 Estratégia de Priorização
+#### 2.3.2 Âmbito e Priorização
 
-- **Critério:** Priorização por dependência entre funcionalidades
-- **MVP:** Todas as 35 funcionalidades fazem parte do MVP
+- **Âmbito:** Todas as 35 funcionalidades listadas
+- **Critério de Priorização:** Por dependência entre funcionalidades
 - **Funcionalidades Exclusivas Web:** Nenhuma (paridade com mobile)
+- **Faseamento:** Não previsto (lançamento único)
 
 #### 2.3.3 Suporte Multi-idioma
 
@@ -105,6 +106,8 @@ O projeto HomeBanking Web visa disponibilizar aos clientes do Novo Banco uma pla
 | Tempo resposta operações críticas | max 3 segundos | Transações, consultas |
 | Throughput | 10 TPS | Transações por segundo |
 | Tempo carregamento página inicial | max 10 segundos | First Contentful Paint |
+
+> **Nota:** Os valores de throughput e utilizadores concorrentes são estimativas iniciais. Devem ser calibrados com métricas reais da app mobile (utilização normal e em pico).
 
 #### 2.4.2 Disponibilidade
 
@@ -144,7 +147,7 @@ O projeto HomeBanking Web visa disponibilizar aos clientes do Novo Banco uma pla
 | Tipo | Restrição | Impacto |
 |------|-----------|---------|
 | **Técnica** | Reutilização de APIs e serviços da app mobile | Define integração com backend existente |
-| **Técnica** | Tecnologias 100% Web (sem componentes nativos) | MBWay SDK out-of-scope |
+| **Técnica** | Funcionalidades nativas não expostas na web (ex: MBWay SDK) | MBWay SDK out-of-scope. Nota: web pode ser incorporada na app nativa com integração específica |
 | **Regulatória** | Conformidade PSD2 | Autenticação forte (SCA) obrigatória |
 | **Regulatória** | Regulamentações Banco de Portugal | Requisitos de segurança e auditoria |
 
@@ -197,6 +200,18 @@ end note
 | Core Banking | Sistema legado | Sim |
 | Serviços Terceiros | Integrações existentes | Sim |
 
+### 2.8 Estratégia de Lançamento
+
+A estratégia de transição do canal atual para o novo HomeBanking Web necessita de definição.
+
+| Aspeto | Status | Observação |
+|--------|--------|------------|
+| **Estratégia de Cutover** | _A definir_ | Big bang vs incremental |
+| **Coexistência de Canais** | _A definir_ | Período de transição? |
+| **Impacto Infraestrutura** | _A definir_ | Dependente da estratégia |
+
+> **Pendência:** Definir estratégia de switch com o cliente, pois pode influenciar o desenho e a infraestrutura.
+
 ## Entregáveis
 
 - [x] Descrição do contexto de negócio
@@ -228,3 +243,5 @@ Os seguintes itens requerem informação adicional:
 | Certificações de Segurança | DEF-02-requisitos-nao-funcionais | Área de Segurança |
 | Requisitos de Encriptação | DEF-02-requisitos-nao-funcionais | Área de Segurança |
 | Política de Retenção de Logs | DEF-02-requisitos-nao-funcionais | Compliance |
+| **Estratégia de Lançamento/Cutover** | SEC-02 | Produto/Arquitetura |
+| **Calibração de métricas de performance** | SEC-02, SEC-12 | Cliente/Infraestrutura |

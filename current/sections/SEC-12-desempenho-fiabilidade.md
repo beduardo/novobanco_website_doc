@@ -42,6 +42,8 @@ Os targets são baseados nos requisitos não funcionais (DEF-02):
 | **Disponibilidade** | 99.9% | DEF-02 |
 | **Crescimento Anual** | 5% | DEF-02 |
 
+> **Pendência:** Estes targets são valores provisórios. Necessário obter métricas reais da app mobile para calibrar: pedidos/segundo (normal e pico), padrões de sazonalidade (fim de mês, períodos fiscais).
+
 ### 12.2 Core Web Vitals
 
 | Métrica | Target | Classificação |
@@ -325,3 +327,11 @@ note right: Task.WhenAll() em .NET
 - [DEF-12-desempenho-fiabilidade.md](../definitions/DEF-12-desempenho-fiabilidade.md) - Detalhes completos
 - [DEF-02-requisitos-nao-funcionais.md](../definitions/DEF-02-requisitos-nao-funcionais.md) - NFRs de performance
 - [DEF-05-padroes-resiliencia.md](../definitions/DEF-05-padroes-resiliencia.md) - Padrões de resiliência
+
+## Itens Pendentes
+
+| Item | Responsável | Prioridade |
+|------|-------------|------------|
+| **Calibração de métricas de performance** | Cliente/Infraestrutura | Alta |
+| Obter throughput real da app mobile (normal e pico) | Cliente | Alta |
+| Padrões de sazonalidade (fim de mês, períodos fiscais) | Cliente | Média |

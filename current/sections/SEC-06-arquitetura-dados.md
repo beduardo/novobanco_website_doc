@@ -101,6 +101,8 @@ package "Backend Services" {
 - **Não há dados específicos** do canal web que não existam na app mobile
 - Canal web consome os mesmos backend services e modelo de domínio
 
+> **Nota:** Isto significa que não estão previstos novos endpoints ou estruturas de dados específicas para o canal web. Funcionalidades ou layouts específicos que possam necessitar de novos dados serão avaliados durante a implementação.
+
 ### 6.3 Armazenamento
 
 ```plantuml
@@ -139,8 +141,10 @@ rectangle "Armazenamento por Camada" {
 | Aspeto | Decisão |
 |---------|---------|
 | **Em trânsito** | TLS (versão a definir) |
-| **Em repouso (BFF/cache)** | Sem requisitos específicos |
-| **Gestão de chaves** | SSL apenas (no momento) |
+| **Em repouso (BFF/cache)** | Em definição durante o projeto |
+| **Gestão de chaves** | Em definição durante o projeto |
+
+> **Nota:** Requisitos de encriptação em repouso e gestão de chaves estão a ser trabalhados e serão detalhados em âmbito de implementação.
 
 ### 6.5 Retenção de Dados
 

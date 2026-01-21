@@ -27,6 +27,8 @@ status: completed
 
 Definir a estratégia de observabilidade do HomeBanking Web, incluindo stack tecnológica, métricas chave (golden signals), tracing distribuído e abordagem de SLIs/SLOs.
 
+> **Importante - Sessão Requerida:** Esta secção deve ser revista em sessão com a equipa de infraestrutura do NovoBanco para validar requisitos concretos. Funcionalidades de observabilidade que não sejam realmente utilizadas no dia a dia terão custos associados - avaliar custo/benefício antes de implementar.
+
 ## Conteúdo
 
 ### 11.1 Os Três Pilares
@@ -40,6 +42,8 @@ Definir a estratégia de observabilidade do HomeBanking Web, incluindo stack tec
 ### 11.2 Stack de Observabilidade
 
 A stack de observabilidade será baseada no **ELK Stack** (Elasticsearch, Logstash, Kibana), reutilizando a infraestrutura existente.
+
+> **Pendência:** Confirmar com equipa de infraestrutura do NovoBanco que ELK Stack é a stack de logging a utilizar e obter estrutura de logs existente para alinhar.
 
 ```plantuml
 @startuml
@@ -87,6 +91,11 @@ ES --> ALERT
 | **Visualização** | Dashboards | Kibana |
 | **Alerting** | Notificações | ElastAlert |
 
+> **Nota - Logging do Frontend:** O logging a partir do frontend apresenta desafios de segurança (exposição de dados sensíveis, manipulação de logs) e custos face ao benefício. A implementação de logs do frontend deve ser discutida e validada com o cliente antes de avançar, considerando:
+> - Riscos de segurança específicos do ambiente browser
+> - Custo de armazenamento e processamento
+> - Valor diagnóstico vs alternativas (APM RUM)
+
 ### 11.3 Golden Signals
 
 Os quatro golden signals serão monitorizados conforme melhores práticas SRE:
@@ -133,6 +142,11 @@ Todos os logs serão estruturados em formato JSON com campos padronizados:
 | Email | Mascarar (`j***@email.com`) |
 | NIF | Mascarar |
 | Tokens | Nunca logar |
+
+> **Questão em aberto - Mascaramento vs Cifragem:** Para fins de diagnóstico ou auditoria, pode ser necessário recuperar dados sensíveis que foram mascarados. Avaliar com equipa de segurança se:
+> - Mascaramento é suficiente (dados irrecuperáveis)
+> - Cifragem é preferível (dados recuperáveis por entidades autorizadas)
+> - Abordagem híbrida: mascarar na maioria dos casos, cifrar apenas para logs de auditoria críticos
 
 #### Retenção de Logs
 
@@ -231,3 +245,13 @@ Todos os logs serão estruturados em formato JSON com campos padronizados:
 
 - [DEF-11-observabilidade-operacoes.md](../definitions/DEF-11-observabilidade-operacoes.md) - Detalhes completos
 - [DEF-02-requisitos-nao-funcionais.md](../definitions/DEF-02-requisitos-nao-funcionais.md) - SLAs
+
+## Itens Pendentes
+
+| Item | Responsável | Prioridade |
+|------|-------------|------------|
+| **Confirmar ELK Stack** | Cliente/Infraestrutura | Média |
+| Obter estrutura de logs existente do NB para alinhamento | Cliente/Infraestrutura | Média |
+| **Logging do frontend** - decidir implementação (custo/benefício vs segurança) | Cliente/Segurança | Média |
+| **Mascaramento vs cifragem** - definir política para dados sensíveis em logs | Cliente/Segurança | Média |
+| **Sessão com equipa de infraestrutura** - requisitos concretos de observabilidade | Arquitetura | Média |
