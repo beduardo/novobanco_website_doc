@@ -86,7 +86,7 @@ SVC --> LOG : ELK
 |------------|------------|
 | **Runtime** | .NET 8 |
 | **Linguagem** | C# |
-| **Container** | OpenShift compliant |
+| **Container** | Assente em OpenShift |
 | **Observabilidade** | ELK Stack |
 
 #### 5.2.3 Responsabilidades

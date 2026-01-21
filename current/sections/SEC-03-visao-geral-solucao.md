@@ -39,7 +39,7 @@ Apresentar os princípios de arquitetura, diagrama conceptual e casos de uso pri
 
 | Princípio | Decisão | Descrição |
 |-----------|---------|-----------|
-| **Cloud Strategy** | Containers OpenShift | Arquitetura orientada a containers, compliant com OpenShift |
+| **Cloud Strategy** | Containers OpenShift | Arquitetura orientada a containers, assente em OpenShift |
 | **API Strategy** | BFF (Backend for Frontend) | Camada de agregação específica para o canal web, isolando sistemas legados |
 | **Build vs Buy** | Preferência Build | Avaliação caso a caso, construir quando soluções de mercado forem caras ou inadequadas |
 | **Acoplamento Legados** | Via BFF apenas | Frontend isolado de complexidades dos sistemas legados |
