@@ -107,29 +107,29 @@ Definir a arquitetura de dados do HomeBanking Web, incluindo modelo de dados, ar
 ## Decisões
 
 ### Persistência Local Frontend
-- **Decisão:** _A preencher_
-- **Justificação:**
-- **Alternativas consideradas:**
+- **Decisão:** localStorage para dados não sensíveis (DEC-005)
+- **Justificação:** Dados básicos do utilizador, dados públicos, notícias e informações frequentes para construção de páginas. Informações sigilosas ficam em cache no BFF.
+- **Alternativas consideradas:** IndexedDB (descartado - requisitos PWA/Offline não definidos), nenhum armazenamento (descartado - impacto em performance)
 
 ### Armazenamento BFF
-- **Decisão:** _A preencher_
-- **Justificação:**
-- **Alternativas consideradas:**
+- **Decisão:** Apenas cache - Redis Cluster (DEC-005)
+- **Justificação:** BFF não possui base de dados própria. Dados transacionais residem nos backend services existentes. Cache para sessões e tokens.
+- **Alternativas consideradas:** BFF com base de dados própria (descartado - duplicação de dados, complexidade operacional)
 
 ### Encriptação
-- **Decisão:** _A preencher_
-- **Justificação:**
-- **Alternativas consideradas:**
+- **Decisão:** TLS em trânsito; encriptação em repouso em definição durante projeto
+- **Justificação:** SSL/TLS como base. Requisitos de encriptação em repouso e gestão de chaves a detalhar em âmbito de implementação.
+- **Alternativas consideradas:** N/A
 
 ### Retenção
-- **Decisão:** _A preencher_
-- **Justificação:**
-- **Alternativas consideradas:**
+- **Decisão:** _A definir_ - Necessita aprofundamento
+- **Justificação:** Políticas de retenção para logs de acesso, dados de sessão e requisitos de auditoria ainda pendentes.
+- **Alternativas consideradas:** N/A
 
 ### RGPD
-- **Decisão:** _A preencher_
-- **Justificação:**
-- **Alternativas consideradas:**
+- **Decisão:** Conformidade RGPD gerida integralmente pela API/Backend
+- **Justificação:** Dados transacionais são do Core Banking. Logs de sessão e preferências do utilizador seguem processos RGPD existentes.
+- **Alternativas consideradas:** Gestão parcial no frontend (descartado por requisito do cliente)
 
 ## Restrições Conhecidas
 

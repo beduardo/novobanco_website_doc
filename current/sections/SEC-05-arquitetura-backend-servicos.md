@@ -49,6 +49,8 @@ A decomposição de serviços segue a arquitectura de referência definida na se
 | BFF → Serviços Azure | Direto | Serviços a identificar |
 | API Gateway → Siebel | Bearer Token | **Siebel valida o token** |
 
+> **Nota - Serviço de Autenticação:** Não está previsto um AuthService autónomo separado. A autenticação é gerida pelos Backend Services existentes (Siebel). O BFF apenas gere a sessão web (cookies, cache de tokens) e propaga credenciais/tokens para o Siebel, que realiza toda a validação.
+
 ### 5.2 Arquitetura BFF
 
 #### 5.2.1 Visao Geral
@@ -160,11 +162,11 @@ activate BFF
 BFF -> BFF : Validar sessao\n(Cache lookup)
 BFF -> GW : REST\n(clientid + secret)
 activate GW
-note right of GW: Autentica BFF\ncom clientid+secret
+note right of GW: Routing apenas\n(sem autenticação)
 
 GW -> SIEBEL : REST\n(Bearer token)
 activate SIEBEL
-note right of SIEBEL: **Valida o Token**
+note right of SIEBEL: **Valida clientid+secret**\n**e Bearer Token**
 
 SIEBEL -> CORE : Protocolo interno
 activate CORE
@@ -187,11 +189,13 @@ deactivate BFF
 | Comunicacao | Protocolo | Autenticacao | Observação |
 |-------------|-----------|--------------|------------|
 | Frontend → BFF | REST/HTTPS | Cookie de sessao (HttpOnly, Secure) | - |
-| BFF → API Gateway (IBM) | REST | ClientID + ClientSecret | Gateway autentica o BFF |
+| BFF → API Gateway (IBM) | REST | ClientID + ClientSecret | Gateway faz routing apenas |
 | API Gateway → Siebel | REST | Bearer Token (propagado) | **Siebel valida o token** |
 | Siebel → Core Banking | Protocolo interno | - | - |
 
 > **Nota:** O BFF não tem API Gateway à frente. O API Gateway (IBM) é utilizado apenas para acesso aos Backend Services (Siebel e outros).
+
+> **Nota Importante - Validação de Token:** O API Gateway (IBM) faz **apenas routing**, sem realizar autenticação. Toda a autenticação (validação de clientid+secret do BFF e validação do Bearer Token do utilizador) é realizada pelo **Siebel**. Serviços backend que não suportem Bearer Token diretamente são acedidos exclusivamente através do Siebel, que actua como camada de mediação.
 
 #### 5.4.1 Comunicacao Assincrona
 

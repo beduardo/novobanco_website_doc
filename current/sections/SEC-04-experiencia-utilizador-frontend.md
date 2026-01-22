@@ -145,7 +145,7 @@ As jornadas serão baseadas nos 35 requisitos funcionais definidos, com foco em:
 
 ### 4.6 Stack Frontend
 
-> **Pendência:** Stack frontend a finalizar em sessão específica de React com equipa NB. A framework do NB tem alternativas para alguns componentes. Base já alinhada com Havas.
+> **Nota:** Stack frontend base definida em DEC-009 (aceite). Sessão específica de React com equipa NB necessária para alinhar componentes específicos da framework NB e validar alternativas. Base técnica já alinhada com Havas.
 
 ```plantuml
 @startuml
@@ -204,6 +204,8 @@ REACT --> PLAYWRIGHT
 | **Testes E2E** | Playwright | Latest |
 
 #### 4.6.2 Rendering Strategy
+
+> **Pendência:** Estratégia de rendering a validar em sessão específica de React com equipa NB.
 
 | Estratégia | Uso | Exemplo |
 |------------|-----|---------|

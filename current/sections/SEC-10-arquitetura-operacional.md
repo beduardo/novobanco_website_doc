@@ -124,7 +124,7 @@ A aplicação utiliza três ambientes, segregados por **namespaces** no cluster 
 
 ### 10.3 CI/CD Pipeline
 
-> **Nota:** O pipeline de CI/CD já se encontra implementado no NovoBanco e será **reutilizado** para este projeto. Os detalhes específicos serão validados com a equipa de infraestrutura.
+> **Nota Importante:** A infraestrutura de CI/CD já se encontra implementada no NovoBanco e será **reutilizada integralmente** para este projeto. Os detalhes abaixo são indicativos e serão validados/ajustados pela equipa de infraestrutura do NovoBanco. Alguns aspectos podem não reflectir exactamente a configuração actual.
 
 #### Visão Geral
 

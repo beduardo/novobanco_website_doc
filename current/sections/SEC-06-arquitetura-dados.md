@@ -131,9 +131,9 @@ rectangle "Armazenamento por Camada" {
 
 | Decisão | Valor |
 |---------|-------|
-| **Frontend - Persistência** | localStorage |
-| **BFF - Base de dados** | Não (apenas cache) |
-| **BFF - Tecnologia cache** | _A definir_ (Redis recomendado) |
+| **Frontend - Persistência** | localStorage (DEC-005) |
+| **BFF - Base de dados** | Não (apenas cache) (DEC-005) |
+| **BFF - Tecnologia cache** | Redis Cluster (DEC-002, DEC-005) |
 | **Backend** | Reutiliza infraestrutura existente |
 
 ### 6.4 Encriptação

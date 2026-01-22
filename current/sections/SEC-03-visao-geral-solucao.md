@@ -218,8 +218,12 @@ MS ..> ELK : Logs/Métricas
 | BFF | ApiPsd2 | OAuth + Assinatura SHA256 | REST |
 | BFF | ApiBBest | OAuth 1.1 (HMAC-SHA256) | REST |
 | BFF | MS | Token de Sessão | Omni |
-| BFF | API Gateway | ClientID + ClientSecret | BEST |
-| API Gateway | Siebel | Bearer Token (propagado) | Siebel |
+| BFF | API Gateway (IBM) | ClientID + ClientSecret | BEST |
+| API Gateway | Siebel | Bearer Token (propagado) - **Siebel valida** | Siebel |
+
+> **Esclarecimento API Gateway:** O API Gateway IBM faz **apenas routing** dos pedidos, sem realizar autenticação. Toda a autenticação (validação de clientid+secret do BFF e validação do Bearer Token do utilizador) é realizada pelo **Siebel**.
+
+> **Cenário Secundário - Web na App:** Embora não seja o fluxo primário, está prevista a possibilidade do canal web correr dentro da app mobile nativa (WebView). Este cenário requer integração específica para navegação e biometria. Os detalhes serão definidos em fase posterior.
 
 #### Pendências de Detalhe
 

@@ -150,10 +150,10 @@ Definir as integrações do HomeBanking Web com sistemas internos e externos. O 
 ### API Management
 
 28. Qual API Gateway é utilizado?
-    Azure API Gateway
+    IBM API Gateway (para acesso ao Siebel). O BFF acede directamente a ApiPsd2, ApiBBest e Microservices sem passar pelo Gateway.
 
 29. Como é feito o rate limiting por integração?
-    Necessita aprofundamento. Gerido pelo Gateway, não pelo BFF.
+    Necessita aprofundamento. Gerido pelo Gateway (IBM), não pelo BFF.
 
 ### Catálogo de Integrações (Simplificado)
 

@@ -111,6 +111,8 @@ FE --> USER : Acesso concedido
 @enduml
 ```
 
+> **Nota - Arquitectura Completa:** Os diagramas de autenticação acima estão simplificados para focar no fluxo de autenticação do utilizador. Para a arquitectura completa incluindo API Gateway (IBM) e validação de token pelo Siebel, consultar [SEC-03 3.2 - Diagrama Conceptual](SEC-03-visao-geral-solucao.md#32-diagrama-conceptual) e [SEC-05 5.4 - Comunicação entre Serviços](SEC-05-arquitetura-backend-servicos.md#54-comunicacao-entre-servicos).
+
 #### 7.2.2 Fluxo Fallback - Username/Password + 2FA
 
 ```plantuml

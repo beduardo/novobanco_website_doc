@@ -136,24 +136,33 @@ Definir os requisitos de segurança e conformidade regulatória do HomeBanking W
 ## Decisões
 
 ### Threat Modeling
-- **Decisão:** _A preencher_
-- **Justificação:**
-- **Alternativas consideradas:**
+- **Decisão:** _A definir_ - Ação pendente
+- **Justificação:** Análise de ameaças ainda não realizada. Metodologia (STRIDE ou PASTA) a definir.
+- **Alternativas consideradas:** N/A
 
 ### Security Headers
-- **Decisão:** _A preencher_
-- **Justificação:**
-- **Alternativas consideradas:**
+- **Decisão:** Headers de segurança HTTP implementados conforme DEC-004
+- **Justificação:** Prevenção de XSS, Clickjacking e MIME sniffing
+- **Configuração:**
+  - Content-Security-Policy: `self` inicial, expandir conforme necessidade
+  - X-Frame-Options: `SAMEORIGIN`
+  - X-Content-Type-Options: `nosniff`
+  - Strict-Transport-Security: `max-age` a definir no assessment
+- **Alternativas consideradas:** CSP permissivo (descartado - segurança insuficiente para aplicação bancária)
 
 ### OWASP Compliance
-- **Decisão:** _A preencher_
-- **Justificação:**
-- **Alternativas consideradas:**
+- **Decisão:** Controlos de segurança alinhados com OWASP Top 10 (DEC-004)
+- **Justificação:** Proteção robusta contra XSS, CSRF, Clickjacking
+- **Controlos implementados:**
+  - XSS: React auto-escape, innerHTML/eval proibidos, CSP
+  - CSRF: Tokens rotacionados por request, cookies SameSite=Strict
+  - SRI: Bibliotecas servidas localmente, atributos integrity e crossorigin
+- **Alternativas consideradas:** Controlos mais permissivos (descartado por requisitos bancários)
 
 ### PSD2 Compliance
-- **Decisão:** _A preencher_
-- **Justificação:**
-- **Alternativas consideradas:**
+- **Decisão:** SCA obrigatório para todas as operações, TLS 1.2+ (DEC-004)
+- **Justificação:** Conformidade com diretiva europeia de serviços de pagamento
+- **Alternativas consideradas:** Isenções SCA (descartado - sem cenários públicos aplicáveis)
 
 ### RGPD Compliance
 - **Decisão:** Conformidade RGPD gerida integralmente pela API/Backend

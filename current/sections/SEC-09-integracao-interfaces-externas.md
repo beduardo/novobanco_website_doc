@@ -88,11 +88,11 @@ BFF -> BFF : Valida sessao\nObtem token do cache
 
 BFF -> GW : GET /v1/accounts\n(clientid + secret)
 activate GW
-note right of GW: Autentica BFF\ncom clientid+secret
+note right of GW: Routing apenas\n(sem autenticação)
 
 GW -> SIEBEL : GET /v1/accounts\n(Bearer Token)
 activate SIEBEL
-note right of SIEBEL: **Valida o Token**
+note right of SIEBEL: **Valida clientid+secret**\n**e Bearer Token**
 
 SIEBEL -> CB : Consulta contas
 activate CB
@@ -132,7 +132,7 @@ deactivate BFF
 | **Versionamento** | Via URL path (ex: `/v1/accounts`) |
 | **Autenticacao** | Bearer Token (OAuth 2.0) |
 | **APIs** | Mesmas utilizadas pela app mobile |
-| **Documentacao** | Nao disponivel (a fornecer) |
+| **Documentacao** | **APIs BEST:** Nao disponivel - a fornecer pelo NovoBanco. **Lado consumo:** Equipa NextReality possui conhecimento dos contratos existentes |
 
 #### Transformacao de Dados
 
