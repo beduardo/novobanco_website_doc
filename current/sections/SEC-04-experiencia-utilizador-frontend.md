@@ -242,28 +242,6 @@ REACT --> PLAYWRIGHT
 | Espaçamentos | A definir | Início do desenvolvimento |
 | Sombras | A definir | Início do desenvolvimento |
 
-#### 4.7.3 Biblioteca de Componentes
-
-```plantuml
-@startuml
-skinparam backgroundColor #FEFEFE
-
-start
-:Avaliar bibliotecas existentes\n(Material UI, Ant Design, etc.);
-
-if (Biblioteca adequada?) then (sim)
-  :Utilizar biblioteca existente;
-  :Customizar conforme design system;
-else (não)
-  :Desenvolver componentes internamente;
-endif
-
-:Documentar em Storybook;
-:Sincronizar com Figma;
-
-stop
-@enduml
-```
 
 ### 4.8 Responsividade
 

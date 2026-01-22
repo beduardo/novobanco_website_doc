@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "old/definitions/DEF-07-autenticacao-oauth.md",
+                "file": "current/sections/SEC-12-desempenho-fiabilidade.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "DEF-07-autenticacao-oauth"
+              "title": "SEC-12-desempenho-fiabilidade"
             }
           }
         ]
@@ -185,7 +185,20 @@
   },
   "active": "1f7f331510066918",
   "lastOpenFiles": [
+    "current/sections/SEC-09-integracao-interfaces-externas.md",
+    "current/sections/SEC-07-autenticacao-autorizacao.md",
+    "current/sections/SEC-15-governacao-roadmap.md",
     "current/sections/SEC-10-arquitetura-operacional.md",
+    "current/sections/SEC-11-observabilidade-operacoes.md",
+    "current/ALTERACOES-2201.md",
+    "current/sections/SEC-08-seguranca-conformidade.md",
+    "current/sections/SEC-05-arquitetura-backend-servicos.md",
+    "current/sections/SEC-03-visao-geral-solucao.md",
+    "current/sections/SEC-06-arquitetura-dados.md",
+    "current/sections/SEC-04-experiencia-utilizador-frontend.md",
+    "current/sections/SEC-02-contexto-negocio-requisitos.md",
+    "current/sections/SEC-01-sumario-executivo.md",
+    "old/definitions/DEF-07-autenticacao-oauth.md",
     "current/definitions/DEF-10-arquitetura-operacional.md",
     "current/decisions/DEC-010-stack-tecnologica-backend.md",
     "old/definitions/DEF-10-deployment-infrastructure.md",

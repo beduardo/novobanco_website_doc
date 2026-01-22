@@ -282,8 +282,8 @@ skinparam backgroundColor #FEFEFE
 actor "Utilizador" as USER
 participant "Frontend" as FE
 participant "BFF" as BFF
-participant "Auth Service" as AUTH
-participant "Cache" as CACHE
+participant "Siebel (via GW)" as AUTH
+participant "Redis" as CACHE
 
 USER -> FE : Login
 FE -> BFF : POST /auth/login\n(credentials)

@@ -45,12 +45,14 @@ package "Browser" {
     note right of LS : Dados básicos\nDados públicos\nNotícias
 }
 
-package "BFF (.NET 8)" {
+package "BFF (.NET 8)" as BFF {
     [Session Cache] as SC
     [Token Cache] as TC
     note right of SC : Session ID\nUser context
     note right of TC : Access Token\nRefresh Token
 }
+
+Component "Siebel" as Siebel
 
 package "Backend Services" {
     database "Core Banking" as CB
@@ -63,9 +65,10 @@ package "Backend Services" {
 [BFF] --> SC : Sessão
 [BFF] --> TC : OAuth Tokens
 [BFF] --> [API Gateway] : REST
-[API Gateway] --> CB
-[API Gateway] --> AD
-[API Gateway] --> TD
+[API Gateway] --> [Siebel]
+[Siebel] --> CB
+[Siebel] --> AD
+[Siebel] --> TD
 
 @enduml
 ```

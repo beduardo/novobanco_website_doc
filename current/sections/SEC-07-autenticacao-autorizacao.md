@@ -87,29 +87,72 @@ skinparam backgroundColor #FEFEFE
 actor "Utilizador" as USER
 participant "Browser" as FE
 participant "BFF" as BFF
-participant "Auth Service" as AUTH
+participant "Auth Service (MicroService)" as AUTH
 participant "App Mobile" as APP
+participant Redis
 
 USER -> FE : Acede ao HomeBanking
-FE -> BFF : Solicita QR Code
-BFF -> AUTH : Gera QR Code + Session Token
-AUTH --> BFF : QR Code data
-BFF --> FE : Apresenta QR Code
+FE -> BFF : POST /auth/qr-code/generate\nx-nb-channel: best.spa
+BFF -> AUTH : POST /auth/qr-code/generate
+AUTH -> AUTH : Gera Session Token (token_sessao_spa)
+note over AUTH
+  Gera: GUID, timestamp
+  Calcula: assinatura SHA256
+  Estado: PENDING
+end note
+AUTH -> Redis : Armazena sessão (estado: PENDING)
+AUTH --> BFF : {sessionId, qrCodeData, expiresAt}
+BFF --> FE : {sessionId, qrCodeData, expiresAt}
+FE --> USER : Apresenta QR Code
+
+loop Polling (cada 2-3 segundos)
+    FE -> BFF : GET /auth/qr-code/status/{sessionId}\nx-nb-channel: best.spa
+    BFF -> AUTH : GET /auth/qr-code/status/{sessionId}
+    AUTH -> Redis : Consulta estado da sessão
+    alt estado == PENDING
+        AUTH --> BFF : {status: "pending"}
+        BFF --> FE : {status: "pending"}
+    else estado == AUTHORIZED
+        AUTH --> BFF : {status: "authorized"}
+        BFF --> FE : Set-Cookie: token_sessao_spa\n(HttpOnly, Secure, SameSite=Strict)\n{status: "authorized", mustChangePassword, firstLogin}
+        FE --> USER : Acesso concedido
+    else estado == EXPIRED
+        AUTH --> BFF : {status: "expired"}
+        BFF --> FE : {status: "expired"}
+        FE --> USER : QR Code expirado
+    end
+end
+
+note over FE
+  Polling termina quando:
+  - status == "authorized"
+  - status == "expired"
+  - timeout do cliente
+end note
+
+== Fluxo Paralelo: Autorização via App Mobile ==
 
 USER -> APP : Abre app mobile
 USER -> APP : Escaneia QR Code
 APP -> APP : Solicita biometria
 USER -> APP : Confirma biometria
-APP -> AUTH : Valida + vincula sessão
-AUTH --> APP : Sessão aprovada
-
-AUTH --> BFF : Notifica aprovação
-BFF -> BFF : Cria sessão web
-BFF --> FE : Set-Cookie: SessionID\n(HttpOnly, Secure, SameSite=Strict)
-FE --> USER : Acesso concedido
+APP -> BFF : POST /auth/qr-code/authorize\nx-nb-channel: best.app\n{sessionId, appAccessToken, appRefreshToken}
+BFF -> AUTH : POST /auth/qr-code/link\n{sessionId, appAccessToken, appRefreshToken}
+AUTH -> Redis : Vincula tokens e atualiza estado para AUTHORIZED
+AUTH --> BFF : {success: true}
+BFF --> APP : {success: true}
 
 @enduml
 ```
+
+**Endpoints do Fluxo QR Code:**
+
+| Endpoint | Método | Origem | Descrição |
+|----------|--------|--------|-----------|
+| `/auth/qr-code/generate` | POST | Browser/BFF | Gera novo QR Code e sessão pendente |
+| `/auth/qr-code/status/{sessionId}` | GET | Browser/BFF | Consulta estado da sessão (polling) |
+| `/auth/qr-code/authorize` | POST | App Mobile | Autoriza sessão com tokens da app |
+| `/auth/qr-code/link` | POST | BFF interno | Vincula tokens à sessão web |
 
 > **Nota - Arquitectura Completa:** Os diagramas de autenticação acima estão simplificados para focar no fluxo de autenticação do utilizador. Para a arquitectura completa incluindo API Gateway (IBM) e validação de token pelo Siebel, consultar [SEC-03 3.2 - Diagrama Conceptual](SEC-03-visao-geral-solucao.md#32-diagrama-conceptual) e [SEC-05 5.4 - Comunicação entre Serviços](SEC-05-arquitetura-backend-servicos.md#54-comunicacao-entre-servicos).
 
@@ -122,75 +165,37 @@ skinparam backgroundColor #FEFEFE
 actor "Utilizador" as USER
 participant "Browser" as FE
 participant "BFF" as BFF
-participant "Auth Service" as AUTH
+participant "Auth Service (MicroService)" as AUTH
+participant "ApiPsd2" as APIAPP
 
 USER -> FE : Indica falha no QR Code
 FE --> USER : Apresenta opções fallback
-
 USER -> FE : Insere Username/Password
-FE -> BFF : POST /auth/login (credentials)
-BFF -> AUTH : Valida credenciais
-AUTH --> BFF : Requer 2FA
+FE -> BFF : POST /auth/login (credentials)\nx-nb-channel: best.spa
 
-alt SMS OTP
-    BFF -> AUTH : Solicita envio OTP
-    AUTH --> USER : SMS com código
-    USER -> FE : Insere código OTP
-    FE -> BFF : POST /auth/verify-otp
-else App Push
-    BFF -> AUTH : Solicita push notification
-    AUTH -> APP : Envia push
-    USER -> APP : Aprova notificação
-end
-
-AUTH --> BFF : 2FA validado
-BFF -> BFF : Cria sessão web
-BFF --> FE : Set-Cookie: SessionID
-FE --> USER : Acesso concedido
-
-@enduml
-```
-
-#### 7.2.3 Detalhes Técnicos do Fluxo Fallback (BFF ↔ ApiPsd2)
-
-O fluxo fallback utiliza a ApiPsd2 para autenticação. O BFF encapsula toda a complexidade:
-
-```plantuml
-@startuml
-skinparam backgroundColor #FEFEFE
-
-actor "Utilizador" as USER
-participant "Browser" as FE
-participant "BFF" as BFF
-database "Redis" as REDIS
-participant "ApiPsd2" as API
-
-USER -> FE : Insere Username/Password
-FE -> BFF : POST /auth/login\nx-nb-channel: best.spa
-
-note over BFF
-  Gera: GUID, timestamp
-  Calcula: assinatura SHA256
-  Token: access_token_anonimo
-end note
-
-BFF -> API : AUT_004 (Authentication_checkLogin)\nOAuth Authorization header\n{user, pass, encrypt, device_id, app_version, so_id}
-
-API --> BFF : returnCode: "0"\napiToken, mustChangePassword,\nneedStrongAuthentication, firstLogin
-
-alt needStrongAuthentication == "Y"
-    BFF -> API : AUT_001 (ReenviaOTP)
-    API --> BFF : authentication, auth_seq, object_id
+BFF -> AUTH : POST /auth/login (credentials)\nx-nb-channel: best.spa
+AUTH -> APIAPP : AUT_004 (Authentication_checkLogin)\nOAuth Authorization header\n{user, pass, encrypt, device_id, app_version, so_id}
+APIAPP --> AUTH : returnCode: "0"\napiToken, mustChangePassword,\nneedStrongAuthentication, firstLogin
+alt needStrongAuthentication == "Y" 
+    AUTH -> APIAPP : AUT_001 (ReenviaOTP)
+    APIAPP --> AUTH : authentication, auth_seq, object_id
+    AUTH --> BFF : Requer OTP
     BFF --> FE : Requer OTP
     USER -> FE : Insere código OTP
     FE -> BFF : POST /auth/verify-otp
-    BFF -> API : DEV_005.2 (RegistarDispositivoSecure)\n{object_id, auth_type, auth_value}
-    API --> BFF : Sucesso
+    BFF -> AUTH : POST /auth/verify-otp
+    AUTH -> APIAPP : DEV_005.2 (RegistarDispositivoSecure)\n{object_id, auth_type, auth_value}
+    APIAPP --> AUTH : Sucesso
 end
-
-BFF -> BFF : Gera token_sessao_spa (GUID)
-BFF -> REDIS : SET token_sessao_spa\n{apiToken, user_context, ...}
+AUTH -> AUTH : Gera Session Token (token_sessao_spa)
+note over AUTH
+Gera: GUID, timestamp
+Calcula: assinatura SHA256
+end note
+AUTH -> Redis : Armazena Tokens da Sessão vinculados (SPA Token : ApiPsd2 Token)
+AUTH --> BFF : Set-Cookie: token_sessao_spa
 BFF --> FE : Set-Cookie: token_sessao_spa\n(HttpOnly, Secure, SameSite=Strict)\n{mustChangePassword, firstLogin}
+FE --> USER : Acesso concedido
 
 @enduml
 ```
@@ -202,9 +207,8 @@ BFF --> FE : Set-Cookie: token_sessao_spa\n(HttpOnly, Secure, SameSite=Strict)\n
 | AUT_004 | Authentication_checkLogin | Validação de credenciais |
 | AUT_001 | ReenviaOTP | Solicita envio de OTP |
 | DEV_005.2 | RegistarDispositivoSecure | Valida OTP e regista dispositivo |
-| CLI_005 | ConsultaCliente | Consulta dados do cliente (pós-login) |
 
-#### 7.2.4 Segurança na Transmissão de Credenciais
+#### 7.2.3 Segurança na Transmissão de Credenciais
 
 > **Nota Importante:** O ambiente web requer atenção especial na transmissão e gestão de credenciais. Ver [Secção 8.3.6](SEC-08-seguranca-conformidade.md#836-considerações-de-segurança-web-vs-mobile) para diferenças de segurança web vs mobile.
 
@@ -253,10 +257,10 @@ BFF --> FE : Set-Cookie: token_sessao_spa\n(HttpOnly, Secure, SameSite=Strict)\n
 |---------|---------|
 | **SCA Obrigatório** | Sim, para todos os acessos a áreas restritas |
 | **Segundo fator primário** | Biometria via app (validação QR Code) |
-| **Segundo fator fallback** | SMS OTP ou App Push |
+| **Segundo fator fallback** | SMS OTP |
 | **Isenções SCA** | Nenhuma |
 
-**Fluxo de fallback:** Após o utilizador informar falha na leitura do QR Code, a aplicação permite login com SMS OTP ou App Push. A disponibilidade dos métodos é **uniforme** para todos os utilizadores (não configurável por utilizador) e **sem prioridade** entre os métodos.
+**Fluxo de fallback:** Após o utilizador informar falha na leitura do QR Code, a aplicação permite login com SMS OTP. A disponibilidade dos métodos é **uniforme** para todos os utilizadores (não configurável por utilizador) e **sem prioridade** entre os métodos.
 
 #### 7.3.1 SCA Condicional
 
