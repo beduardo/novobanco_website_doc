@@ -120,7 +120,7 @@ As jornadas serão baseadas nos 35 requisitos funcionais definidos, com foco em:
 |--------|------------|-----------|
 | Português | Principal | 100% |
 | Inglês | Secundário | 100% |
-| Espanhol | Secundário | 100% |
+| Francês | Secundário | 100% |
 
 **Implementação:**
 - Biblioteca: **i18next** com react-i18next
@@ -140,7 +140,7 @@ As jornadas serão baseadas nos 35 requisitos funcionais definidos, com foco em:
 
 > **Nota - Tratamento de Falhas de Comunicação:** Embora não haja suporte a funcionamento offline, a aplicação deve tratar adequadamente falhas de comunicação com:
 > - Feedback visual ao utilizador em caso de perda de conectividade
-> - Retry automático com backoff exponencial para operações falhadas
+> - Não há retry automático com backoff exponencial para operações falhadas
 > - Mensagens de erro claras e acionáveis
 
 ### 4.6 Stack Frontend

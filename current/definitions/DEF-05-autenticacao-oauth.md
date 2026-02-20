@@ -304,8 +304,8 @@ O BFF comunica com dois backends diferentes usando variantes de OAuth:
 
 | Backend | Protocolo | Assinatura | Propósito |
 |---------|-----------|------------|-----------|
-| **ApiPsd2** | OAuth + SHA256 | `SHA256(consumer_key & GUID & timestamp & version & secret_key)` | Autenticação PSD2 |
-| **ApiBBest** | OAuth 1.1 HMAC | `HMAC-SHA256(base_string, consumer_secret)` | APIs bancárias |
+| **Siebel (autenticação PSD2)** | OAuth + SHA256 | `SHA256(consumer_key & GUID & timestamp & version & secret_key)` | Autenticação PSD2 |
+| **Siebel (APIs bancárias)** | OAuth 1.1 HMAC | `HMAC-SHA256(base_string, consumer_secret)` | APIs bancárias |
 
 ### Header de Identificação de Canal
 
@@ -317,7 +317,7 @@ x-nb-channel: best.spa
 
 ---
 
-## Protocolo OAuth 1.1 (ApiBBest)
+## Protocolo OAuth 1.1 (Siebel - APIs Bancárias)
 
 ### Tokens Anónimos (Pré-Login)
 
@@ -366,7 +366,7 @@ stop
 
 ---
 
-## Códigos de Operação ApiPsd2
+## Códigos de Operação Siebel (Autenticação PSD2)
 
 | Código | Operação | Descrição | Token Usado |
 |--------|----------|-----------|-------------|
@@ -553,11 +553,11 @@ Existe divergência entre documentos sobre quando o `apiToken` é retornado:
 
 **Evidência do novo documento (DEF-GEN-other-auth-flow.md):**
 ```
-BFF-->ApiBBest: Authentication_checkLogin
-BFF<--ApiBBest: "apiToken":"914e55d8ea3b4e19b1aa63c9efbad2ba", ...
+BFF-->Siebel: Authentication_checkLogin
+BFF<--Siebel: "apiToken":"914e55d8ea3b4e19b1aa63c9efbad2ba", ...
 BFF-->SPA: Pede OTP
 SPA-->BFF: Envia OTP
-BFF-->ApiBBest: Chamar API de secure
+BFF-->Siebel: Chamar API de secure
 ```
 
 **Questão para o analista:**

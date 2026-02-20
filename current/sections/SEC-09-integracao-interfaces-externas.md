@@ -46,15 +46,11 @@ O HomeBanking Web segue uma arquitetura de integracao em camadas, onde o **BFF (
 | Frontend → F5 | Omni | Cookie de sessao | HttpOnly, Secure, SameSite=Strict |
 | F5 → BFF | Omni | Cookie de sessao (propagado) | - |
 | BFF → Redis | - | - | Lookup/Store de sessao e tokens |
-| BFF → ApiPsd2 | REST | OAuth + SHA256 | Autenticacao PSD2 (directo) |
-| BFF → ApiBBest | REST | OAuth 1.1 HMAC | APIs bancarias (directo) |
 | BFF → Microservices | Omni | Token de sessao | Logica de negocio (directo) |
 | BFF → API Gateway (IBM) | BEST | ClientID + ClientSecret | **Apenas para Siebel** |
 | BFF → Servicos Azure | REST | Direto | Servicos a identificar |
 | API Gateway → Siebel | Siebel | Bearer Token | **Siebel valida o token** |
 | MS → Siebel | Siebel | - | Logica de negocio |
-| Siebel → Core Banking | Interno | - | Protocolo interno |
-| Siebel → Terceiros | REST | - | KYC/AML, Cartoes, Notificacoes |
 
 #### Principios de Integracao
 
@@ -65,246 +61,8 @@ O HomeBanking Web segue uma arquitetura de integracao em camadas, onde o **BFF (
 | **Reutilizacao** | Mesmas APIs utilizadas pela app mobile |
 | **Transformacao no BFF** | Adaptacao de dados para necessidades especificas do canal web |
 
-### 9.2 Integracao Core Banking
 
-#### Arquitetura de Acesso
-
-O canal web **nao acede diretamente** ao Core Banking. A integracao e feita atraves do **Siebel** (backend principal), que encapsula a complexidade dos sistemas legados e **valida os tokens de autenticacao**.
-
-```plantuml
-@startuml
-skinparam sequenceMessageAlign center
-
-participant "Frontend" as FE
-participant "BFF" as BFF
-participant "API Gateway\n(IBM)" as GW
-participant "Siebel" as SIEBEL
-participant "Core\nBanking" as CB
-
-FE -> BFF : GET /api/accounts\n(Session Cookie)
-activate BFF
-
-BFF -> BFF : Valida sessao\nObtem token do cache
-
-BFF -> GW : GET /v1/accounts\n(clientid + secret)
-activate GW
-note right of GW: Routing apenas\n(sem autenticação)
-
-GW -> SIEBEL : GET /v1/accounts\n(Bearer Token)
-activate SIEBEL
-note right of SIEBEL: **Valida clientid+secret**\n**e Bearer Token**
-
-SIEBEL -> CB : Consulta contas
-activate CB
-CB --> SIEBEL : Dados raw
-deactivate CB
-
-SIEBEL --> GW : Response JSON
-deactivate SIEBEL
-
-GW --> BFF : Response
-deactivate GW
-
-BFF -> BFF : Transforma dados\npara formato web
-
-BFF --> FE : Response adaptado
-deactivate BFF
-
-@enduml
-```
-
-#### Servicos Consumidos
-
-| Categoria | Servicos | Protocolo |
-|-----------|----------|-----------|
-| **Contas** | Saldos, Movimentos, Extratos | REST/JSON |
-| **Transferencias** | Nacionais, SEPA, Internacionais | REST/JSON |
-| **Pagamentos** | Servicos, Impostos, Outros | REST/JSON |
-| **Cartoes** | Consulta, Bloqueio, Ativacao, Limites | REST/JSON |
-| **Autenticacao** | Login, Sessao, MFA | REST/JSON |
-
-#### Protocolo e Formato
-
-| Aspecto | Especificacao |
-|---------|---------------|
-| **Protocolo** | REST sobre HTTPS |
-| **Formato de dados** | JSON |
-| **Versionamento** | Via URL path (ex: `/v1/accounts`) |
-| **Autenticacao** | Bearer Token (OAuth 2.0) |
-| **APIs** | Mesmas utilizadas pela app mobile |
-| **Documentacao** | **APIs BEST:** Nao disponivel - a fornecer pelo NovoBanco. **Lado consumo:** Equipa NextReality possui conhecimento dos contratos existentes |
-
-#### Transformacao de Dados
-
-O BFF e responsavel por transformar os dados do Backend API para o formato otimizado para o canal web:
-
-| Responsabilidade | Descricao |
-|------------------|-----------|
-| **Agregacao** | Combinar multiplas chamadas em uma unica resposta |
-| **Filtragem** | Remover campos nao necessarios para o frontend |
-| **Formatacao** | Adaptar formatos de data, moeda, etc. |
-| **Enriquecimento** | Adicionar informacoes calculadas ou derivadas |
-| **Cache** | Armazenar dados frequentemente acedidos |
-
-### 9.3 Terceiros - KYC/AML
-
-A integracao com servicos de KYC (Know Your Customer) e AML (Anti-Money Laundering) e **gerida inteiramente pelo Backend**, nao havendo requisitos especificos para o canal web.
-
-| Aspecto | Status |
-|---------|--------|
-| Provider KYC/AML | Implementado no backend |
-| Requisitos no canal web | Nenhum requisito especifico |
-| Fluxos de onboarding | Necessita aprofundamento |
-| Verificacoes AML em tempo real | Necessita aprofundamento |
-
-### 9.4 Terceiros - Notificacoes
-
-O canal web **gera e recebe** notificacoes, integrando com os servicos de notificacao existentes.
-
-> **Nota:** A necessidade de notificacoes (ex: confirmacao de transferencia) e um requisito de negocio, nao do frontend. O frontend apenas aciona/exibe - a decisao de enviar notificacao e do backend.
-
-#### Capacidades
-
-| Direcao | Descricao |
-|---------|-----------|
-| **Gera** | O canal web pode acionar envio de notificacoes (ex: confirmacao de transferencia) |
-| **Recebe** | O canal web recebe notificacoes para exibir ao utilizador |
-
-> **Pendencia:** Verificar se notificacoes de confirmacao de transferencia ja existem na app mobile.
-
-#### Canais de Notificacao
-
-| Canal | Provider | Status |
-|-------|----------|--------|
-| **SMS** | A definir no assessment | Pendente |
-| **Push Notifications** | A definir no assessment | Pendente |
-| **Email Transacional** | A definir no assessment | Pendente |
-
-#### Fluxo de Notificacoes
-
-```plantuml
-@startuml
-skinparam activityShape octagon
-
-start
-
-:Operacao realizada\nno canal web;
-
-:BFF processa\noperacao;
-
-if (Operacao requer\nnotificacao?) then (sim)
-  :BFF envia evento\npara Backend API;
-
-  :Backend API aciona\nservico de notificacoes;
-
-  fork
-    :SMS Gateway;
-  fork again
-    :Push Service;
-  fork again
-    :Email Service;
-  end fork
-
-  :Notificacao enviada\nao utilizador;
-else (nao)
-endif
-
-:Resposta ao\ncanal web;
-
-stop
-
-@enduml
-```
-
-### 9.5 Terceiros - Cartoes
-
-O canal web permite operacoes de gestao de cartoes atraves da integracao com o provider de cartoes.
-
-#### Operacoes Suportadas
-
-| Operacao | Disponivel | Notas |
-|----------|------------|-------|
-| Consulta de cartoes | Sim | Lista de cartoes do utilizador |
-| Bloqueio temporario | Sim | Bloqueio/desbloqueio pelo utilizador |
-| Ativacao de cartao | Sim | Ativacao de cartao novo |
-| Alteracao de limites | Sim | Ajuste de limites de credito/debito |
-| Consulta de movimentos | Sim | Historico de transacoes |
-| PIN (alteracao) | Necessita aprofundamento | - |
-| 3D Secure | Necessita aprofundamento | - |
-
-#### Provider de Cartoes
-
-| Aspecto | Status |
-|---------|--------|
-| Provider (emissao/processamento) | Necessita aprofundamento |
-| Integracao 3D Secure | Necessita aprofundamento |
-
-### 9.6 ApiPsd2 - Interface de Autenticacao PSD2
-
-A ApiPsd2 e o servico de autenticacao PSD2 do backend existente, acedido **directamente pelo BFF** (sem API Gateway IBM).
-
-#### Caracteristicas
-
-| Aspecto | Valor |
-|---------|-------|
-| **Protocolo** | REST |
-| **Autenticacao** | OAuth com assinatura SHA256 |
-| **Acesso** | Directo pelo BFF |
-| **Documentacao** | A fornecer pelo NovoBanco |
-
-#### Operacoes Identificadas
-
-| Codigo | Nome | Descricao | Contexto |
-|--------|------|-----------|----------|
-| AUT_004 | Authentication_checkLogin | Autenticacao inicial | Login |
-| AUT_001 | ReenviaOTP | Solicita envio de OTP | MFA |
-| DEV_005.2 | RegistarDispositivoSecure | Valida OTP | MFA |
-| CLI_005 | ConsultaCliente | Dados do cliente | Pos-login |
-
-#### Estrutura do Header de Autorizacao
-
-```
-Authorization: OAuth access_token={{access_token}},
-                    oauth_consumer_key={{client_token}},
-                    oauth_timestamp={{timestamp}},
-                    oauth_version={{version}},
-                    oauth_signature={{assinatura}},
-                    oauth_guid={{GUID}}
-```
-
-#### Header de Identificacao de Canal
-
-```
-x-nb-channel: best.spa
-```
-
-### 9.7 ApiBBest - APIs Bancarias Principais
-
-A ApiBBest e o servico principal de APIs bancarias, acedido **directamente pelo BFF** (sem API Gateway IBM).
-
-#### Caracteristicas
-
-| Aspecto | Valor |
-|---------|-------|
-| **Protocolo** | REST |
-| **Autenticacao** | OAuth 1.1 (HMAC-SHA256) |
-| **Acesso** | Directo pelo BFF |
-| **Documentacao** | A fornecer pelo NovoBanco |
-
-#### Categorias de APIs
-
-| Categoria | Exemplos |
-|-----------|----------|
-| **Cliente** | Client_getClientInformation, Client_getClientContact |
-| **Contas** | Account_getAccounts, Account_getMovements |
-| **Cartoes** | CCards_getCreditCards, DCards_getDebitCards |
-| **Operacoes** | Operation_getOperationConfirmation, Schedule_getSchedules |
-| **Transferencias** | API Beneficiarios, API COPS, API VOP, API Simulacao |
-| **PSD2** | SIBS_getConsentStatus, SIBS_getConsentAccount |
-
-> **Catalogo completo:** Ver [DEF-09-integracao-interfaces.md](../definitions/DEF-09-integracao-interfaces.md#catálogo-de-apis---backends-do-bff)
-
-### 9.8 Microservices - Logica de Negocio
+### 9.2 Microservices - Logica de Negocio
 
 Os Microservices sao uma camada de logica de negocio acedida **directamente pelo BFF** via Protocolo Omni.
 
@@ -327,19 +85,16 @@ Os Microservices sao uma camada de logica de negocio acedida **directamente pelo
 
 > **Pendencia:** Identificar quais MS serao desenvolvidos e suas responsabilidades especificas.
 
-### 9.9 Servicos Fora do Middleware BEST
+### 9.3 Servicos Fora do Middleware BEST
 
 Existem servicos utilizados pela app mobile que nao passam pelo middleware BEST e sao acedidos diretamente. Estes servicos precisam ser identificados e avaliados para o canal web.
 
-> **Nota:** Conforme arquitectura definida, o BFF acede directamente a ApiPsd2, ApiBBest e Microservices (sem API Gateway IBM). O API Gateway e utilizado **apenas** para Siebel.
+> **Nota:** Conforme arquitectura definida, o BFF acede directamente ao Siebel e aos Microservices. O API Gateway IBM e utilizado para routing dos pedidos ao Siebel.
 
 #### Servicos Identificados
 
 | Servico | Tipo | Funcao | Acesso |
 |---------|------|--------|--------|
-| ApiPsd2 | Autenticacao | Autenticacao PSD2 | Directo pelo BFF |
-| ApiBBest | APIs Bancarias | APIs principais | Directo pelo BFF |
-| Microservices | Logica de Negocio | Regras de dominio | Directo pelo BFF |
 | Servicos Azure | Cloud | _A identificar_ | Directo pelo BFF |
 
 #### Questoes a Resolver
@@ -347,24 +102,9 @@ Existem servicos utilizados pela app mobile que nao passam pelo middleware BEST 
 | Questao | Responsavel | Status |
 |---------|-------------|--------|
 | Lista completa de servicos Azure acedidos diretamente | Cliente | Pendente |
-| Abertura de conta - interacoes com terceiros? | Cliente | Pendente |
 
-### 9.10 Open Banking PSD2
 
-A conformidade PSD2 e tratada a nivel do Backend API. Os detalhes de implementacao para o canal web necessitam aprofundamento.
-
-| Aspecto | Status |
-|---------|--------|
-| APIs expostas (AISP, PISP) | Necessita aprofundamento |
-| APIs consumidas | Necessita aprofundamento |
-| Gestao de consentimentos | Necessita aprofundamento |
-| Modelo de autorizacao | Necessita aprofundamento |
-
-### 9.11 Gestao de Consentimentos
-
-_Necessita aprofundamento - dependente das decisoes de Open Banking PSD2_
-
-### 9.12 Message Broker
+### 9.4 Message Broker
 
 A tecnologia de Message Broker e os eventos a serem publicados/consumidos pelo canal web serao definidos no assessment inicial do projeto.
 
@@ -378,19 +118,7 @@ A tecnologia de Message Broker e os eventos a serem publicados/consumidos pelo c
 
 > **Nota:** RabbitMQ e Azure Service Bus não são opções consideradas.
 
-### 9.13 Tratamento de Erros
-
-#### Estrategia de Retry
-
-| Tipo de Erro | Estrategia | Tentativas | Delay |
-|--------------|------------|------------|-------|
-| **Erros transientes** | Exponential backoff | 3 | 1s, 2s, 4s |
-| **Network Timeout** | Immediate retry | 1 | 0s |
-| **Rate limiting (429)** | Fixed delay | Ate sucesso | Retry-After header |
-| **Erros de negocio (4xx)** | Sem retry | 0 | - |
-| **Erros de servidor (5xx)** | Exponential backoff | 3 | 1s, 2s, 4s |
-
-> **Pendencia:** Verificar se esta estrategia de retry (especialmente para 5xx) esta implementada na app mobile atual.
+### 9.5 Tratamento de Erros
 
 #### Circuit Breaker
 
@@ -416,21 +144,17 @@ A tecnologia de Message Broker e os eventos a serem publicados/consumidos pelo c
 | Rate limiting | "Muitas tentativas. Por favor aguarde alguns segundos." | Registo de log |
 | Erro de negocio | Mensagem especifica da operacao | Orientacao ao utilizador |
 
-### 9.14 SLAs de Integracao
+### 9.6 SLAs de Integracao
 
 _Os SLAs de integracao dependem de informacoes dos sistemas backend e fornecedores terceiros._
 
 | Integracao | Disponibilidade | Latencia P95 | Timeout |
 |------------|-----------------|--------------|---------|
-| Backend API (Facade) | Necessita aprofundamento | Necessita aprofundamento | 60s |
-| Core Banking | Necessita aprofundamento | Necessita aprofundamento | 60s |
-| Notificacoes | Necessita aprofundamento | Necessita aprofundamento | 30s |
-| Cartoes | Necessita aprofundamento | Necessita aprofundamento | 60s |
-| KYC/AML | N/A (backend) | N/A | N/A |
+| Siebel | Necessita aprofundamento | Necessita aprofundamento | 60s |
 
 **Nota:** Janelas de manutencao programadas que afetam integracoes necessitam aprofundamento.
 
-### 9.15 Catalogo de Integracoes
+### 9.7 Catalogo de Integracoes
 
 _O catalogo detalhado de integracoes sera documentado no assessment inicial do projeto._
 
@@ -440,7 +164,7 @@ _O catalogo detalhado de integracoes sera documentado no assessment inicial do p
 | Ferramenta de documentacao | Necessita aprofundamento |
 | Ambiente de sandbox | Necessita aprofundamento |
 
-### 9.16 API Management
+### 9.8 API Management
 
 #### IBM API Gateway
 
@@ -457,42 +181,8 @@ O **IBM API Gateway** e utilizado como ponto central de gestao de APIs entre o B
 | **Throttling diferenciado** | Necessita aprofundamento |
 | **Monitoring** | Necessita aprofundamento |
 
-## Diagramas
 
-### Diagrama de Contexto de Integracao
-
-```plantuml
-@startuml
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
-
-LAYOUT_WITH_LEGEND()
-
-title Diagrama de Contexto - Integracoes HomeBanking Web
-
-Person(user, "Utilizador", "Cliente do banco")
-
-System(web, "HomeBanking Web", "Canal web para homebanking")
-
-System_Ext(mobile, "App Mobile", "Aplicacao mobile existente")
-System_Ext(backend, "Backend API", "Facade para Core Banking")
-System_Ext(core, "Core Banking", "Sistemas bancarios core")
-System_Ext(notif, "Servicos Notificacao", "SMS, Push, Email")
-System_Ext(cards, "Provider Cartoes", "Emissao e processamento")
-
-Rel(user, web, "Utiliza", "HTTPS")
-Rel(user, mobile, "Utiliza", "HTTPS")
-
-Rel(web, backend, "Integra via BFF", "REST/HTTPS")
-Rel(mobile, backend, "Integra", "REST/HTTPS")
-
-Rel(backend, core, "Acede", "Interno")
-Rel(backend, notif, "Aciona", "REST")
-Rel(backend, cards, "Integra", "REST")
-
-@enduml
-```
-
-## Entregaveis
+## Entregáveis
 
 - [x] Diagrama de integracao de alto nivel
 - [ ] Catalogo de integracoes documentado
@@ -502,11 +192,11 @@ Rel(backend, cards, "Integra", "REST")
 - [ ] Documentacao de fluxos assincronos
 - [ ] Matriz de dependencias externas
 
-## Definicoes Utilizadas
+## Definições Utilizadas
 
 - [x] [DEF-09-integracao-interfaces.md](../definitions/DEF-09-integracao-interfaces.md) - Status: in-progress
 
-## Decisoes Referenciadas
+## Decisões Referenciadas
 
 - [x] [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - Status: accepted
 - [x] [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Status: accepted

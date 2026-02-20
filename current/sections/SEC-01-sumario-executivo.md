@@ -48,7 +48,7 @@ O nível de detalhe adotado é **HLD (High Level Design)**, evitando soluções 
 | Desenvolvedores | Implementação seguindo as diretrizes definidas |
 | Gestores de Projeto | Gestão e acompanhamento do projeto |
 
-### 1.3 Escopo
+### 1.3 Âmbito
 
 #### 1.3.1 In-Scope
 
@@ -62,14 +62,15 @@ O HomeBanking Web incluirá **35 funcionalidades** da aplicação mobile, organi
 | **Operações** | Ordens Pendentes, Histórico de Operações, Confirmação de Operações |
 | **Documentos** | Comprovativos e Extratos |
 | **Investimentos** | Warrants, Ações, ETF, Fundos, Obrigações, Índices, Temas Investimento, Depósito a Prazo, Leilões, Ofertas Públicas, Unit Linked, Robot Advisor, BTP |
-| **Pagamentos** | Transferências, Pagamentos, Carregamentos, MBWay (componentes não-SDK) |
+| **Operações Diárias** | Transferências, Pagamentos, Carregamentos |
 | **Outros** | Outros Bancos, Eventos Corporativos, Seguros de Proteção, Área do Viajante, Bea, Wishlist, Notícias Externas |
 
 #### 1.3.2 Out-of-Scope
 
 | Funcionalidade | Justificação |
 |----------------|--------------|
-| MBWay SDK | Componentes nativos do SDK são específicos para aplicações mobile nativas e não compatíveis com ambiente web |
+| MBWay | Todas as funcionalidades estão fora de âmbito |
+
 
 ### 1.4 Visão Geral da Arquitetura
 
@@ -81,11 +82,12 @@ A arquitetura do HomeBanking Web segue o padrão **BFF (Backend for Frontend)**,
 |------------|-----------|
 | **Frontend Web (SPA)** | Aplicação React executada no browser do cliente |
 | **BFF Web (.NET 8)** | Camada de agregação e transformação específica para o canal web |
-| **API Gateway (IBM)** | Gateway existente para acesso aos Backend Services |
+| **API Gateway** | Gateway existente para acesso aos Backend Services |
 | **Backend Services (Siebel)** | Serviços de negócio existentes que validam tokens e acedem ao Core Banking |
 
 **Princípios Fundamentais:**
 - Reutilização da infraestrutura e serviços existentes através do BFF
+- Reutilização de funcionalidades web em canal Mobile Nativo
 - Tecnologias 100% Web (sem dependências de componentes nativos)
 - Conformidade com regulamentações bancárias portuguesas
 - Isolamento do frontend de complexidades dos sistemas legados via BFF

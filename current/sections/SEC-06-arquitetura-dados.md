@@ -54,21 +54,12 @@ package "BFF (.NET 8)" as BFF {
 
 Component "Siebel" as Siebel
 
-package "Backend Services" {
-    database "Core Banking" as CB
-    database "Account Data" as AD
-    database "Transaction Data" as TD
-}
-
 [Browser] --> LS : Dados não sensíveis
 [Browser] --> [BFF] : HTTPS/REST
 [BFF] --> SC : Sessão
 [BFF] --> TC : OAuth Tokens
 [BFF] --> [API Gateway] : REST
 [API Gateway] --> [Siebel]
-[Siebel] --> CB
-[Siebel] --> AD
-[Siebel] --> TD
 
 @enduml
 ```

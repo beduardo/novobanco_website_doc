@@ -40,7 +40,7 @@ title Fluxo de Transferência - HomeBanking Web
 actor "Utilizador" as USER
 participant "Frontend\n(SPA React)" as FE
 participant "BFF\n(.NET 8)" as BFF
-participant "ApiBBest" as API
+participant "Siebel" as API
 
 == Selecção de Beneficiário ==
 USER -> FE : Acede a Transferências
@@ -109,7 +109,7 @@ FE --> USER : Ecrã de sucesso
 | Passo | Descrição | Responsável |
 |-------|-----------|-------------|
 | 1 | Utilizador selecciona tipo: IBAN, SPIN, MBway | Frontend |
-| 2 | Frontend obtém lista de beneficiários | BFF → ApiBBest |
+| 2 | Frontend obtém lista de beneficiários | BFF → Siebel |
 | 3 | Utilizador selecciona beneficiário ou introduz IBAN novo | Frontend |
 
 ### Fase 2: Validação de IBAN
@@ -124,9 +124,9 @@ FE --> USER : Ecrã de sucesso
 
 | Passo | Descrição | Responsável |
 |-------|-----------|-------------|
-| 1 | Consulta COPS (se IBAN nacional) | BFF → ApiBBest |
+| 1 | Consulta COPS (se IBAN nacional) | BFF → Siebel |
 | 2 | Utilizador confirma nome | Frontend |
-| 3 | Verificação VOP | BFF → ApiBBest |
+| 3 | Verificação VOP | BFF → Siebel |
 
 ### Fase 4: Dados da Transferência
 
@@ -141,7 +141,7 @@ FE --> USER : Ecrã de sucesso
 | Passo | Descrição | Responsável |
 |-------|-----------|-------------|
 | 1 | Envio de dados completos | Frontend → BFF |
-| 2 | Cálculo de taxas e valores | BFF → ApiBBest |
+| 2 | Cálculo de taxas e valores | BFF → Siebel |
 | 3 | Apresentação de sumário | Frontend |
 
 ### Fase 6: Confirmação e SCA
@@ -149,11 +149,11 @@ FE --> USER : Ecrã de sucesso
 | Passo | Descrição | Responsável |
 |-------|-----------|-------------|
 | 1 | Utilizador confirma operação | Frontend |
-| 2 | Execução da transferência | BFF → ApiBBest |
-| 3 | Solicitação de OTP (SCA) | ApiBBest → BFF → Frontend |
+| 2 | Execução da transferência | BFF → Siebel |
+| 3 | Solicitação de OTP (SCA) | Siebel → BFF → Frontend |
 | 4 | Introdução de OTP | Frontend |
-| 5 | Validação de OTP | BFF → ApiBBest |
-| 6 | Conclusão da operação | ApiBBest → BFF → Frontend |
+| 5 | Validação de OTP | BFF → Siebel |
+| 6 | Conclusão da operação | Siebel → BFF → Frontend |
 
 ## Dados da Operação
 

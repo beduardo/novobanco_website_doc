@@ -78,17 +78,17 @@ O BFF comunica directamente com múltiplos backends, cada um com o seu protocolo
 
 | Backend | Protocolo | Propósito | Via Gateway |
 |---------|-----------|-----------|-------------|
-| **ApiPsd2** | OAuth + SHA256 | Autenticação PSD2 | Não (directo) |
-| **ApiBBest** | OAuth 1.1 HMAC | APIs bancárias principais | Não (directo) |
+| **Siebel (autenticação PSD2)** | OAuth + SHA256 | Autenticação PSD2 | Não (directo) |
+| **Siebel (APIs bancárias)** | OAuth 1.1 HMAC | APIs bancárias principais | Não (directo) |
 | **Microservices** | Protocolo Omni | Lógica de Negócio | Não (directo) |
-| **Siebel** | BEST | Lógica de negócio core | **Sim** (API Gateway IBM) |
+| **Siebel (core)** | BEST | Lógica de negócio core | **Sim** (API Gateway IBM) |
 | **Serviços Azure** | REST | Serviços cloud | Não (directo) |
 
 > **Nota:** O API Gateway IBM é utilizado **apenas** para comunicação com o Siebel.
 
-### ApiPsd2 como Dependência
+### Siebel (Autenticação PSD2) como Dependência
 
-O BFF atua como intermediário para todas as chamadas à ApiPsd2:
+O BFF atua como intermediário para todas as chamadas de autenticação PSD2 ao Siebel:
 
 | Aspeto | Decisão |
 |--------|---------|
@@ -154,8 +154,8 @@ x-nb-channel: best.spa
 | SPA | F5 | Protocolo Omni |
 | F5 | BFF | Protocolo Omni |
 | BFF | Microservices | Protocolo Omni |
-| BFF | ApiPsd2 | OAuth + SHA256 |
-| BFF | ApiBBest | OAuth 1.1 HMAC |
+| BFF | Siebel (autenticação PSD2) | OAuth + SHA256 |
+| BFF | Siebel (APIs bancárias) | OAuth 1.1 HMAC |
 | BFF | API Gateway | BEST |
 | API Gateway | Siebel | Siebel |
 
@@ -189,13 +189,13 @@ O Protocolo Omni é uma padronização sobre REST utilizada para comunicação e
 
 | Dado | Descrição | Origem |
 |------|-----------|--------|
-| `apiToken` | Token de acesso à ApiPsd2 | Resposta AUT_004 |
+| `apiToken` | Token de acesso ao Siebel | Resposta AUT_004 |
 | `mustChangePassword` | Flag de alteração obrigatória | Resposta AUT_004 |
 | `needStrongAuthentication` | Flag SCA necessário | Resposta AUT_004 |
 | `firstLogin` | Flag primeiro acesso | Resposta AUT_004 |
 | `user_context` | Dados do utilizador (não sensíveis) | Resposta login |
 
-**Importante:** O `sasToken` retornado pela ApiPsd2 **não é utilizado** no canal web. Este token é específico para a app mobile.
+**Importante:** O `sasToken` retornado pelo Siebel **não é utilizado** no canal web. Este token é específico para a app mobile.
 
 ### Cache de Dados Transitórios
 
@@ -245,7 +245,7 @@ O BFF implementa o padrão "Cache or API" para dados frequentemente acedidos:
 
 - Deploy em containers OpenShift
 - API Gateway IBM utilizado **apenas** para Siebel
-- Acesso directo a ApiPsd2, ApiBBest e Microservices
+- Acesso directo ao Siebel e Microservices
 - Isolamento de sistemas legados via BFF
 - Stack ELK para observabilidade
 - Redis Cluster para sessões distribuídas

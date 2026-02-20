@@ -82,7 +82,7 @@ skinparam backgroundColor #FEFEFE
 actor "Utilizador" as USER
 participant "SPA" as SPA
 participant "BFF" as BFF
-participant "ApiBBest" as API
+participant "Siebel" as API
 
 == Selecção de Beneficiário ==
 USER -> SPA : Acede a Transferências

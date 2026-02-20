@@ -90,12 +90,11 @@ O projeto HomeBanking Web visa disponibilizar aos clientes do Novo Banco uma pla
 |--------|------------|
 | Português | Principal |
 | Inglês | Secundário |
-| Espanhol | Secundário |
+| Francês | Secundário |
 
 #### 2.3.4 Acessibilidade
 
-- **Status:** _A definir_ - Requer aprofundamento
-- **Referência:** WCAG 2.1 AA (a considerar)
+- **Referência:** WCAG 2.1 AA
 
 ### 2.4 Requisitos Não Funcionais
 
@@ -124,7 +123,7 @@ O projeto HomeBanking Web visa disponibilizar aos clientes do Novo Banco uma pla
 |---------|-------|------------|
 | Utilizadores concorrentes | 400 | Baseline |
 | Crescimento anual | 5% | Projeção 3 anos |
-| Picos de utilização | Sim | Fim de mês, períodos fiscais |
+| Picos de utilização | Sim | Após envio de campanhas |
 
 #### 2.4.4 Segurança
 
@@ -147,60 +146,10 @@ O projeto HomeBanking Web visa disponibilizar aos clientes do Novo Banco uma pla
 | Tipo | Restrição | Impacto |
 |------|-----------|---------|
 | **Técnica** | Reutilização de APIs e serviços da app mobile | Define integração com backend existente |
-| **Técnica** | Funcionalidades nativas não expostas na web (ex: MBWay SDK) | MBWay SDK out-of-scope. Nota: web pode ser incorporada na app nativa com integração específica |
 | **Regulatória** | Conformidade PSD2 | Autenticação forte (SCA) obrigatória |
 | **Regulatória** | Regulamentações Banco de Portugal | Requisitos de segurança e auditoria |
 
-### 2.6 Pressupostos
-
-| ID | Pressuposto | Validado |
-|----|-------------|----------|
-| P1 | APIs da app mobile estão disponíveis e documentadas | A validar |
-| P2 | Infraestrutura existente suporta canal web adicional | A validar |
-| P3 | Requisitos de segurança são os mesmos da app mobile | A validar |
-| P4 | Não há necessidade de novas integrações com terceiros | Sim |
-
-### 2.7 Dependências
-
-```plantuml
-@startuml
-skinparam backgroundColor #FEFEFE
-
-package "HomeBanking Web" {
-    [Frontend Web] as FE
-}
-
-package "Dependências Existentes" {
-    [API Gateway] as APIGW
-    [Backend Services] as BE
-    [Core Banking] as CORE
-    [Serviços Terceiros\n(KYC, Cartões, etc)] as THIRD
-}
-
-FE --> APIGW : Depende
-APIGW --> BE : Depende
-BE --> CORE : Depende
-BE --> THIRD : Depende
-
-note right of FE
-  Nova componente
-end note
-
-note right of APIGW
-  Componentes existentes
-  (app mobile)
-end note
-@enduml
-```
-
-| Dependência | Tipo | Crítica |
-|-------------|------|---------|
-| API Gateway | Infraestrutura existente | Sim |
-| Backend Services | Serviços existentes | Sim |
-| Core Banking | Sistema legado | Sim |
-| Serviços Terceiros | Integrações existentes | Sim |
-
-### 2.8 Estratégia de Lançamento
+### 2.6 Estratégia de Lançamento
 
 A estratégia de transição do canal atual para o novo HomeBanking Web necessita de definição.
 

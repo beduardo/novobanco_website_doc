@@ -206,63 +206,13 @@ rectangle "Ferramentas" #Yellow {
 | Frequência de scans | _A definir_ |
 
 ### 8.5 Conformidade PSD2
-
-```plantuml
-@startuml
-skinparam backgroundColor #FEFEFE
-
-title Conformidade PSD2 - HomeBanking Web
-
-rectangle "Requisitos PSD2" {
-    rectangle "SCA" #LightGreen {
-        [Todas as operações]
-        note bottom : Sem isenções
-    }
-
-    rectangle "Dynamic Linking" #Yellow {
-        [Valor + Beneficiário]
-        note bottom : Estrutura app\njá segue PSD2\n(a aprofundar)
-    }
-
-    rectangle "Comunicação Segura" #LightGreen {
-        [TLS 1.2+]
-    }
-}
-
-@enduml
-```
-
-| Requisito | Decisão |
-|-----------|---------|
-| **SCA obrigatório** | Sim, todas as operações |
-| **Isenções SCA** | Nenhuma |
-| **Dynamic Linking** | Estrutura app já segue PSD2 (a aprofundar) |
-| **TLS** | 1.2+ (versão específica a definir) |
+Todo o processo de conformidade PSD2 é garantido pelas apis
 
 ### 8.6 Conformidade RGPD
-
-> **Nota do Cliente:** Todo o processo de conformidade RGPD é gerido pelas API. A responsabilidade não é do frontend.
-
-| Aspeto | Status |
-|---------|--------|
-| Base legal para tratamento | **Gerido pela API** |
-| Consentimento | **Gerido pela API** |
-| DPO designado | **Gerido pela API** (questão organizacional) |
-| ROPA | **Gerido pela API** |
-
-**Decisão:** O frontend apenas consome dados já tratados. A conformidade RGPD é integralmente responsabilidade do backend.
+Todo o processo de conformidade RGPD é garantido pelas apis
 
 ### 8.7 PCI-DSS
-
-> **Nota do Cliente:** Todo o processo de tokenização e processamento de cartões é gerido pelas API. O frontend não processa PAN diretamente.
-
-| Aspeto | Status |
-|---------|--------|
-| Processamento de PAN | **Gerido pela API** - Frontend não processa |
-| Nível de conformidade | **Gerido pela API** |
-| Tokenização de cartões | **Gerido pela API** |
-
-**Decisão:** O frontend não lida diretamente com dados de cartão. Toda a conformidade PCI-DSS é responsabilidade do backend.
+Todo o processo de conformidade PCI-DSS é garantido pelas apis
 
 ### 8.8 Banco de Portugal
 

@@ -129,4 +129,4 @@ Os requisitos não funcionais definem os atributos de qualidade da solução Hom
 
 - [CONTEXT.md](../CONTEXT.md) - Contexto geral do projeto
 - SLAs da infraestrutura atual (a fornecer)
-- Políticas de segurança do Novo Banco (a fornecer)
+- Políticas de segurança do Banco Best (a fornecer)

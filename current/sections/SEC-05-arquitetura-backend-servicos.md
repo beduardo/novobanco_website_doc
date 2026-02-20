@@ -38,7 +38,6 @@ A decomposição de serviços segue a arquitectura de referência definida na se
 | Siebel (Backend Principal) | Existente | Reutilizar | Valida tokens |
 | Outros Backend Services | Existente | Reutilizar | A identificar |
 | Serviços Azure | Existente | Reutilizar | Acesso direto pelo BFF |
-| Core Banking | Existente | Reutilizar | Via Siebel |
 
 #### Notas de Integração
 
@@ -98,7 +97,7 @@ SVC --> LOG : ELK
 | Agregacao de chamadas | Sim | Combinar multiplas chamadas backend |
 | Transformacao de dados | Sim | Adaptar formato para frontend |
 | Cache | Sim | Sessao e tokens |
-| Autenticacao/Autorizacao | Sim | OAuth 2.0, validacao de sessao |
+| Autenticacao/Autorizacao | Sim | OAuth 1.1, validacao de sessao |
 | Rate Limiting | Nao | Responsabilidade do Gateway |
 
 ### 5.3 Arquitetura API
@@ -151,12 +150,15 @@ SVC --> LOG : ELK
 skinparam backgroundColor #FEFEFE
 
 participant "Frontend" as FE
+participant "F5" as F5
 participant "BFF" as BFF
 participant "API Gateway\n(IBM)" as GW
 participant "Siebel" as SIEBEL
-participant "Core Banking" as CORE
 
-FE -> BFF : REST/HTTPS\n(Cookie sessao)
+FE -> F5 : REST/HTTPS\n(Cookie sessao)
+activate F5
+
+F5 -> BFF : REST/HTTPS\n(Cookie sessao)
 activate BFF
 
 BFF -> BFF : Validar sessao\n(Cache lookup)
@@ -167,11 +169,6 @@ note right of GW: Routing apenas\n(sem autenticação)
 GW -> SIEBEL : REST\n(Bearer token)
 activate SIEBEL
 note right of SIEBEL: **Valida clientid+secret**\n**e Bearer Token**
-
-SIEBEL -> CORE : Protocolo interno
-activate CORE
-CORE --> SIEBEL : Response
-deactivate CORE
 
 SIEBEL --> GW : JSON
 deactivate SIEBEL
@@ -191,7 +188,6 @@ deactivate BFF
 | Frontend → BFF | REST/HTTPS | Cookie de sessao (HttpOnly, Secure) | - |
 | BFF → API Gateway (IBM) | REST | ClientID + ClientSecret | Gateway faz routing apenas |
 | API Gateway → Siebel | REST | Bearer Token (propagado) | **Siebel valida o token** |
-| Siebel → Core Banking | Protocolo interno | - | - |
 
 > **Nota:** O BFF não tem API Gateway à frente. O API Gateway (IBM) é utilizado apenas para acesso aos Backend Services (Siebel e outros).
 
@@ -272,36 +268,6 @@ O modelo de dominio segue as entidades ja existentes nos backend services da app
 > **Pendência:** Validar com negócio se degradação graceful sem logs é aceitável ou se é necessário fallback alternativo.
 
 ### 5.11 Autenticacao e Sessao
-
-#### Fluxo de Autenticacao
-
-```plantuml
-@startuml
-skinparam backgroundColor #FEFEFE
-
-actor "Utilizador" as USER
-participant "Frontend" as FE
-participant "BFF" as BFF
-participant "Siebel (via GW)" as AUTH
-participant "Redis" as CACHE
-
-USER -> FE : Login
-FE -> BFF : POST /auth/login\n(credentials)
-BFF -> AUTH : Validar credenciais
-AUTH --> BFF : OAuth Token
-
-BFF -> BFF : Gerar Session ID
-BFF -> CACHE : Store(SessionID, Token)
-BFF --> FE : Set-Cookie: SessionID\n(HttpOnly, Secure)
-
-FE -> BFF : GET /accounts\n(Cookie: SessionID)
-BFF -> CACHE : Get(SessionID)
-CACHE --> BFF : Token
-BFF -> AUTH : Validate Token
-BFF --> FE : Account data
-
-@enduml
-```
 
 #### Gestao de Sessao
 

@@ -79,7 +79,7 @@ Implementar **arquitetura de tokens em dois niveis**: tokens de sessao (Browser-
 
 | Dado | Descricao | Origem |
 |------|-----------|--------|
-| `apiToken` | Token de acesso a ApiPsd2 | Resposta AUT_004 |
+| `apiToken` | Token de acesso ao Siebel | Resposta AUT_004 |
 | `mustChangePassword` | Flag de alteracao obrigatoria | Resposta AUT_004 |
 | `needStrongAuthentication` | Flag SCA necessario | Resposta AUT_004 |
 | `firstLogin` | Flag primeiro acesso | Resposta AUT_004 |
@@ -89,7 +89,7 @@ Implementar **arquitetura de tokens em dois niveis**: tokens de sessao (Browser-
 - Refresh silencioso conforme atividade do utilizador
 - BFF renova tokens backend automaticamente antes de expiracao
 
-**Importante:** O `sasToken` retornado pela ApiPsd2 **nao e utilizado** no canal web. Este token e especifico para a app mobile.
+**Importante:** O `sasToken` retornado pelo Siebel **nao e utilizado** no canal web. Este token e especifico para a app mobile.
 
 ## Alternatives Considered
 

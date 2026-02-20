@@ -29,8 +29,7 @@ Definir as integrações do HomeBanking Web com sistemas internos e externos. O 
 
 | Sistema | Tipo | Proprietário | Criticidade | Status |
 |---------|------|--------------|-------------|--------|
-| **ApiPsd2** | Autenticação PSD2 | NovoBanco | Alta | Existente |
-| **ApiBBest** | APIs Bancárias | NovoBanco | Alta | Existente |
+| **Siebel** | Backend Principal (Autenticação PSD2 + APIs Bancárias) | NovoBanco | Alta | Existente |
 | **Microservices** | Lógica de Negócio | NovoBanco | Alta | A desenvolver |
 | Core Banking APIs | Integração | NovoBanco | Alta | Existente |
 | App Mobile Nativa | Referência | NovoBanco | Média | Existente |
@@ -150,7 +149,7 @@ Definir as integrações do HomeBanking Web com sistemas internos e externos. O 
 ### API Management
 
 28. Qual API Gateway é utilizado?
-    IBM API Gateway (para acesso ao Siebel). O BFF acede directamente a ApiPsd2, ApiBBest e Microservices sem passar pelo Gateway.
+    IBM API Gateway (para routing ao Siebel). O BFF acede ao Siebel e aos Microservices.
 
 29. Como é feito o rate limiting por integração?
     Necessita aprofundamento. Gerido pelo Gateway (IBM), não pelo BFF.
@@ -223,7 +222,7 @@ Definir as integrações do HomeBanking Web com sistemas internos e externos. O 
 
 > **Fonte:** Diagramas de sequência do cliente
 
-### APIs de Autenticação (ApiPsd2)
+### APIs de Autenticação (Siebel)
 
 | Código | API | Descrição | Criticidade |
 |--------|-----|-----------|-------------|
@@ -231,7 +230,7 @@ Definir as integrações do HomeBanking Web com sistemas internos e externos. O 
 | AUT_001 | ReenviaOTP | Solicita envio de OTP | Alta |
 | DEV_005.2 | RegistarDispositivoSecure | Valida OTP e regista dispositivo | Alta |
 
-### APIs de Dados do Cliente (ApiBBest)
+### APIs de Dados do Cliente (Siebel)
 
 | API | Descrição | Dados Retornados |
 |-----|-----------|------------------|
@@ -241,7 +240,7 @@ Definir as integrações do HomeBanking Web com sistemas internos e externos. O 
 | MIFID_getInvestorProfile | Perfil de investidor | Perfil MIFID |
 | Message_getInboxMessage | Mensagens | Inbox do utilizador |
 
-### APIs de Contas e Movimentos (ApiBBest)
+### APIs de Contas e Movimentos (Siebel)
 
 | API | Descrição | Dados Retornados |
 |-----|-----------|------------------|
@@ -249,14 +248,14 @@ Definir as integrações do HomeBanking Web com sistemas internos e externos. O 
 | Account_getMovements | Movimentos | Extracto de movimentos |
 | Statement_getUserStatement | Património | Posição patrimonial |
 
-### APIs de Cartões (ApiBBest)
+### APIs de Cartões (Siebel)
 
 | API | Descrição | Dados Retornados |
 |-----|-----------|------------------|
 | CCards_getCreditCards | Cartões de crédito | Lista e detalhes |
 | DCards_getDebitCards | Cartões de débito | Lista e detalhes |
 
-### APIs de Operações (ApiBBest)
+### APIs de Operações (Siebel)
 
 | API | Descrição | Dados Retornados |
 |-----|-----------|------------------|
@@ -265,14 +264,14 @@ Definir as integrações do HomeBanking Web com sistemas internos e externos. O 
 | Permanent_getPermanentOrders | Ordens permanentes | Lista de ordens |
 | CorpAction_getOngoingClosedCA | Operações corporativas | Corporate actions |
 
-### APIs PSD2/SIBS (ApiBBest)
+### APIs PSD2/SIBS (Siebel)
 
 | API | Descrição | Dados Retornados |
 |-----|-----------|------------------|
 | SIBS_getConsentStatus | Estado de consentimento PSD2 | Status |
 | SIBS_getConsentAccount | Contas com consentimento | Lista de contas |
 
-### APIs de Transferências (ApiBBest)
+### APIs de Transferências (Siebel)
 
 | API | Descrição | Uso |
 |-----|-----------|-----|
@@ -297,8 +296,8 @@ Definir as integrações do HomeBanking Web com sistemas internos e externos. O 
 
 | Backend | Protocolo | Token Usado |
 |---------|-----------|-------------|
-| ApiPsd2 | OAuth + SHA256 | access_token_anonimo (pré-login) / apiToken (pós-login) |
-| ApiBBest | OAuth 1.1 HMAC | apiToken |
+| Siebel (autenticação PSD2) | OAuth + SHA256 | access_token_anonimo (pré-login) / apiToken (pós-login) |
+| Siebel (APIs bancárias) | OAuth 1.1 HMAC | apiToken |
 | Microservices | Protocolo Omni | Token de sessão |
 | Siebel (via Gateway) | BEST | Bearer Token |
 

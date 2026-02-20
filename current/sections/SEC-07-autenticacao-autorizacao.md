@@ -69,7 +69,6 @@ rectangle "Métodos de Autenticação" {
 | QR Code + Biometria | Primário | Validação via app mobile |
 | Username/Password | Fallback | Apenas quando QR Code falha |
 | SMS OTP | Fallback | Segundo fator no fallback |
-| App Push | Fallback | Segundo fator no fallback |
 | Certificado Digital | Não | Não suportado |
 
 **Login unificado:** Sim, mesmas credenciais da app mobile.
@@ -166,7 +165,7 @@ actor "Utilizador" as USER
 participant "Browser" as FE
 participant "BFF" as BFF
 participant "Auth Service (MicroService)" as AUTH
-participant "ApiPsd2" as APIAPP
+participant "Siebel" as APIAPP
 
 USER -> FE : Indica falha no QR Code
 FE --> USER : Apresenta opções fallback
@@ -192,7 +191,7 @@ note over AUTH
 Gera: GUID, timestamp
 Calcula: assinatura SHA256
 end note
-AUTH -> Redis : Armazena Tokens da Sessão vinculados (SPA Token : ApiPsd2 Token)
+AUTH -> Redis : Armazena Tokens da Sessão vinculados (SPA Token : Siebel Token)
 AUTH --> BFF : Set-Cookie: token_sessao_spa
 BFF --> FE : Set-Cookie: token_sessao_spa\n(HttpOnly, Secure, SameSite=Strict)\n{mustChangePassword, firstLogin}
 FE --> USER : Acesso concedido
@@ -200,7 +199,7 @@ FE --> USER : Acesso concedido
 @enduml
 ```
 
-**Códigos de Operação ApiPsd2:**
+**Códigos de Operação Siebel:**
 
 | Código | Operação | Descrição |
 |--------|----------|-----------|
@@ -245,33 +244,23 @@ FE --> USER : Acesso concedido
 
 ##### Pendências de Segurança de Credenciais
 
-| Item | Descrição | Prioridade |
-|------|-----------|------------|
-| **Revisão de dados no login** | Identificar todos os dados retornados no login e avaliar risco em ambiente web | **Alta** |
-| **Cifra de PIN** | Avaliar se PIN deve ser cifrado client-side antes de transmissão (além de TLS) | Alta |
-| **Credenciais do banco** | Avaliar risco de exposição de credenciais de acesso a sistemas backend | Alta |
+| Item                          | Descrição                                                                      | Prioridade |
+| ----------------------------- | ------------------------------------------------------------------------------ | ---------- |
+| **Revisão de dados no login** | Identificar todos os dados retornados no login e avaliar risco em ambiente web | **Alta**   |
+| **Cifra de PIN**              | Avaliar se PIN deve ser cifrado client-side antes de transmissão (além de TLS) | Alta       |
+| **Credenciais do banco**      | Avaliar risco de exposição de credenciais de acesso a sistemas backend         | Alta       |
 
 ### 7.3 MFA/SCA (Strong Customer Authentication)
 
-| Aspeto | Decisão |
-|---------|---------|
-| **SCA Obrigatório** | Sim, para todos os acessos a áreas restritas |
-| **Segundo fator primário** | Biometria via app (validação QR Code) |
-| **Segundo fator fallback** | SMS OTP |
-| **Isenções SCA** | Nenhuma |
+| Aspeto                     | Decisão                                      |
+| -------------------------- | -------------------------------------------- |
+| **SCA Obrigatório**        | Em todas as áreas onde a API definir obrigatório |
+| **Segundo fator login primário** | Biometria via app (validação QR Code)        |
+| **Segundo fator login fallback** | OTP                                      |
+| **Segundo fator não login primário** | OTP - Segundo modelo de segurança Banco Best                                      |
+| **Isenções SCA**           | Nenhuma                                      |
 
 **Fluxo de fallback:** Após o utilizador informar falha na leitura do QR Code, a aplicação permite login com SMS OTP. A disponibilidade dos métodos é **uniforme** para todos os utilizadores (não configurável por utilizador) e **sem prioridade** entre os métodos.
-
-#### 7.3.1 SCA Condicional
-
-A ApiPsd2 retorna a flag `needStrongAuthentication` que indica se SCA é requerido:
-
-| Valor | Significado | Ação |
-|-------|-------------|------|
-| "Y" | SCA obrigatório | Prosseguir com OTP |
-| "N" | SCA não requerido | Login completo |
-
-> **Pendência:** Clarificar com o cliente em que cenários `needStrongAuthentication` retorna "N". Ver PENDENCIAS.md.
 
 ### 7.4 Gestão de Sessões
 
@@ -300,14 +289,14 @@ end note
 @enduml
 ```
 
-| Parâmetro | Valor | Observação |
-|-----------|-------|------------|
-| **Timeout por inatividade** | 10 minutos (sugestão) | Configurável |
-| **Timeout absoluto** | 30 minutos (sugestão) | Configurável |
-| **Sessão exclusiva** | Recomendado | Novo login invalida sessão anterior |
-| **Aviso de expiração** | Popup com temporizador | - |
-| **Relação sessão web/mobile** | **Independentes** | Não há relação entre sessões |
-| **Limite de sessões** | _A definir_ | - |
+| Parâmetro                     | Valor                  | Observação                          |
+| ----------------------------- | ---------------------- | ----------------------------------- |
+| **Timeout por inatividade**   | 10 minutos (sugestão)  | Configurável                        |
+| **Timeout absoluto**          | 30 minutos (sugestão)  | Configurável                        |
+| **Sessão exclusiva**          | Recomendado            | Novo login invalida sessão anterior |
+| **Aviso de expiração**        | Popup com temporizador | -                                   |
+| **Relação sessão web/mobile** | **Independentes**      | Não há relação entre sessões        |
+| **Limite de sessões**         | _A definir_            | -                                   |
 
 > **Nota:** Os tempos de sessão são sugestões e devem ser configuráveis. O valor final será definido em conjunto com o cliente.
 

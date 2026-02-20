@@ -103,4 +103,11 @@ spec:
           command: document.word.generate
           params:
             destination: ./final/novobanco-final.docx
-            source: ./joined/novobanco-joined.md 
+            source: ./joined/novobanco-joined.md
+            title: "Site Transacional Banco Best"
+            author: ""
+            cover_page: false
+            date: ""
+            organization: "IT People"
+            subject: "High Level Definition Architecture Document"
+

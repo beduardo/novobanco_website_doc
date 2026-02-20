@@ -30,39 +30,13 @@ Definir o plano de migracao e implementacao do HomeBanking Web, incluindo roadma
 ## Conteudo
 
 ### 14.1 Roadmap de Implementacao
-
-```plantuml
-@startuml
-skinparam backgroundColor white
-
-title Roadmap de Implementacao - HomeBanking Web
-
-project starts 2026-02-01
-
-[Fase 0: Setup] as setup lasts 4 weeks
-[Fase 1: MVP Core] as mvp lasts 12 weeks
-[Fase 2: Features Completas] as features lasts 8 weeks
-[Fase 3: Beta/UAT] as beta lasts 4 weeks
-[Fase 4: Go-Live] as golive lasts 2 weeks
-[Fase 5: Hypercare] as hypercare lasts 4 weeks
-
-setup -> mvp
-mvp -> features
-features -> beta
-beta -> golive
-golive -> hypercare
-
-@enduml
-```
-
-| Fase | Duracao | Entregas |
-|------|---------|----------|
-| **0: Setup** | 4 semanas | Infraestrutura, pipelines CI/CD, ambientes, design system base |
-| **1: MVP Core** | 12 semanas | Login (4 fluxos), Dashboard, Contas, Saldos, Transferencias |
-| **2: Features** | 8 semanas | Restantes 35 funcionalidades (paridade mobile) |
-| **3: Beta/UAT** | 4 semanas | Testes UAT, correcoes, pentest |
-| **4: Go-Live** | 2 semanas | Cutover, lancamento controlado |
-| **5: Hypercare** | 4 semanas | Suporte intensivo, monitorizacao, ajustes |
+| Fase | Entregas |
+|------|---------|
+| **0: Setup** |  Infraestrutura, pipelines CI/CD, ambientes, design system base |
+| **1: Features** |  Restantes 35 funcionalidades (paridade mobile) |
+| **2: Beta/UAT** |  Testes UAT, correcoes, pentest |
+| **3: Go-Live** |  Cutover, lancamento controlado |
+| **5: Hypercare** |  Suporte intensivo, monitorizacao, ajustes |
 
 ### 14.2 MVP - Funcionalidades Core
 
@@ -78,52 +52,8 @@ golive -> hypercare
 | Logout | P1 | Baixa |
 
 ### 14.3 Estrategia de Cutover
-
+(A Definir)
 **Abordagem:** Lancamento Gradual (Phased Rollout) com Feature Flags
-
-```plantuml
-@startuml
-skinparam backgroundColor white
-
-title Estrategia de Lancamento Gradual
-
-|Semana 1|
-start
-:Beta privado;
-note right: 100 utilizadores internos
-
-|Semana 2|
-:Beta controlado;
-note right: 500 utilizadores selecionados
-
-|Semana 3|
-:Lancamento parcial;
-note right: 20% dos utilizadores
-
-|Semana 4|
-:Lancamento geral;
-note right: 100% dos utilizadores
-
-stop
-
-@enduml
-```
-
-#### Criterios de Progressao
-
-| Etapa | Condicao para Avancar |
-|-------|----------------------|
-| Beta -> Lancamento Parcial | 0 bugs criticos, taxa de erro < 1% |
-| Parcial -> Geral | SLOs cumpridos, feedback positivo, 0 P1 abertos |
-
-#### Feature Flags para Rollout
-
-| Flag | Descricao | Default |
-|------|-----------|---------|
-| `enable_web_banking` | Habilita acesso ao canal web | false |
-| `enable_qr_login` | Habilita login via QR Code | true |
-| `enable_transfers` | Habilita transferencias | true |
-| `maintenance_mode` | Modo manutencao (bloqueia acessos) | false |
 
 ### 14.4 Coexistencia com App Mobile
 
@@ -170,6 +100,8 @@ end note
 | Sessoes simultaneas | Permitidas (Web + Mobile) |
 | Logout | Independente por canal |
 | Tokens | Separados (App vs Web BFF) |
+
+**Nota:** Ainda estamos a aprofundar a forma como a APP Mobile executar funcionalidades 100% WEB em contexto nativo.
 
 ### 14.5 Migracao de Dados
 

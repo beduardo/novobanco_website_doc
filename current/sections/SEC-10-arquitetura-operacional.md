@@ -50,6 +50,7 @@ package "OpenShift Cluster" #LightBlue {
   package "Namespace: best-web-prod" {
     [Frontend\n(Nginx + React)] as FE
     [BFF\n(.NET 8)] as BFF
+    [Auth Service (MicroService)\n(.NET 8)] as AuthService
   }
 
   [Redis Cache] as REDIS
@@ -73,7 +74,10 @@ NET --> LB
 LB --> FE
 FE --> BFF
 BFF --> REDIS
+AuthService --> REDIS
+BFF -> AuthService
 BFF --> GW
+AuthService --> GW
 GW --> API
 FE --> ELK : logs
 BFF --> ELK : logs
@@ -89,7 +93,7 @@ BFF --> ELK : logs
 | **Container Registry** | A validar com equipa de infra |
 | **Secrets** | A validar com equipa de infra |
 
-> **Nota:** Os detalhes específicos de infraestrutura (registry, secrets, networking) serão validados com a equipa de infraestrutura do NovoBanco, uma vez que reutilizam componentes existentes.
+> **Nota:** Os detalhes específicos de infraestrutura (registry, secrets, networking) serão validados com a equipa de infraestrutura do Banco Best, uma vez que reutilizam componentes existentes.
 
 #### Requisitos de Imagens Container (OpenShift-Compliant)
 
@@ -105,11 +109,11 @@ BFF --> ELK : logs
 
 A aplicação utiliza três ambientes, segregados por **namespaces** no cluster OpenShift.
 
-| Ambiente | Propósito | Namespace | Promoção |
-|----------|-----------|-----------|----------|
-| **dev** | Desenvolvimento e integração | `best-web-dev` | Automática (CI) |
-| **qa** | Testes integrados e UAT | `best-web-qa` | Automática (após dev OK) |
-| **prod** | Produção | `best-web-prod` | Manual (aprovação) |
+| Ambiente | Propósito                    | Namespace       | Promoção                 |
+| -------- | ---------------------------- | --------------- | ------------------------ |
+| **dev**  | Desenvolvimento e integração | `best-web-dev`  | Automática (CI)          |
+| **qa**   | Testes integrados e UAT      | `best-web-qa`   | Automática (após dev OK) |
+| **prod** | Produção                     | `best-web-prod` | Manual (aprovação)       |
 
 > **Nota:** A nomenclatura dos namespaces segue o padrão do ecossistema BEST. A existência de F5 em cada ambiente será validada com a equipa de infraestrutura.
 
@@ -124,11 +128,11 @@ A aplicação utiliza três ambientes, segregados por **namespaces** no cluster 
 
 ### 10.3 CI/CD Pipeline
 
-> **Nota Importante:** A infraestrutura de CI/CD já se encontra implementada no NovoBanco e será **reutilizada integralmente** para este projeto. Os detalhes abaixo são indicativos e serão validados/ajustados pela equipa de infraestrutura do NovoBanco. Alguns aspectos podem não reflectir exactamente a configuração actual.
+> **Nota Importante:** A infraestrutura de CI/CD já se encontra implementada no Banco Best e será **reutilizada integralmente** para este projeto. Os detalhes abaixo são indicativos e serão validados/ajustados pela equipa de infraestrutura do Banco Best. Alguns aspectos podem não reflectir exactamente a configuração actual.
 
 #### Visão Geral
 
-O projeto reutiliza a infraestrutura de CI/CD existente no NovoBanco:
+O projeto reutiliza a infraestrutura de CI/CD existente no Banco Best:
 
 | Aspeto | Abordagem |
 |--------|-----------|
@@ -170,7 +174,7 @@ O projeto reutiliza a infraestrutura de CI/CD existente no NovoBanco:
 
 ### 10.5 Secrets Management
 
-> **Nota:** A gestão de secrets reutiliza a infraestrutura existente no NovoBanco. Os detalhes serão validados com a equipa de infraestrutura.
+> **Nota:** A gestão de secrets reutiliza a infraestrutura existente no Banco Best. Os detalhes serão validados com a equipa de infraestrutura.
 
 | Aspeto | Especificação |
 |---------|---------------|
@@ -180,7 +184,7 @@ O projeto reutiliza a infraestrutura de CI/CD existente no NovoBanco:
 
 ### 10.6 Container Registry
 
-> **Nota:** O container registry reutiliza a infraestrutura existente no NovoBanco.
+> **Nota:** O container registry reutiliza a infraestrutura existente no Banco Best.
 
 | Aspeto | Configuração |
 |---------|--------------|
@@ -230,7 +234,7 @@ O canal web **não requer backup dedicado**:
 
 ## Itens Pendentes - Validação com Equipa de Infraestrutura
 
-> **Ação Requerida:** Agendar sessão com equipa de infraestrutura do NovoBanco para validar os seguintes pontos.
+> **Ação Requerida:** Agendar sessão com equipa de infraestrutura do Banco Best para validar os seguintes pontos.
 
 | Item | Descrição | Prioridade |
 |------|-----------|------------|
