@@ -197,18 +197,171 @@ SEC-02 indica picos "Apos envio de campanhas" (generico). O cliente especifica q
 
 ---
 
+## NC-09: API Gateway Serve Tambem Microservices (Nao Apenas Siebel)
+
+**Gravidade:** ALTA
+**Origem:** Comentarios JGC-2 #3, #5, #8, #11, #26, #27
+**Seccoes afetadas:** SEC-03 (3.1, 3.2, 3.3), SEC-05 (5.1, 5.4, 5.6), SEC-09 (9.1, 9.2, 9.8)
+
+**Descricao:**
+O documento afirma repetidamente que o API Gateway IBM e utilizado **"apenas para Siebel"**. O Jorge esclarece que o principio e que **tudo ira via APIGW, excepto o BFF e servicos Azure**. Ou seja, os Microservices tambem ficam por detras do API Gateway.
+
+Comentario #3: "Tirando o BFF, penso que o principio a colocar em cima da mesa e que tudo ira via APIGW. A APIGW nao sera apenas para SIEBEL mas tambem para os MS"
+Comentario #26: "Estaria por detras da apigw, pelo menos pelo diagrama inicial?"
+
+**O que o documento diz (em multiplos locais):**
+- SEC-03: "API Gateway | **Apenas para Siebel**"
+- SEC-05 5.4 nota: "O API Gateway (IBM) e utilizado apenas para acesso aos Backend Services (Siebel)"
+- SEC-09 9.1: "BFF → Microservices | Omni | Token de sessao | Logica de negocio (directo)"
+
+**O que deveria dizer:**
+- API Gateway serve Siebel E Microservices
+- Apenas o BFF (e servicos Azure) ficam fora do API Gateway
+- Diagrama 3.2 deve refletir MS por detras da APIGW
+
+**Acao requerida:**
+1. Atualizar diagrama de referencia (SEC-03 3.2) para mostrar MS atras do API Gateway
+2. Remover todas as notas "apenas para Siebel" e substituir por "para Siebel e Microservices"
+3. Atualizar tabelas de comunicacao em SEC-03, SEC-05 e SEC-09
+4. Rever SEC-05 5.6 (rate limiting) - se MS estao atras da APIGW, o rate limiting aplica-se tambem a eles
+
+---
+
+## NC-10: Versao .NET Deve Ser 10 (Nao 8)
+
+**Gravidade:** MEDIA
+**Origem:** Comentario JGC-2 #17
+**Seccoes afetadas:** SEC-03 (3.2, 3.3), SEC-05 (5.2.2), SEC-09 (9.2), DEC-010
+
+**Descricao:**
+O documento refere ".NET 8" como tecnologia do BFF e Microservices. O Jorge corrige para ".NET 10".
+
+**O que o documento diz:**
+- SEC-03 diagrama: "BFF Web (.NET 8)"
+- SEC-05 5.2.2: "Runtime | .NET 8"
+- SEC-03 3.3: "BFF Web | .NET 8", "Microservices | .NET 8"
+
+**O que deveria dizer:**
+- .NET 10 em todos os locais
+
+**Acao requerida:**
+1. Substituicao global de ".NET 8" por ".NET 10" em seccoes, definicoes e decisoes
+
+---
+
+## NC-11: Estrutura de URL e Convencoes de API Nao Alinhadas
+
+**Gravidade:** MEDIA
+**Origem:** Comentario JGC-2 #18
+**Seccoes afetadas:** SEC-05 (5.3.2, 5.3.3)
+
+**Descricao:**
+A estrutura de endpoints proposta (/api/v1/auth/login, etc.) nao segue as convencoes do NovoBanco. O Jorge indica:
+- Prefixo deve ser `/web/ocb/<servicobest>/best`
+- Remover `/api` para consistencia com o resto
+- Assumir v1 para todos, versionamento ao servico (nao ao API)
+- Recomendacao arquitectural: usar POST (nao GET/PUT/DELETE)
+
+**O que o documento diz:**
+```
+/api/v1/
+├── auth/
+├── accounts/
+├── payments/
+...
+```
+
+**O que deveria dizer:**
+```
+/web/ocb/<servico>/best/
+├── auth/
+├── accounts/
+...
+```
+Com versionamento por servico e metodo POST como padrao.
+
+**Acao requerida:**
+1. Atualizar estrutura de endpoints em SEC-05 5.3.3
+2. Atualizar estrategia de versionamento em SEC-05 5.3.2 (por servico, nao por API)
+3. Documentar recomendacao de POST como metodo padrao
+
+---
+
+## NC-12: BFF Nao E a API Strategy Generica
+
+**Gravidade:** MEDIA
+**Origem:** Comentarios JGC-2 #1, #2
+**Seccoes afetadas:** SEC-03 (3.1)
+
+**Descricao:**
+SEC-03 apresenta "BFF (Backend for Frontend)" como a **API Strategy** generica do sistema. O Jorge esclarece que BFF e especifico para o UI React. Os Microservices tem a sua propria estrategia.
+
+Comentario #1: "O API strategy nao sera o BFF de forma generica. BFF sera para o UI react."
+Comentario #2: Acoplamento legados "Via BFF apenas" deveria ser "BFF ou MS"
+
+**O que o documento diz:**
+- SEC-03 3.1: "API Strategy | BFF (Backend for Frontend) | Camada de agregacao especifica para o canal web, isolando sistemas legados"
+- SEC-03 3.1: "Acoplamento Legados | Via BFF apenas"
+
+**O que deveria dizer:**
+- API Strategy: BFF para o canal web React; MS para logica de negocio nao implementavel em Siebel
+- Acoplamento Legados: Via BFF ou MS
+
+**Acao requerida:**
+1. Corrigir tabela de principios em SEC-03 3.1
+2. Separar o papel do BFF (frontend gateway) do papel dos MS (logica de negocio)
+
+---
+
+## NC-13: "Fluxos Mobile Replicados na Web" - Assercao Nao Validada
+
+**Gravidade:** BAIXA
+**Origem:** Comentario JGC-2 #13
+**Seccoes afetadas:** SEC-04 (4.2.1)
+
+**Descricao:**
+SEC-04 afirma como principio de design: "Fluxos da app mobile replicados na web". O Jorge questiona: "Isto e verdade?"
+
+Isto pode nao ser correto - os fluxos web podem ter diferencas significativas em relacao aos mobile (ex: navegacao sidebar vs tabs, responsividade, ausencia de biometria nativa).
+
+**Acao requerida:**
+1. Reformular para algo como "Fluxos inspirados na app mobile, adaptados ao contexto web"
+2. Ou remover se nao for uma premissa validada
+
+---
+
+## NC-14: Referencia a "Equipa de Autenticacao do NovoBanco" Inexistente
+
+**Gravidade:** BAIXA
+**Origem:** Comentario JGC-2 #23
+**Seccoes afetadas:** SEC-07 (7.1)
+
+**Descricao:**
+SEC-07 7.1 contem a nota: "Esta seccao necessita de validacao mais detalhada com equipa de autenticacao do NovoBanco." O Jorge reage com "???", indicando que esta equipa nao existe como tal.
+
+**Acao requerida:**
+1. Reformular para referenciar a equipa correta (ex: "equipa de seguranca" ou "equipa de arquitectura do Banco Best")
+
+---
+
 ## Matriz de Prioridades
 
-| Prioridade | NC | Descricao |
-|---|---|---|
-| **ALTA** | NC-01 | Stack frontend nao alinhada |
-| **ALTA** | NC-02 | CI/CD nao corresponde a realidade |
-| **ALTA** | NC-06 | Falta desenho aplicacional / excesso infra |
-| **MEDIA** | NC-03 | ApiPsd2/ApiBBest como Siebel |
-| **MEDIA** | NC-04 | "Novo Banco" → "Banco Best" |
-| **MEDIA** | NC-05 | MBWay na contagem |
-| **MEDIA** | NC-07 | Assercoes potencialmente irrealistas |
-| **BAIXA** | NC-08 | Picos = newsletter |
+| Prioridade | NC | Descricao | Origem |
+|---|---|---|---|
+| **ALTA** | NC-09 | APIGW tambem para MS, nao so Siebel | JGC-2 |
+| **ALTA** | NC-01 | Stack frontend nao alinhada | JGC-1 + JGC-2 #16 |
+| **ALTA** | NC-02 | CI/CD nao corresponde a realidade | JGC-1 + JGC-2 #28 |
+| **ALTA** | NC-06 | Falta desenho aplicacional / excesso infra | E-mail + JGC-2 #12 |
+| **MEDIA** | NC-10 | .NET 10 (nao 8) | JGC-2 #17 |
+| **MEDIA** | NC-11 | Estrutura URL e convencoes API | JGC-2 #18 |
+| **MEDIA** | NC-12 | BFF nao e API strategy generica | JGC-2 #1, #2 |
+| **MEDIA** | NC-03 | ApiPsd2/ApiBBest como Siebel | CORRECOES.md (**corrigido**) |
+| **MEDIA** | NC-04 | "Novo Banco" → "Banco Best" | CORRECOES.md |
+| **MEDIA** | NC-05 | MBWay na contagem | CORRECOES.md |
+| **MEDIA** | NC-07 | Assercoes potencialmente irrealistas | E-mail |
+| **BAIXA** | NC-13 | "Fluxos mobile replicados na web" nao validado | JGC-2 #13 |
+| **BAIXA** | NC-14 | Referencia a equipa inexistente | JGC-2 #23 |
+| **BAIXA** | NC-08 | Picos = newsletter | CORRECOES.md |
 
 ---
 
@@ -227,4 +380,6 @@ SEC-02 indica picos "Apos envio de campanhas" (generico). O cliente especifica q
 
 | Data | Acao |
 |------|------|
-| 2026-02-19 | Criacao do documento com analise de 54 comentarios e e-mail JGC |
+| 2026-02-19 | Criacao do documento com analise de comentarios HDL-JJC-2 e e-mail JGC |
+| 2026-02-19 | NC-03 corrigida (ApiPsd2/ApiBBest unificados como Siebel) |
+| 2026-02-19 | Adicionadas NC-09 a NC-14 da analise de novobanco-jcc-commented-20260219.md (2a ronda de comentarios) |
