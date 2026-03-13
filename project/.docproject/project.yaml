@@ -1,0 +1,14 @@
+title: HomeBanking Web Banco Best
+type: technical
+objective: Documentação técnica para implementação do novo homebanking Banco Best
+author: Bruno Vieira
+organization: NextReality
+status: drafting
+language: en
+created: "2026-03-09"
+vectorDB:
+    path: .docproject/vectors.db
+    chunkSize: 500
+    chunkOverlap: 50
+    embeddingModel: text-embedding-3-small
+    synthesisModel: gpt-4o-mini

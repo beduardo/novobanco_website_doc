@@ -1,0 +1,7 @@
+defaultFilter: render-filters/default.yaml
+targets:
+    word:
+        title: HomeBanking Web Banco Best
+        author: Bruno Vieira
+        organization: NextReality
+        coverPage: true

@@ -1,0 +1,16 @@
+apiVersion: devtool/v1
+kind: RenderDocument
+metadata:
+  name: default-delivery-filter
+spec:
+  notWanted:
+    - heading: "\\d\\d.*"
+      regex: true
+      children:
+        - heading: "Notas.*"
+          regex: true
+        - heading: "TODO"
+        - heading: "Rascunho.*"
+          regex: true
+        - heading: "Draft.*"
+          regex: true

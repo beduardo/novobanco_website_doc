@@ -1,0 +1,15 @@
+apiVersion: devtool/v1
+kind: RenderDocument
+metadata:
+  name: SEC-14
+spec:
+  notWanted:
+    - heading: 14. Plano de Migracao & Implementacao
+      children:
+      - heading: Definições e Decisões
+      - heading: Entregáveis
+      - heading: Definições Utilizadas
+      - heading: Decisões Referenciadas
+      - heading: Itens Pendentes
+      - heading: Perguntas para o Utilizador
+
