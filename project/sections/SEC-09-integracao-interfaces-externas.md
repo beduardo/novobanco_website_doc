@@ -96,21 +96,7 @@ Existem servicos utilizados pela app mobile que nao passam pelo middleware BEST 
 | Lista completa de servicos Azure acedidos diretamente | Cliente | Pendente |
 
 
-### 9.4 Message Broker
-
-A tecnologia de Message Broker e os eventos a serem publicados/consumidos pelo canal web serao definidos no assessment inicial do projeto.
-
-| Aspecto | Status |
-|---------|--------|
-| **Tecnologia** | Kafka ou JMS (a definir) |
-| Eventos publicados | Necessita aprofundamento |
-| Eventos consumidos | Necessita aprofundamento |
-| Ordenacao/Exactly-once | Necessita aprofundamento |
-| Dead-letter strategy | Necessita aprofundamento |
-
-> **Nota:** RabbitMQ e Azure Service Bus não são opções consideradas.
-
-### 9.5 Tratamento de Erros
+### 9.4 Tratamento de Erros
 
 #### Circuit Breaker
 

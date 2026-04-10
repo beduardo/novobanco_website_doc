@@ -51,8 +51,8 @@ Implementar **arquitetura de tokens em dois niveis**: tokens de sessao (Browser-
 
 **Configuracao de Tokens Backend:**
 - Access Token TTL: **15 minutos**
-- Refresh Token TTL: **7 dias**
 - Armazenamento: **BFF cache** (Redis ou similar)
+- **Refresh Token: nao utilizado** — o canal web nao usa Refresh Token; a renovacao e gerida via sessao web e reautenticacao
 
 **Configuracao de Sessao Web:**
 - Cookie: `token_sessao_spa`
@@ -77,15 +77,16 @@ Implementar **arquitetura de tokens em dois niveis**: tokens de sessao (Browser-
 | `user_context` | Dados do utilizador (nao sensiveis) | Resposta login |
 
 **Renovacao:**
-- Refresh silencioso conforme atividade do utilizador
-- BFF renova tokens backend automaticamente antes de expiracao
+- O Access Token e rotacionado automaticamente pelo backend a cada resposta
+- O BFF actualiza o token em cache apos cada interaccao com o backend
+- Nao existe renovacao proativa nem Refresh Token (ver DEC-013)
 
 **Importante:** O `sasToken` retornado pelo Siebel **nao e utilizado** no canal web. Este token e especifico para a app mobile.
 
 ## Alternatives Considered
 
 ### Alternative 1: Tokens OAuth diretamente no browser
-- **Description:** Access/Refresh tokens armazenados em localStorage ou cookies no browser
+- **Description:** Access Token armazenado em localStorage ou cookies no browser
 - **Pros:** Arquitetura mais simples, menos hops
 - **Cons:** Exposicao de tokens sensiveis, risco XSS
 - **Why not chosen:** Seguranca insuficiente para aplicacao bancaria

@@ -259,11 +259,11 @@ BFF -> API : GET /accounts\nHeader: Authorization: OAuth {apiToken}...
 API --> BFF : {accounts_data}
 BFF --> FE : {accounts_data}
 
-== Renovação Transparente ==
+== Rotação do Token ==
 note over BFF
-Se apiToken próximo de expirar,
-BFF renova automaticamente
-sem envolver o Frontend
+Backend devolve novo apiToken
+em cada resposta.
+BFF actualiza cache imediatamente.
 end note
 
 == Logout ==
@@ -288,7 +288,7 @@ BFF --> FE : {status: "logged_out"}
 |--------|------|-------------|
 | Login bem-sucedido | Criar session_token, armazenar tokens reais | BFF |
 | Requisição | Traduzir session_token para tokens reais | BFF |
-| Proximidade de expiração | Renovar apiToken automaticamente | BFF |
+| Resposta do backend | Actualizar apiToken em cache com token rotacionado | BFF |
 | Logout | Eliminar session_token e tokens do cache | BFF |
 | Inatividade (15 min) | Invalidar sessão | BFF |
 

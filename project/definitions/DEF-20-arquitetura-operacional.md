@@ -4,7 +4,8 @@ title: "Arquitetura Operacional"
 status: "completed"
 created: "2026-01-04"
 updated: "2026-01-04"
-related-decisions: []
+related-decisions:
+  - "DEC-012"
 affects-sections:
   - "SEC-10"
 ---
@@ -479,6 +480,7 @@ stop
 | Q-10-003 | Política de rotação de secrets | SecOps | Média |
 | Q-10-004 | Localização do site de DR | Infra | Baixa |
 | Q-10-005 | Limites de recursos (CPU/Mem) | DevOps | Alta |
+| Q-10-006 | Definir runbook de ativacao/desativacao da pagina de manutencao no F5 (ver DEC-012) | Infra / DevOps | Alta |
 
 ---
 
@@ -511,6 +513,7 @@ stop
 - [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Estratégia de containers
 - [DEC-008-stack-observabilidade-elk.md](../decisions/DEC-008-stack-observabilidade-elk.md) - Stack de observabilidade
 - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack tecnológica backend
+- [DEC-012-comunicacao-de-janelas-de-manutencao-ao-cliente.md](../decisions/DEC-012-comunicacao-de-janelas-de-manutencao-ao-cliente.md) - Comunicacao de janelas de manutencao
 
 ## Referências
 

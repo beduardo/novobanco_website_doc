@@ -224,7 +224,6 @@ FE --> USER : Acesso concedido
 |------|---------|---------|------------|
 | **Session ID** | Cookie no browser | HttpOnly, Secure, SameSite=Strict | Único identificador exposto ao browser |
 | **Access Token** | Cache do BFF | Nunca enviado ao browser | Isolado pelo padrão BFF |
-| **Refresh Token** | Cache do BFF | Nunca enviado ao browser | Isolado pelo padrão BFF |
 | **Dados do utilizador** | Response JSON | Apenas dados não sensíveis | Nome, segmento, etc. |
 
 > **Pendência de Revisão:** Identificar exatamente quais dados são retornados pela API de login da app mobile e avaliar se todos são seguros para exposição no ambiente web. Ver comentário JGC #10.
@@ -289,8 +288,8 @@ end note
 
 | Parâmetro                     | Valor                  | Observação                          |
 | ----------------------------- | ---------------------- | ----------------------------------- |
-| **Timeout por inatividade**   | 10 minutos (sugestão)  | Configurável                        |
-| **Timeout absoluto**          | 30 minutos (sugestão)  | Configurável                        |
+| **Timeout por inatividade**   | 10 minutos (sugestão)  | Alterável por configuração via DevOps                        |
+| **Timeout absoluto**          | 30 minutos (sugestão)  | Alterável por configuração via DevOps                        |
 | **Sessão exclusiva**          | Recomendado            | Novo login invalida sessão anterior |
 | **Aviso de expiração**        | Popup com temporizador | -                                   |
 | **Relação sessão web/mobile** | **Independentes**      | Não há relação entre sessões        |
@@ -316,9 +315,10 @@ package "Browser" {
 
 package "BFF Cache" {
     [Access Token] as AT
-    [Refresh Token] as RT
-    note bottom of AT : TTL: 15 min
-    note bottom of RT : TTL: 7 dias
+    note bottom of AT
+        TTL: 15 min (salvaguarda)
+        Rotacionado a cada resposta
+    end note
 }
 
 package "Backend Services" {
@@ -326,9 +326,8 @@ package "Backend Services" {
 }
 
 [Browser] --> [BFF] : Session Cookie
-[BFF] --> AT : Lookup
-[BFF] --> RT : Refresh silencioso
-[BFF] --> OAUTH : Bearer Token
+[BFF] --> AT : Lookup / Update
+[BFF] --> OAUTH : Bearer Token\n<= novo token em cada resposta
 
 @enduml
 ```
@@ -337,9 +336,8 @@ package "Backend Services" {
 |-------|-------------|-----|-----|
 | **Session Cookie** | Browser (cookie) | 30 min | Browser -> BFF |
 | **Access Token** | BFF Cache | 15 min | BFF -> Backend |
-| **Refresh Token** | BFF Cache | 7 dias | Renovação silenciosa |
 
-**Renovação:** Refresh silencioso conforme atividade do utilizador. BFF renova tokens automaticamente antes de expiração.
+**Rotação de Token:** O backend devolve um novo Access Token em cada resposta. O BFF actualiza o token em cache imediatamente após cada interacção com o backend. Não existe Refresh Token nem renovação proactiva — ver DEC-013.
 
 ### 7.6 Autorização
 

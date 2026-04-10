@@ -37,3 +37,6 @@ High Level Definition Architecture Document para o projeto HomeBanking Web do No
 | SEC-13 | Estrategia de Testes | Quality assurance, test automation, test strategy | completed |
 | SEC-14 | Plano de Migracao e Implementacao | Rollout strategy, migration plan, implementation phases | completed |
 | SEC-15 | Governacao e Roadmap | Technical governance, roadmap, technical debt | completed |
+
+## Pending Changes
+- Verificar seção 9.3 que deve se tratar do CMS

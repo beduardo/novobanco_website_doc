@@ -45,7 +45,7 @@ O projeto HomeBanking Web visa disponibilizar aos clientes do Novo Banco uma pla
 |-------|------------------|-----------------|
 | Sponsor | Patrocinador executivo do projeto | Fórum designado pelo Banco Best |
 | Product Owner | Definição de requisitos e priorização | A definir no início do projeto |
-| Arquiteto NovoBanco | Validação técnica e integração com sistemas existentes | A definir no início do projeto |
+| Arquiteto Best | Validação técnica e integração com sistemas existentes | A definir no início do projeto |
 | Equipa Segurança | Validação de conformidade e segurança | A definir no início do projeto |
 | Equipa Infraestrutura | Suporte Azure e ambientes | A definir no início do projeto |
 | Equipa Core Banking | Integração com APIs do Core | A definir no início do projeto |

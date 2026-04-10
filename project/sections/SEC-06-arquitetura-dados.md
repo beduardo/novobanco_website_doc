@@ -44,7 +44,7 @@ package "BFF (.NET 8)" as BFF {
     [Session Cache] as SC
     [Token Cache] as TC
     note right of SC : Session ID\nUser context
-    note right of TC : Access Token\nRefresh Token
+    note right of TC : Access Token
 }
 
 Component "Siebel" as Siebel
@@ -85,12 +85,6 @@ Component "Siebel" as Siebel
 | Refresh Token | Cache | 7 dias |
 | Dados SSR/SSG | Cache | _A definir_ |
 
-#### 6.2.3 Dados Específicos do Canal Web
-
-- **Não há dados específicos** do canal web que não existam na app mobile
-- Canal web consome os mesmos backend services e modelo de domínio
-
-> **Nota:** Isto significa que não estão previstos novos endpoints ou estruturas de dados específicas para o canal web. Funcionalidades ou layouts específicos que possam necessitar de novos dados serão avaliados durante a implementação.
 
 ### 6.3 Armazenamento
 

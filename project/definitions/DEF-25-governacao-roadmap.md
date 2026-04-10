@@ -4,7 +4,8 @@ title: "Governação e Roadmap"
 status: "completed"
 created: "2026-01-08"
 updated: "2026-01-08"
-related-decisions: []
+related-decisions:
+  - "DEC-012"
 affects-sections:
   - "SEC-15"
 ---

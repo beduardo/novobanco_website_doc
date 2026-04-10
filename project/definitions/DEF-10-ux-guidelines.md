@@ -4,7 +4,8 @@ title: "UX Guidelines"
 status: "completed"
 created: "2026-01-03"
 updated: "2026-01-03"
-related-decisions: []
+related-decisions:
+  - "DEC-012"
 affects-sections:
   - "SEC-04"
 ---
@@ -124,6 +125,16 @@ Definir as diretrizes de experiência do utilizador para o HomeBanking Web, gara
 - **Justificação:** Definir comunicação de segurança e timeout de sessão
 - **Alternativas consideradas:** N/A
 
+## Questões Pendentes de Confirmação
+
+| ID | Questão | Responsável | Prioridade |
+|----|---------|-------------|------------|
+| Q-04-001 | Definir formato e momento de aviso pre-manutencao ao cliente (banner, toast, antecedencia) (ver DEC-012) | Negocio / UX | Alta |
+| Q-04-002 | Definir conteudo da mensagem de manutencao apresentada ao cliente (horario estimado, canais alternativos) (ver DEC-012) | Negocio / UX | Alta |
+| Q-04-003 | Definir mecanismo de obtencao da informacao de manutencao pelo frontend (API, feature flags, CMS) (ver DEC-012) | Desenvolvimento | Media |
+
+---
+
 ## Restrições Conhecidas
 
 - Paridade funcional com app mobile
@@ -134,6 +145,7 @@ Definir as diretrizes de experiência do utilizador para o HomeBanking Web, gara
 ## Decisões Relacionadas
 
 - [DEC-009-stack-tecnologica-frontend.md](../decisions/DEC-009-stack-tecnologica-frontend.md) - Stack tecnológica frontend
+- [DEC-012-comunicacao-de-janelas-de-manutencao-ao-cliente.md](../decisions/DEC-012-comunicacao-de-janelas-de-manutencao-ao-cliente.md) - Comunicacao de janelas de manutencao
 
 ## Referências
 
