@@ -23,7 +23,7 @@ Identificar todas as partes interessadas no projeto HomeBanking web e os seus pa
 |-------|------------------|----------|
 | Sponsor | Patrocinador executivo do projeto | [A DEFINIR COM CLIENTE] |
 | Product Owner | Definição de requisitos e priorização | [A DEFINIR COM CLIENTE] |
-| Arquiteto NovoBanco | Validação técnica e integração com sistemas existentes | [A DEFINIR COM CLIENTE] |
+| Arquiteto BEST | Validação técnica e integração com sistemas existentes | [A DEFINIR COM CLIENTE] |
 | Equipa Segurança | Validação de conformidade e segurança | [A DEFINIR COM CLIENTE] |
 | Equipa Infraestrutura | Suporte Azure e ambientes | [A DEFINIR COM CLIENTE] |
 | Equipa Core Banking | Integração com APIs do Core | [A DEFINIR COM CLIENTE] |

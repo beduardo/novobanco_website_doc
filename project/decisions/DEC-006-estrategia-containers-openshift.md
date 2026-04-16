@@ -92,4 +92,4 @@ Adotar **arquitetura orientada a containers, compliant com OpenShift** para todo
 
 - Versao OpenShift a confirmar com equipa de infraestrutura
 - Estrategia de resource limits a definir no assessment
-- Integracao com pipelines CI/CD a detalhar
+- Integracao com pipelines CI/CD: o cliente gere a sua propria plataforma CI/CD; a nossa responsabilidade e fornecer artefactos compliants (ver DEC-014)

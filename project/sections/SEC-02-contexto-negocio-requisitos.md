@@ -32,7 +32,7 @@ Descrever o contexto da solução HomeBanking Web, suas partes interessadas, req
 
 ### 2.1 Contexto de Negócio
 
-O projeto HomeBanking Web visa disponibilizar aos clientes do Novo Banco uma plataforma web com funcionalidades equivalentes à aplicação mobile nativa existente. A solução reutilizará a infraestrutura e serviços já criados para a app mobile.
+O projeto HomeBanking Web visa disponibilizar aos clientes do Best uma plataforma web com funcionalidades equivalentes à aplicação mobile nativa existente. A solução reutilizará a infraestrutura e serviços já criados para a app mobile.
 
 **Drivers de Negócio:**
 - Oferecer canal alternativo ao mobile para clientes que preferem acesso via browser
@@ -51,7 +51,7 @@ O projeto HomeBanking Web visa disponibilizar aos clientes do Novo Banco uma pla
 | Equipa Core Banking | Integração com APIs do Core | A definir no início do projeto |
 | Equipa Mobile | Coordenação com app nativa existente | A definir no início do projeto |
 | DPO (Data Protection Officer) | Conformidade RGPD | A definir no início do projeto |
-| Utilizadores Finais | Clientes do Novo Banco | N/A |
+| Utilizadores Finais | Clientes do Best | N/A |
 
 **Notas:**
 - O sponsor é o fórum designado pelo Banco Best, podendo ser alterado conforme necessidade
@@ -106,6 +106,8 @@ O projeto HomeBanking Web visa disponibilizar aos clientes do Novo Banco uma pla
 > **Nota:** Os valores de throughput e utilizadores concorrentes são estimativas iniciais. Devem ser calibrados com métricas reais da app mobile (utilização normal e em pico).
 
 #### 2.4.2 Disponibilidade
+Os valores apresentados são recomendações com base em best practices de mercado. Devem ser ajustados aos objetivos do negócio e alinhados com a realidade existente.
+
 
 | Métrica | Valor | Observação |
 |---------|-------|------------|

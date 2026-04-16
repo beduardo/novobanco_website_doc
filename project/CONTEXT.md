@@ -16,7 +16,7 @@ Documentacao tecnica para implementacao do novo homebanking Banco Best
 
 ## General Information
 
-High Level Definition Architecture Document para o projeto HomeBanking Web do Novo Banco, definindo as componentes criticas da aplicacao e sua implementacao em tecnologias 100% Web.
+High Level Definition Architecture Document para o projeto HomeBanking Web do Best, definindo as componentes criticas da aplicacao e sua implementacao em tecnologias 100% Web.
 
 ## List of Sections
 

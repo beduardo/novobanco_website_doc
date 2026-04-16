@@ -47,6 +47,7 @@ Apresentar os princípios de arquitetura, diagrama conceptual e casos de uso pri
 ### 3.2 Diagrama Conceptual
 
 > **Nota:** Este é o diagrama de referência principal da arquitetura. Todas as outras secções devem referenciar este diagrama em vez de duplicá-lo (ver [DEC-011](../decisions/DEC-011-diagrama-arquitetura-unico.md)).
+A representação do canal mobile é meramente ilustrativa para efeitos de clareza em como se ligam os canais na arquitetura proposta.
 
 ```plantuml
 @startuml
@@ -59,6 +60,14 @@ skinparam linetype ortho
 title Arquitetura Conceptual - HomeBanking Web (C4 Level 1)
 
 actor "Cliente" as USER
+
+package "Canal Mobile" as CANAL_MOBILE #LightCyan {
+    [App Mobile\n(iOS / Android)] as MOBILE
+    note right of MOBILE
+      Canal nativo
+      Representação ilustrativa
+    end note
+}
 
 package "Canal Web" as CANAL_WEB #LightBlue {
     [HomeBanking Web\n(SPA React)] as WEB
@@ -133,7 +142,10 @@ package "Observabilidade" as OBSERVABILIDADE #LightGray {
 }
 
 ' Fluxo Principal
+USER -l-> CANAL_MOBILE : HTTPS
 USER -l-> CANAL_WEB : HTTPS
+CANAL_MOBILE -d-> CANAL_WEB : Funcionalidades Web\n(WebView)
+CANAL_MOBILE -d-> GATEWAY : Serviços Mobile\n(clientid + secret)
 CANAL_WEB -d-> INFRAESTRUTURA : Protocolo Omni
 INFRAESTRUTURA --> CAMADA_BFF : Protocolo Omni
 CAMADA_BFF --> CACHE_DISTRIBUIDO : Lookup/Store\nTokens e Sessão
@@ -210,7 +222,7 @@ MICROSERVICES ..> OBSERVABILIDADE : Logs/Métricas
 
 | Ator                | Descrição                        | Prioridade |
 | ------------------- | -------------------------------- | ---------- |
-| Cliente Individual  | Cliente particular do Novo Banco | Principal  |
+| Cliente Individual  | Cliente particular do Best | Principal  |
 | Cliente Empresarial | _Futuro_                         | Secundário |
 
 #### 3.4.2 Casos de Uso por Categoria

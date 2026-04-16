@@ -93,7 +93,7 @@ Os princípios de arquitetura são diretrizes fundamentais que guiam todas as de
 ## Restrições Conhecidas
 
 - Reutilização da infraestrutura e serviços da app mobile nativa
-- Alinhamento com standards de arquitetura do Novo Banco (se existirem)
+- Alinhamento com standards de arquitetura do Best (se existirem)
 
 ## Decisões Relacionadas
 

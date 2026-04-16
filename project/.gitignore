@@ -1,3 +1,6 @@
 .docproject/vectors.db
 exports/
 delivery/*/output/
+**/rendered/**
+**/joined/**
+**/final/**

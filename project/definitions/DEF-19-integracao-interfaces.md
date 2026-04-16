@@ -21,11 +21,11 @@ Definir as integrações do HomeBanking Web com sistemas internos e externos. O 
 
 | Sistema | Tipo | Proprietário | Criticidade | Status |
 |---------|------|--------------|-------------|--------|
-| **Siebel** | Backend Principal (Autenticação PSD2 + APIs Bancárias) | NovoBanco | Alta | Existente |
-| **Microservices** | Lógica de Negócio | NovoBanco | Alta | A desenvolver |
-| Core Banking APIs | Integração | NovoBanco | Alta | Existente |
-| App Mobile Nativa | Referência | NovoBanco | Média | Existente |
-| Azure Infrastructure | Plataforma | NovoBanco | Alta | Existente |
+| **Siebel** | Backend Principal (Autenticação PSD2 + APIs Bancárias) | BEST | Alta | Existente |
+| **Microservices** | Lógica de Negócio | BEST | Alta | A desenvolver |
+| Core Banking APIs | Integração | BEST | Alta | Existente |
+| App Mobile Nativa | Referência | BEST | Média | Existente |
+| Azure Infrastructure | Plataforma | BEST | Alta | Existente |
 | Gateway de Pagamentos | Integração | [A DEFINIR] | Alta | A validar |
 | KYC/AML Provider | Integração | [A DEFINIR] | Alta | A validar |
 | SMS Gateway | Integração | [A DEFINIR] | Alta | A definir no assessment |

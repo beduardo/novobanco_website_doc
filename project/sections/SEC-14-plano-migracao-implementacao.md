@@ -6,7 +6,8 @@ created: "2026-01-08"
 updated: "2026-01-08"
 depends-on-definitions:
   - "DEF-24"
-depends-on-decisions: []
+depends-on-decisions:
+  - "DEC-014"
 word-count: 0
 ---
 
@@ -25,7 +26,7 @@ Definir o plano de migracao e implementacao do HomeBanking Web, incluindo roadma
 ### 14.1 Roadmap de Implementacao
 | Fase | Entregas |
 |------|---------|
-| **0: Setup** |  Infraestrutura, pipelines CI/CD, ambientes, design system base |
+| **0: Setup** |  Infraestrutura, onboarding na pipeline CI/CD existente do cliente (DEC-014), ambientes, design system base |
 | **1: Features** |  Restantes 35 funcionalidades (paridade mobile) |
 | **2: Beta/UAT** |  Testes UAT, correcoes, pentest |
 | **3: Go-Live** |  Cutover, lancamento controlado |
@@ -256,6 +257,7 @@ stop
 ## Decisoes Referenciadas
 
 - [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Deploy strategy
+- [DEC-014-adocao-de-cicd-e-deployment-existentes-do-cliente.md](../decisions/DEC-014-adocao-de-cicd-e-deployment-existentes-do-cliente.md) - Onboarding na pipeline é coordenado com o cliente
 
 ## Definicoes Utilizadas
 

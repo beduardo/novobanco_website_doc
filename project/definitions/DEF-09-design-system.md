@@ -15,12 +15,12 @@ affects-sections:
 
 ## Contexto
 
-Definir o design system a ser utilizado no HomeBanking Web, garantindo consistência visual e de experiência com a marca do Novo Banco e a app mobile existente.
+Definir o design system a ser utilizado no HomeBanking Web, garantindo consistência visual e de experiência com a marca do Best e a app mobile existente.
 
 ## Perguntas a Responder
 
 ### Design System Existente
-1. Existe um design system corporativo do Novo Banco?
+1. Existe um design system corporativo do Best?
     Não. O Design será criado para a aplicação nas primeiras sprints após a criação deste documento.
 2. A app mobile tem um design system documentado?
     Não
@@ -100,7 +100,7 @@ Definir o design system a ser utilizado no HomeBanking Web, garantindo consistê
 
 ## Restrições Conhecidas
 
-- Alinhamento com identidade visual do Novo Banco
+- Alinhamento com identidade visual do Best
 - Consistência com experiência da app mobile
 - Requisitos de acessibilidade a definir
 
@@ -110,6 +110,6 @@ Definir o design system a ser utilizado no HomeBanking Web, garantindo consistê
 
 ## Referências
 
-- Brand guidelines do Novo Banco (a fornecer)
+- Brand guidelines do Best (a fornecer)
 - Design system da app mobile (a fornecer)
 - WCAG 2.1 Guidelines

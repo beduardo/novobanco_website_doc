@@ -46,6 +46,7 @@ A decomposição de serviços segue a arquitectura de referência definida na se
 |-------|--------------|------------|
 | Frontend → BFF | Cookie de sessão | HttpOnly, Secure |
 | BFF → API Gateway (IBM) | ClientID + ClientSecret | Para serviços via Siebel |
+| BFF → MS | Direto | Delega Bearer Token caso MS se comunique com Siebel |
 | BFF → Serviços Azure | Direto | Serviços a identificar |
 | API Gateway → Siebel | Bearer Token | **Siebel valida o token** |
 
@@ -116,7 +117,7 @@ SVC --> LOG : ELK
 
 | Aspecto | Decisao | Exemplo |
 |---------|---------|---------|
-| **Estrategia** | URL path | `/api/v1/accounts` |
+| **Estrategia** | URL path | `/web/ocb/bst/` |
 | **Deprecacao** | _A definir_ | - |
 
 #### 5.3.3 Estrutura de Endpoints
@@ -153,6 +154,7 @@ skinparam backgroundColor #FEFEFE
 participant "Frontend" as FE
 participant "F5" as F5
 participant "BFF" as BFF
+participant "MS" as MS
 participant "API Gateway\n(IBM)" as GW
 participant "Siebel" as SIEBEL
 
@@ -163,19 +165,50 @@ F5 -> BFF : REST/HTTPS\n(Cookie sessao)
 activate BFF
 
 BFF -> BFF : Validar sessao\n(Cache lookup)
-BFF -> GW : REST\n(clientid + secret)
-activate GW
-note right of GW: Routing apenas\n(sem autenticação)
 
-GW -> SIEBEL : REST\n(Bearer token)
-activate SIEBEL
-note right of SIEBEL: **Valida clientid+secret**\n**e Bearer Token**
+alt Servicos com acesso direto ao Siebel (sem MS)
+    BFF -> GW : REST\n(clientid + secret)
+    activate GW
+    note right of GW: Routing apenas\n(sem autenticação)
 
-SIEBEL --> GW : JSON
-deactivate SIEBEL
+    GW -> SIEBEL : REST\n(Bearer token)
+    activate SIEBEL
+    note right of SIEBEL: **Valida clientid+secret**\n**e Bearer Token**
 
-GW --> BFF : JSON
-deactivate GW
+    SIEBEL --> GW : JSON
+    deactivate SIEBEL
+
+    GW --> BFF : JSON
+    deactivate GW
+
+else Servicos delegados a Microservice (com integracao Siebel)
+    BFF -> MS : REST\n(clientid + secret)
+    activate MS
+
+    MS -> GW : REST\n(clientid + secret)
+    activate GW
+
+    GW -> SIEBEL : REST\n(Bearer token)
+    activate SIEBEL
+
+    SIEBEL --> GW : JSON
+    deactivate SIEBEL
+
+    GW --> MS : JSON
+    deactivate GW
+
+    MS --> BFF : JSON
+    deactivate MS
+
+else Servicos delegados a Microservice (autonomo, sem Siebel)
+    BFF -> MS : REST
+    activate MS
+    note right of MS: Logica propria\nsem integracao Siebel
+
+    MS --> BFF : JSON
+    deactivate MS
+
+end
 
 BFF -> BFF : Transformar/Agregar
 BFF --> FE : JSON
@@ -184,23 +217,20 @@ deactivate BFF
 @enduml
 ```
 
+
 | Comunicacao | Protocolo | Autenticacao | Observação |
 |-------------|-----------|--------------|------------|
 | Frontend → BFF | REST/HTTPS | Cookie de sessao (HttpOnly, Secure) | - |
-| BFF → API Gateway (IBM) | REST | ClientID + ClientSecret | Gateway faz routing apenas |
+| BFF → API Gateway (IBM) | REST | ClientID + ClientSecret | Acesso direto ao Siebel, sem MS |
+| BFF → MS | REST | Bearer Token delegado | MS pode ou não precisar do Siebel |
+| MS → API Gateway (IBM) | REST | ClientID + ClientSecret | Apenas quando MS necessita do Siebel |
 | API Gateway → Siebel | REST | Bearer Token (propagado) | **Siebel valida o token** |
+| MS (autónomo) | - | - | MS com lógica própria, sem Siebel |
 
-> **Nota:** O BFF não tem API Gateway à frente. O API Gateway (IBM) é utilizado apenas para acesso aos Backend Services (Siebel e outros).
+> **Nota:** O BFF não tem API Gateway à frente. O API Gateway (IBM) é utilizado apenas para acesso aos Backend Services (Siebel e outros), quer pelo BFF diretamente, quer por um MS intermediário.
+> **Nota:** Não há dados críticos no BFF
 
-> **Nota Importante - Validação de Token:** O API Gateway (IBM) faz **apenas routing**, sem realizar autenticação. Toda a autenticação (validação de clientid+secret do BFF e validação do Bearer Token do utilizador) é realizada pelo **Siebel**. Serviços backend que não suportem Bearer Token diretamente são acedidos exclusivamente através do Siebel, que actua como camada de mediação.
-
-#### 5.4.1 Comunicacao Assincrona
-
-| Aspecto | Status |
-|---------|--------|
-| Message Queues | _A definir_ - Necessita casos de uso concretos |
-
-> **Nota:** Message Queues (Kafka/JMS) serão utilizadas apenas se houver casos de uso específicos que justifiquem comunicação assíncrona. A identificar durante a implementação.
+> **Nota Importante - Validação de Token:** O API Gateway (IBM) faz **apenas routing**, sem realizar autenticação. Toda a autenticação (validação de clientid+secret e validação do Bearer Token do utilizador) é realizada pelo **Siebel**. Serviços backend que não suportem Bearer Token diretamente são acedidos exclusivamente através do Siebel, que actua como camada de mediação.
 
 ### 5.5 Modelo de Dominio
 
@@ -244,7 +274,7 @@ O modelo de dominio segue as entidades ja existentes nos backend services da app
 | Aspecto | Decisao |
 |---------|---------|
 | **Estrategia** | URL path versioning |
-| **Formato** | `/api/v{major}/resource` |
+| **Formato** | `/api/v{major}/resource` (rever em tempo de projeto) |
 | **Politica Deprecacao** | _A definir_ |
 
 ### 5.9 Especificacao API

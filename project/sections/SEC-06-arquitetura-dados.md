@@ -124,8 +124,8 @@ rectangle "Armazenamento por Camada" {
 | Aspeto | Decisão |
 |---------|---------|
 | **Em trânsito** | TLS (versão a definir) |
-| **Em repouso (BFF/cache)** | Em definição durante o projeto |
-| **Gestão de chaves** | Em definição durante o projeto |
+| **Em repouso (BFF/cache)** | Definit em tempo de projeto |
+| **Gestão de chaves** | Definir em tempo de projeto |
 
 > **Nota:** Requisitos de encriptação em repouso e gestão de chaves estão a ser trabalhados e serão detalhados em âmbito de implementação.
 

@@ -21,7 +21,7 @@ word-count: 0
 
 Definir a estratégia de observabilidade do HomeBanking Web, incluindo stack tecnológica, métricas chave (golden signals), tracing distribuído e abordagem de SLIs/SLOs.
 
-> **Importante - Sessão Requerida:** Esta secção deve ser revista em sessão com a equipa de infraestrutura do NovoBanco para validar requisitos concretos. Funcionalidades de observabilidade que não sejam realmente utilizadas no dia a dia terão custos associados - avaliar custo/benefício antes de implementar.
+> **Importante - Sessão Requerida:** Esta secção deve ser revista em sessão com a equipa de infraestrutura do BEST para validar requisitos concretos. Funcionalidades de observabilidade que não sejam realmente utilizadas no dia a dia terão custos associados - avaliar custo/benefício antes de implementar.
 
 ## Conteúdo
 
@@ -37,7 +37,7 @@ Definir a estratégia de observabilidade do HomeBanking Web, incluindo stack tec
 
 A stack de observabilidade será baseada no **ELK Stack** (Elasticsearch, Logstash, Kibana), reutilizando a infraestrutura existente.
 
-> **Pendência:** Confirmar com equipa de infraestrutura do NovoBanco que ELK Stack é a stack de logging a utilizar e obter estrutura de logs existente para alinhar.
+> **Pendência:** Confirmar com equipa de infraestrutura do BEST que ELK Stack é a stack de logging a utilizar e obter estrutura de logs existente para alinhar.
 
 ```plantuml
 @startuml

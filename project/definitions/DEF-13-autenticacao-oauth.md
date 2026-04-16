@@ -1,6 +1,6 @@
 ---
 id: "DEF-13"
-title: "Novo Banco Autenticação OAuth"
+title: "Best Autenticação OAuth"
 status: "completed"
 created: "2025-12-22"
 updated: "2025-12-22"
@@ -15,7 +15,7 @@ affects-sections:
 
 ## Contexto
 
-Este documento define os fluxos de autenticação, mecanismos OAuth, gestão de tokens e integração com a App Mobile para autorização na plataforma de Homebanking do Novo Banco.
+Este documento define os fluxos de autenticação, mecanismos OAuth, gestão de tokens e integração com a App Mobile para autorização na plataforma de Homebanking do Best.
 
 ## Resumo dos Métodos de Autenticação
 

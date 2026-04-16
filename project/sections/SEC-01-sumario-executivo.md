@@ -22,7 +22,7 @@ word-count: 0
 
 ## Propósito
 
-Este documento constitui o workbook de arquitetura High Level Design (HLD) para o projeto HomeBanking Web do Novo Banco, definindo as componentes críticas da aplicação e sua implementação em tecnologias 100% Web.
+Este documento constitui o workbook de arquitetura High Level Design (HLD) para o projeto HomeBanking Web do Best, definindo as componentes críticas da aplicação e sua implementação em tecnologias 100% Web.
 
 ## Conteúdo
 

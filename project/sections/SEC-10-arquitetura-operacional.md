@@ -8,6 +8,7 @@ depends-on-definitions:
   - "DEF-20"
 depends-on-decisions:
   - "DEC-006"
+  - "DEC-014"
 word-count: 0
 ---
 
@@ -89,16 +90,6 @@ BFF --> ELK : logs
 
 > **Nota:** Os detalhes específicos de infraestrutura (registry, secrets, networking) serão validados com a equipa de infraestrutura do Banco Best, uma vez que reutilizam componentes existentes.
 
-#### Requisitos de Imagens Container (OpenShift-Compliant)
-
-| Requisito | Descrição |
-|-----------|-----------|
-| Utilizador não-root | Container executa como utilizador arbitrário (UID > 1000) |
-| Filesystem read-only | Volumes temporários montados explicitamente |
-| Portas > 1024 | Não utilizar portas privilegiadas |
-| Base image | Red Hat UBI (Universal Base Image) recomendado |
-| Health checks | Liveness e Readiness probes obrigatórios |
-
 ### 10.2 Ambientes
 
 A aplicação utiliza três ambientes, segregados por **namespaces** no cluster OpenShift.
@@ -122,7 +113,7 @@ A aplicação utiliza três ambientes, segregados por **namespaces** no cluster 
 
 ### 10.3 CI/CD Pipeline
 
-> **Nota Importante:** A infraestrutura de CI/CD já se encontra implementada no Banco Best e será **reutilizada integralmente** para este projeto. Os detalhes abaixo são indicativos e serão validados/ajustados pela equipa de infraestrutura do Banco Best. Alguns aspectos podem não reflectir exactamente a configuração actual.
+> **Decisão (DEC-014):** A infraestrutura de CI/CD, pipelines e estratégia de deployment são **propriedade e responsabilidade do Banco Best**. A equipa de desenvolvimento adopta o que existe e adapta apenas os artefactos da aplicação (Dockerfile, pipeline YAML, health checks). Os detalhes abaixo são indicativos e serão validados com a equipa de infraestrutura do Banco Best.
 
 #### Visão Geral
 
@@ -135,7 +126,7 @@ O projeto reutiliza a infraestrutura de CI/CD existente no Banco Best:
 | **Quality Gates** | Conforme políticas existentes |
 | **Deploy** | Integrado com OpenShift |
 
-#### Quality Gates (Requisitos Mínimos)
+#### Quality Gates (Proposta de Cumprimento)
 
 | Gate | Requisito |
 |------|-----------|
@@ -242,6 +233,7 @@ O canal web **não requer backup dedicado**:
 ## Decisões Referenciadas
 
 - [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Containers OpenShift-compliant
+- [DEC-014-adocao-de-cicd-e-deployment-existentes-do-cliente.md](../decisions/DEC-014-adocao-de-cicd-e-deployment-existentes-do-cliente.md) - CI/CD e deployment são responsabilidade do cliente
 - [DEC-008-stack-observabilidade-elk.md](../decisions/DEC-008-stack-observabilidade-elk.md) - Stack de observabilidade
 - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack Backend
 

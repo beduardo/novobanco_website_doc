@@ -15,7 +15,7 @@ affects-sections:
 
 ## Contexto
 
-Este documento de arquitetura servirá como referência técnica para o desenvolvimento da plataforma HomeBanking web do Novo Banco. É necessário definir claramente os seus objetivos, escopo e público-alvo para garantir que o documento atenda às necessidades de todos os stakeholders.
+Este documento de arquitetura servirá como referência técnica para o desenvolvimento da plataforma HomeBanking web do Best. É necessário definir claramente os seus objetivos, escopo e público-alvo para garantir que o documento atenda às necessidades de todos os stakeholders.
 
 ## Perguntas a Responder
 

@@ -35,7 +35,7 @@ Definir a estratégia completa de autenticação e autorização do HomeBanking 
 
 ### 7.1 Visão Geral de Autenticação
 
-> **Pendência:** Esta secção necessita de validação mais detalhada com equipa de autenticação do NovoBanco.
+> **Pendência:** Esta secção necessita de validação mais detalhada com equipa de autenticação do BEST.
 
 ```plantuml
 @startuml
@@ -349,7 +349,7 @@ package "Backend Services" {
 | **Atributos** | Sujeito, Recurso, Ação, Ambiente |
 | **Permissões por operação** | Sim (consulta vs transação) |
 
-> **Nota - Responsabilidade:** A validação de autorização (ABAC/RBAC) é responsabilidade dos Backend Services (Siebel). O BFF propaga os tokens e não implementa lógica de autorização própria.
+> **Nota - Responsabilidade:** A validação de autorização (ABAC/RBAC) é responsabilidade dos Backend Services (Siebel).
 
 **Atributos considerados:**
 
