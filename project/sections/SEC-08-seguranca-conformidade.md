@@ -8,6 +8,7 @@ depends-on-definitions:
   - "DEF-18"
 depends-on-decisions:
   - "DEC-004"
+  - "DEC-015"
 word-count: 0
 ---
 
@@ -28,6 +29,8 @@ Definir os requisitos de segurança e conformidade regulatória do HomeBanking W
 ## Conteúdo
 
 ### 8.1 Visão Geral de Segurança
+
+> **Decisão (DEC-015):** A camada de infraestrutura de segurança (WAF, TLS, Rate Limiting, firewalls, network policies, SIEM) é **propriedade e responsabilidade do Novo Banco**. A equipa de desenvolvimento é responsável pelas camadas de aplicação (Frontend e BFF).
 
 ```plantuml
 @startuml
@@ -141,7 +144,7 @@ rectangle "Ferramentas" #Yellow {
 | Aspeto | Status |
 |---------|--------|
 | Input validation | Detalhes no assessment inicial |
-| WAF | _A definir_ com equipa de infraestrutura |
+| WAF | Infraestrutura do Novo Banco (DEC-015) — não gerido pela equipa |
 
 #### 8.3.6 Considerações de Segurança Web vs Mobile
 
@@ -230,26 +233,32 @@ Todo o processo de conformidade PCI-DSS é garantido pelas apis
 
 ### 8.10 Resposta a Incidentes
 
+> **Nota (DEC-015):** O plano de resposta a incidentes, CSIRT e SLAs de resposta são definidos e operados pelo Novo Banco. A equipa de desenvolvimento coordena com SecOps do banco em caso de incidente de segurança.
+
 | Aspeto | Status |
 |---------|--------|
-| Plano de resposta | _A definir_ |
-| SLAs de resposta | _A definir_ |
-| CSIRT | _A definir_ |
+| Plano de resposta | Infraestrutura do Novo Banco |
+| SLAs de resposta | Definidos pelo Novo Banco |
+| CSIRT | Equipa de segurança do Novo Banco |
 
 ### 8.11 Gestão de Vulnerabilidades
 
+> **Nota (DEC-015):** O scanning de vulnerabilidades de plataforma (containers, infra) é gerido pelo Novo Banco via Microsoft Defender for Containers. A equipa de desenvolvimento é responsável por garantir que as imagens produzidas passam o scanning e por corrigir vulnerabilidades de aplicação.
+
 | Aspeto | Status |
 |---------|--------|
-| Processo de gestão | _A definir_ |
-| SLAs de correção | _A definir_ |
-| Bug bounty | _A definir_ |
+| Scanning de plataforma | Microsoft Defender for Containers (Novo Banco) |
+| SLAs de correção de aplicação | _A definir_ com SecOps do banco |
+| Bug bounty | Programa do Novo Banco (se existir) |
 
 ### 8.12 Segregação de Ambientes
 
+> **Nota (DEC-015):** A configuração de namespaces, network policies e segregação de infra é da responsabilidade da equipa de infraestrutura do Novo Banco.
+
 | Aspeto | Status |
 |---------|--------|
-| Segregação (dev/staging/prod) | _A definir_ |
-| Segregação de dados | _A definir_ |
+| Segregação (dev/qa/prod) | Namespaces OpenShift — gerido pelo Novo Banco |
+| Segregação de dados | Garantida pelo backend existente |
 
 ## Entregáveis
 
@@ -270,6 +279,7 @@ Todo o processo de conformidade PCI-DSS é garantido pelas apis
 
 ## Decisões Referenciadas
 
+- [x] [DEC-015-reutilizacao-infraestrutura-operacional-existente-novo-banco.md](../decisions/DEC-015-reutilizacao-infraestrutura-operacional-existente-novo-banco.md) - Infraestrutura de segurança é do banco
 - [x] [DEC-004-controlos-seguranca-frontend.md](../decisions/DEC-004-controlos-seguranca-frontend.md) - Status: accepted
 
 ## Itens Pendentes

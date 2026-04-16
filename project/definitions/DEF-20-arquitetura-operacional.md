@@ -6,6 +6,7 @@ created: "2026-01-04"
 updated: "2026-01-04"
 related-decisions:
   - "DEC-012"
+  - "DEC-015"
 affects-sections:
   - "SEC-10"
 ---

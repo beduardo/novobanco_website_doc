@@ -8,6 +8,7 @@ depends-on-definitions:
   - "DEF-21"
 depends-on-decisions:
   - "DEC-008"
+  - "DEC-015"
 word-count: 0
 ---
 
@@ -35,9 +36,11 @@ Definir a estratégia de observabilidade do HomeBanking Web, incluindo stack tec
 
 ### 11.2 Stack de Observabilidade
 
-A stack de observabilidade será baseada no **ELK Stack** (Elasticsearch, Logstash, Kibana), reutilizando a infraestrutura existente.
+A stack de observabilidade é baseada no **ELK Stack** (Elasticsearch, Logstash, Kibana), infraestrutura existente do Novo Banco.
 
-> **Pendência:** Confirmar com equipa de infraestrutura do BEST que ELK Stack é a stack de logging a utilizar e obter estrutura de logs existente para alinhar.
+> **Decisão (DEC-008 / DEC-015):** O ELK Stack é propriedade e responsabilidade da equipa de infraestrutura do Novo Banco. A equipa de desenvolvimento **não instala nem gere** esta infraestrutura — limita-se a instrumentar a aplicação para emitir logs estruturados e expor métricas no formato esperado pela plataforma.
+
+> **Pendência:** Obter estrutura de logs existente do Novo Banco para alinhar o formato de emissão.
 
 ```plantuml
 @startuml
@@ -213,6 +216,8 @@ Todos os logs serão estruturados em formato JSON com campos padronizados:
 
 ### 11.8 Dashboards
 
+> **Nota (DEC-015):** Os dashboards operacionais são geridos pela equipa de infraestrutura do Novo Banco no Kibana existente. A equipa de desenvolvimento fornece os requisitos de métricas e logs necessários para suportar estes dashboards.
+
 | Dashboard | Audiência | Conteúdo |
 |-----------|-----------|----------|
 | **Health Overview** | NOC / On-call | Status geral, alertas ativos, SLO status |
@@ -233,6 +238,7 @@ Todos os logs serão estruturados em formato JSON com campos padronizados:
 
 ## Decisões Referenciadas
 
+- [DEC-015-reutilizacao-infraestrutura-operacional-existente-novo-banco.md](../decisions/DEC-015-reutilizacao-infraestrutura-operacional-existente-novo-banco.md) - Infraestrutura operacional é do banco
 - [DEC-008-stack-observabilidade-elk.md](../decisions/DEC-008-stack-observabilidade-elk.md) - ELK Stack
 
 ## Definições Utilizadas
@@ -244,7 +250,7 @@ Todos os logs serão estruturados em formato JSON com campos padronizados:
 
 | Item | Responsável | Prioridade |
 |------|-------------|------------|
-| **Confirmar ELK Stack** | Cliente/Infraestrutura | Média |
+| ~~**Confirmar ELK Stack**~~ | Confirmado via DEC-008 | — |
 | Obter estrutura de logs existente do NB para alinhamento | Cliente/Infraestrutura | Média |
 | **Logging do frontend** - decidir implementação (custo/benefício vs segurança) | Cliente/Segurança | Média |
 | **Mascaramento vs cifragem** - definir política para dados sensíveis em logs | Cliente/Segurança | Média |

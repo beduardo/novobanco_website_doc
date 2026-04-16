@@ -9,6 +9,7 @@ depends-on-definitions:
 depends-on-decisions:
   - "DEC-006"
   - "DEC-014"
+  - "DEC-015"
 word-count: 0
 ---
 
@@ -21,6 +22,8 @@ word-count: 0
 ## Propósito
 
 Definir a arquitetura operacional do HomeBanking Web, incluindo infraestrutura de containers, ambientes, pipelines CI/CD, estratégia de deploy, gestão de secrets e disaster recovery.
+
+> **Decisão (DEC-015):** Toda a infraestrutura operacional (CI/CD, observabilidade, segurança, DR, backup) é **propriedade e responsabilidade do Novo Banco**. A equipa de desenvolvimento adapta os artefactos da aplicação à plataforma existente, sem a redesenhar.
 
 ## Conteúdo
 
@@ -88,19 +91,19 @@ BFF --> ELK : logs
 | **Container Registry** | A validar com equipa de infra |
 | **Secrets** | A validar com equipa de infra |
 
-> **Nota:** Os detalhes específicos de infraestrutura (registry, secrets, networking) serão validados com a equipa de infraestrutura do Banco Best, uma vez que reutilizam componentes existentes.
+> **Nota:** Os detalhes específicos de infraestrutura (registry, secrets, networking) serão validados com a equipa de infraestrutura do Novo Banco, uma vez que reutilizam componentes existentes.
 
 ### 10.2 Ambientes
 
 A aplicação utiliza três ambientes, segregados por **namespaces** no cluster OpenShift.
 
-| Ambiente | Propósito                    | Namespace       | Promoção                 |
-| -------- | ---------------------------- | --------------- | ------------------------ |
-| **dev**  | Desenvolvimento e integração | `best-web-dev`  | Automática (CI)          |
-| **qa**   | Testes integrados e UAT      | `best-web-qa`   | Automática (após dev OK) |
-| **prod** | Produção                     | `best-web-prod` | Manual (aprovação)       |
+| Ambiente | Propósito                    | Namespace            | Promoção                 |
+| -------- | ---------------------------- | -------------------- | ------------------------ |
+| **dev**  | Desenvolvimento e integração | `homebanking-dev`    | Automática (CI)          |
+| **qa**   | Testes integrados e UAT      | `homebanking-qa`     | Automática (após dev OK) |
+| **prod** | Produção                     | `homebanking-prod`   | Manual (aprovação)       |
 
-> **Nota:** A nomenclatura dos namespaces segue o padrão do ecossistema BEST. A existência de F5 em cada ambiente será validada com a equipa de infraestrutura.
+> **Nota:** A nomenclatura dos namespaces segue o padrão do ecossistema do Novo Banco. A configuração dos namespaces e network policies é da responsabilidade da equipa de infraestrutura (DEC-015). A existência de F5 em cada ambiente será validada com essa equipa.
 
 #### Segregação de Ambientes
 
@@ -113,11 +116,11 @@ A aplicação utiliza três ambientes, segregados por **namespaces** no cluster 
 
 ### 10.3 CI/CD Pipeline
 
-> **Decisão (DEC-014):** A infraestrutura de CI/CD, pipelines e estratégia de deployment são **propriedade e responsabilidade do Banco Best**. A equipa de desenvolvimento adopta o que existe e adapta apenas os artefactos da aplicação (Dockerfile, pipeline YAML, health checks). Os detalhes abaixo são indicativos e serão validados com a equipa de infraestrutura do Banco Best.
+> **Decisão (DEC-014):** A infraestrutura de CI/CD, pipelines e estratégia de deployment são **propriedade e responsabilidade do Novo Banco**. A equipa de desenvolvimento adopta o que existe e adapta apenas os artefactos da aplicação (Dockerfile, pipeline YAML, health checks). Os detalhes abaixo são indicativos e serão validados com a equipa de infraestrutura do Novo Banco.
 
 #### Visão Geral
 
-O projeto reutiliza a infraestrutura de CI/CD existente no Banco Best:
+O projeto reutiliza a infraestrutura de CI/CD existente no Novo Banco:
 
 | Aspeto | Abordagem |
 |--------|-----------|
@@ -159,7 +162,7 @@ O projeto reutiliza a infraestrutura de CI/CD existente no Banco Best:
 
 ### 10.5 Secrets Management
 
-> **Nota:** A gestão de secrets reutiliza a infraestrutura existente no Banco Best. Os detalhes serão validados com a equipa de infraestrutura.
+> **Nota (DEC-015):** A gestão de secrets reutiliza a infraestrutura existente no Novo Banco. Os detalhes serão validados com a equipa de infraestrutura.
 
 | Aspeto | Especificação |
 |---------|---------------|
@@ -169,7 +172,7 @@ O projeto reutiliza a infraestrutura de CI/CD existente no Banco Best:
 
 ### 10.6 Container Registry
 
-> **Nota:** O container registry reutiliza a infraestrutura existente no Banco Best.
+> **Nota (DEC-015):** O container registry reutiliza a infraestrutura existente no Novo Banco.
 
 | Aspeto | Configuração |
 |---------|--------------|
@@ -186,6 +189,8 @@ O projeto reutiliza a infraestrutura de CI/CD existente no Banco Best:
 
 ### 10.7 Disaster Recovery
 
+> **Nota (DEC-015):** A estratégia de DR é definida e operada pela equipa de infraestrutura do Novo Banco. A equipa de desenvolvimento não define nem opera infraestrutura de DR própria.
+
 | Aspeto | Configuração |
 |---------|--------------|
 | **Tipo** | Cluster réplica (standby passivo) |
@@ -196,6 +201,8 @@ O projeto reutiliza a infraestrutura de CI/CD existente no Banco Best:
 > **Nota:** Canal web é stateless. Dados estão no backend existente com DR próprio. DR do canal web foca na disponibilidade da aplicação.
 
 ### 10.8 Backup
+
+> **Nota (DEC-015):** As políticas de backup são definidas e operadas pelo Novo Banco.
 
 O canal web **não requer backup dedicado**:
 
@@ -219,7 +226,7 @@ O canal web **não requer backup dedicado**:
 
 ## Itens Pendentes - Validação com Equipa de Infraestrutura
 
-> **Ação Requerida:** Agendar sessão com equipa de infraestrutura do Banco Best para validar os seguintes pontos.
+> **Ação Requerida:** Agendar sessão com equipa de infraestrutura do Novo Banco para validar os seguintes pontos.
 
 | Item | Descrição | Prioridade |
 |------|-----------|------------|
@@ -232,6 +239,7 @@ O canal web **não requer backup dedicado**:
 
 ## Decisões Referenciadas
 
+- [DEC-015-reutilizacao-infraestrutura-operacional-existente-novo-banco.md](../decisions/DEC-015-reutilizacao-infraestrutura-operacional-existente-novo-banco.md) - Princípio transversal de reutilização de infraestrutura
 - [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Containers OpenShift-compliant
 - [DEC-014-adocao-de-cicd-e-deployment-existentes-do-cliente.md](../decisions/DEC-014-adocao-de-cicd-e-deployment-existentes-do-cliente.md) - CI/CD e deployment são responsabilidade do cliente
 - [DEC-008-stack-observabilidade-elk.md](../decisions/DEC-008-stack-observabilidade-elk.md) - Stack de observabilidade
