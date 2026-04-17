@@ -10,6 +10,7 @@ depends-on-decisions:
   - "DEC-006"
   - "DEC-014"
   - "DEC-015"
+  - "DEC-016"
 word-count: 0
 ---
 
@@ -48,7 +49,7 @@ package "OpenShift Cluster" #LightBlue {
   package "Namespace: best-web-prod" {
     [Frontend\n(Nginx + React)] as FE
     [BFF\n(.NET 8)] as BFF
-    [Auth Service (MicroService)\n(.NET 8)] as AuthService
+    [MicroService\n(.NET 8)] as MS
   }
 
   [Redis Cache] as REDIS
@@ -72,13 +73,14 @@ NET --> LB
 LB --> FE
 FE --> BFF
 BFF --> REDIS
-AuthService --> REDIS
-BFF -> AuthService
+MS --> REDIS
 BFF --> GW
-AuthService --> GW
+GW --> MS
 GW --> API
+MS --> GW
 FE --> ELK : logs
 BFF --> ELK : logs
+MS --> ELK : logs
 
 @enduml
 ```
@@ -244,6 +246,7 @@ O canal web **não requer backup dedicado**:
 - [DEC-014-adocao-de-cicd-e-deployment-existentes-do-cliente.md](../decisions/DEC-014-adocao-de-cicd-e-deployment-existentes-do-cliente.md) - CI/CD e deployment são responsabilidade do cliente
 - [DEC-008-stack-observabilidade-elk.md](../decisions/DEC-008-stack-observabilidade-elk.md) - Stack de observabilidade
 - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack Backend
+- [DEC-016-microservice-como-pod-unico.md](../decisions/DEC-016-microservice-como-pod-unico.md) - MicroService como Pod único (via Gateway)
 
 ## Definições Utilizadas
 

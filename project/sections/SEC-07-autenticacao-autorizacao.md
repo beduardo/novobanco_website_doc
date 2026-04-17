@@ -11,6 +11,9 @@ depends-on-decisions:
   - "DEC-001"
   - "DEC-002"
   - "DEC-003"
+  - "DEC-017"
+  - "DEC-018"
+  - "DEC-019"
 word-count: 0
 ---
 
@@ -84,13 +87,15 @@ skinparam backgroundColor #FEFEFE
 actor "Utilizador" as USER
 participant "Browser" as FE
 participant "BFF" as BFF
-participant "Auth Service (MicroService)" as AUTH
+participant "API Gateway\n(IBM)" as APIGW
+participant "MicroService" as AUTH
 participant "App Mobile" as APP
 participant Redis
 
 USER -> FE : Acede ao HomeBanking
 FE -> BFF : POST /auth/qr-code/generate\nx-nb-channel: best.spa
-BFF -> AUTH : POST /auth/qr-code/generate
+BFF -> APIGW : POST /auth/qr-code/generate
+APIGW -> AUTH : POST /auth/qr-code/generate
 AUTH -> AUTH : Gera Session Token (token_sessao_spa)
 note over AUTH
   Gera: GUID, timestamp
@@ -98,30 +103,40 @@ note over AUTH
   Estado: PENDING
 end note
 AUTH -> Redis : Armazena sessão (estado: PENDING)
-AUTH --> BFF : {sessionId, qrCodeData, expiresAt}
+AUTH --> APIGW : {sessionId, qrCodeData, expiresAt}
+APIGW --> BFF : {sessionId, qrCodeData, expiresAt}
 BFF --> FE : {sessionId, qrCodeData, expiresAt}
 FE --> USER : Apresenta QR Code
 
-loop Polling (cada 2-3 segundos)
+note over FE
+  Polling automático (cada 2-3s) — sem WebSocket (DEC-017)
+  Botão "Verificar" disponível para acionar\no mesmo pedido manualmente (DEC-018)
+end note
+
+loop Polling (cada 2-3 segundos) ou botão "Verificar"
     FE -> BFF : GET /auth/qr-code/status/{sessionId}\nx-nb-channel: best.spa
-    BFF -> AUTH : GET /auth/qr-code/status/{sessionId}
+    BFF -> APIGW : GET /auth/qr-code/status/{sessionId}
+    APIGW -> AUTH : GET /auth/qr-code/status/{sessionId}
     AUTH -> Redis : Consulta estado da sessão
     alt estado == PENDING
-        AUTH --> BFF : {status: "pending"}
+        AUTH --> APIGW : {status: "pending"}
+        APIGW --> BFF : {status: "pending"}
         BFF --> FE : {status: "pending"}
     else estado == AUTHORIZED
-        AUTH --> BFF : {status: "authorized"}
+        AUTH --> APIGW : {status: "authorized"}
+        APIGW --> BFF : {status: "authorized"}
         BFF --> FE : Set-Cookie: token_sessao_spa\n(HttpOnly, Secure, SameSite=Strict)\n{status: "authorized", mustChangePassword, firstLogin}
         FE --> USER : Acesso concedido
     else estado == EXPIRED
-        AUTH --> BFF : {status: "expired"}
+        AUTH --> APIGW : {status: "expired"}
+        APIGW --> BFF : {status: "expired"}
         BFF --> FE : {status: "expired"}
         FE --> USER : QR Code expirado
     end
 end
 
 note over FE
-  Polling termina quando:
+  Polling/botão termina quando:
   - status == "authorized"
   - status == "expired"
   - timeout do cliente
@@ -133,23 +148,27 @@ USER -> APP : Abre app mobile
 USER -> APP : Escaneia QR Code
 APP -> APP : Solicita biometria
 USER -> APP : Confirma biometria
-APP -> BFF : POST /auth/qr-code/authorize\nx-nb-channel: best.app\n{sessionId, appAccessToken, appRefreshToken}
-BFF -> AUTH : POST /auth/qr-code/link\n{sessionId, appAccessToken, appRefreshToken}
+APP -> APIGW : POST /auth/qr-code/authorize\nx-nb-channel: best.app\n{sessionId, appAccessToken, appRefreshToken}
+note right of APIGW
+  App Mobile acede MicroService
+  directamente via API Gateway
+  Sem BFF (DEC-019)
+end note
+APIGW -> AUTH : POST /auth/qr-code/authorize
 AUTH -> Redis : Vincula tokens e atualiza estado para AUTHORIZED
-AUTH --> BFF : {success: true}
-BFF --> APP : {success: true}
+AUTH --> APIGW : {success: true}
+APIGW --> APP : {success: true}
 
 @enduml
 ```
 
 **Endpoints do Fluxo QR Code:**
 
-| Endpoint | Método | Origem | Descrição |
-|----------|--------|--------|-----------|
-| `/auth/qr-code/generate` | POST | Browser/BFF | Gera novo QR Code e sessão pendente |
-| `/auth/qr-code/status/{sessionId}` | GET | Browser/BFF | Consulta estado da sessão (polling) |
-| `/auth/qr-code/authorize` | POST | App Mobile | Autoriza sessão com tokens da app |
-| `/auth/qr-code/link` | POST | BFF interno | Vincula tokens à sessão web |
+| Endpoint | Método | Origem | Destino | Descrição |
+|----------|--------|--------|---------|-----------|
+| `/auth/qr-code/generate` | POST | Browser → BFF | BFF → GW → MicroService | Gera novo QR Code e sessão pendente |
+| `/auth/qr-code/status/{sessionId}` | GET | Browser → BFF | BFF → GW → MicroService | Consulta estado (polling ou botão manual) |
+| `/auth/qr-code/authorize` | POST | App Mobile → GW | GW → MicroService | App autoriza sessão directamente (DEC-019) |
 
 > **Nota - Arquitectura Completa:** Os diagramas de autenticação acima estão simplificados para focar no fluxo de autenticação do utilizador. Para a arquitectura completa incluindo API Gateway (IBM) e validação de token pelo Siebel, consultar [SEC-03 3.2 - Diagrama Conceptual](SEC-03-visao-geral-solucao.md#32-diagrama-conceptual) e [SEC-05 5.4 - Comunicação entre Serviços](SEC-05-arquitetura-backend-servicos.md#54-comunicacao-entre-servicos).
 
@@ -162,7 +181,7 @@ skinparam backgroundColor #FEFEFE
 actor "Utilizador" as USER
 participant "Browser" as FE
 participant "BFF" as BFF
-participant "Auth Service (MicroService)" as AUTH
+participant "MicroService" as AUTH
 participant "Siebel" as APIAPP
 
 USER -> FE : Indica falha no QR Code
@@ -410,6 +429,9 @@ package "Backend Services" {
 - [x] [DEC-001-estrategia-autenticacao-web.md](../decisions/DEC-001-estrategia-autenticacao-web.md) - Status: accepted
 - [x] [DEC-002-gestao-sessoes-tokens.md](../decisions/DEC-002-gestao-sessoes-tokens.md) - Status: accepted
 - [x] [DEC-003-modelo-autorizacao-abac.md](../decisions/DEC-003-modelo-autorizacao-abac.md) - Status: accepted
+- [x] [DEC-017-sem-websocket-no-canal-web.md](../decisions/DEC-017-sem-websocket-no-canal-web.md) - Status: accepted
+- [x] [DEC-018-qr-code-com-fallback-de-verificacao-manual.md](../decisions/DEC-018-qr-code-com-fallback-de-verificacao-manual.md) - Status: accepted
+- [x] [DEC-019-app-mobile-acede-microservice-diretamente-na-autenticacao-qr-code.md](../decisions/DEC-019-app-mobile-acede-microservice-diretamente-na-autenticacao-qr-code.md) - Status: accepted
 
 ## Itens Pendentes
 

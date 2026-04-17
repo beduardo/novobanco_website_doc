@@ -22,7 +22,7 @@ Definir as integrações do HomeBanking Web com sistemas internos e externos. O 
 | Sistema | Tipo | Proprietário | Criticidade | Status |
 |---------|------|--------------|-------------|--------|
 | **Siebel** | Backend Principal (Autenticação PSD2 + APIs Bancárias) | BEST | Alta | Existente |
-| **Microservices** | Lógica de Negócio | BEST | Alta | A desenvolver |
+| **MicroService** | Lógica de Negócio (Pod único) | BEST | Alta | A desenvolver |
 | Core Banking APIs | Integração | BEST | Alta | Existente |
 | App Mobile Nativa | Referência | BEST | Média | Existente |
 | Azure Infrastructure | Plataforma | BEST | Alta | Existente |
@@ -141,7 +141,7 @@ Definir as integrações do HomeBanking Web com sistemas internos e externos. O 
 ### API Management
 
 28. Qual API Gateway é utilizado?
-    IBM API Gateway (para routing ao Siebel). O BFF acede ao Siebel e aos Microservices.
+    IBM API Gateway (para routing ao Siebel). O BFF acede ao Siebel e ao MicroService.
 
 29. Como é feito o rate limiting por integração?
     Necessita aprofundamento. Gerido pelo Gateway (IBM), não pelo BFF.
@@ -290,7 +290,7 @@ Definir as integrações do HomeBanking Web com sistemas internos e externos. O 
 |---------|-----------|-------------|
 | Siebel (autenticação PSD2) | OAuth + SHA256 | access_token_anonimo (pré-login) / apiToken (pós-login) |
 | Siebel (APIs bancárias) | OAuth 1.1 HMAC | apiToken |
-| Microservices | Protocolo Omni | Token de sessão |
+| MicroService | Protocolo Omni | Token de sessão |
 | Siebel (via Gateway) | BEST | Bearer Token |
 
 ---

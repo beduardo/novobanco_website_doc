@@ -7,7 +7,8 @@ updated: "2026-01-01"
 depends-on-definitions:
   - "DEF-05"
   - "DEF-06"
-depends-on-decisions: []
+depends-on-decisions:
+  - "DEC-016"
 word-count: 0
 ---
 
@@ -110,10 +111,10 @@ package "Serviços Azure" as SERVICOS_AZURE #LightYellow {
     end note
 }
 
-package "Microservices" as MICROSERVICES #LightBlue {
-    [Microservices\n(Lógica de Negócio)] as MS
+package "MicroService" as MICROSERVICES #LightBlue {
+    [MicroService\n(Lógica de Negócio)] as MS
     note right of MS
-      Containers OpenShift
+      Container OpenShift (Pod único)
       Regras de Negócio
       Protocolo Omni
     end note
@@ -122,7 +123,7 @@ package "Microservices" as MICROSERVICES #LightBlue {
 package "Gateway" as GATEWAY #LightGreen {
     [API Gateway\n(IBM)] as APIGW
     note right of APIGW
-      **Apenas para Siebel**
+      Siebel + MicroService
       Autenticação: clientid + secret
       Rate Limiting
     end note
@@ -149,7 +150,7 @@ CANAL_MOBILE -d-> GATEWAY : Serviços Mobile\n(clientid + secret)
 CANAL_WEB -d-> INFRAESTRUTURA : Protocolo Omni
 INFRAESTRUTURA --> CAMADA_BFF : Protocolo Omni
 CAMADA_BFF --> CACHE_DISTRIBUIDO : Lookup/Store\nTokens e Sessão
-CAMADA_BFF --> GATEWAY : clientid + secret\n(Apenas Siebel)
+CAMADA_BFF --> GATEWAY : clientid + secret\n(Siebel + MicroService)
 GATEWAY --> MICROSERVICES : Protocolo Omni\n(Lógica de Negócio)
 CAMADA_BFF --> SERVICOS_AZURE : Direto
 GATEWAY --> BACKEND_SERVICES : Bearer Token
@@ -175,7 +176,7 @@ MICROSERVICES ..> OBSERVABILIDADE : Logs/Métricas
 #### Protocolos de Comunicação
 
 > **Nota sobre Protocolos:**
-> - **Protocolo Omni:** Padronização sobre REST utilizada para comunicação SPA↔F5↔BFF e BFF↔MS
+> - **Protocolo Omni:** Padronização sobre REST utilizada para comunicação SPA↔F5↔BFF e BFF→Gateway→MicroService
 > - **OAuth + SHA256:** Utilizado para comunicação BFF↔Siebel (autenticação PSD2)
 > - **OAuth 1.1 HMAC:** Utilizado para comunicação BFF↔Siebel (APIs bancárias)
 > - **BEST:** Protocolo existente para comunicação BFF↔API Gateway
@@ -188,11 +189,11 @@ MICROSERVICES ..> OBSERVABILIDADE : Logs/Métricas
 | SPA | F5 | Cookie de Sessão (token_sessao_spa, HttpOnly, Secure, SameSite=Strict) | Omni |
 | F5 | BFF | Cookie de Sessão (propagado) | Omni |
 | BFF | Redis | Lookup por token_sessao_spa → tokens do utilizador | - |
-| BFF | MS | Token de Sessão | Omni |
-| BFF | API Gateway (IBM) | ClientID + ClientSecret | BEST |
+| BFF | API Gateway (IBM) | ClientID + ClientSecret | Omni / BEST |
+| API Gateway | MicroService | Protocolo Omni (roteado pelo GW) | Omni |
 | API Gateway | Siebel | Bearer Token (propagado) - **Siebel valida** | Siebel |
 
-> **Esclarecimento API Gateway:** O API Gateway IBM faz **apenas routing** dos pedidos, sem realizar autenticação. Toda a autenticação (validação de clientid+secret do BFF e validação do Bearer Token do utilizador) é realizada pelo **Siebel**.
+> **Esclarecimento API Gateway:** O API Gateway IBM faz **apenas routing** dos pedidos para Siebel e MicroService, sem realizar autenticação. Toda a autenticação (validação de clientid+secret do BFF e validação do Bearer Token do utilizador) é realizada pelo **Siebel**.
 
 > **Cenário Secundário - Web na App:** Embora não seja o fluxo primário, está prevista a possibilidade de haver funcionalidade web a correr dentro da app mobile nativa (WebView). Este cenário requer integração específica para navegação e biometria. Os detalhes serão definidos em fase posterior.
 
@@ -201,7 +202,7 @@ MICROSERVICES ..> OBSERVABILIDADE : Logs/Métricas
 | Item | Descrição | Responsável |
 |------|-----------|-------------|
 | Serviços Azure | Identificar quais serviços Azure são acedidos diretamente pelo BFF | Banco Best |
-| Lista de Microservices | Identificar quais MS serão desenvolvidos e suas responsabilidades | Banco Best/NextReality |
+| Responsabilidades do MicroService | Identificar as responsabilidades específicas do MicroService | Banco Best/NextReality |
 
 ### 3.3 Componentes Principais
 
@@ -211,8 +212,8 @@ MICROSERVICES ..> OBSERVABILIDADE : Logs/Métricas
 | **F5** | Infraestrutura | Entrada de tráfego web | Existente |
 | **BFF Web** | Backend | Lógica de UI, agregação, transformação, orquestração | .NET 8 |
 | **Redis Cluster** | Cache | Sessões distribuídas, tokens | Existente |
-| **Microservices** | Backend | Lógica de Negócio, regras de domínio | .NET 8 |
-| **API Gateway** | Infraestrutura | Roteamento para Siebel | IBM (Existente) |
+| **MicroService** | Backend | Lógica de Negócio, regras de domínio (Pod único) | .NET 8 |
+| **API Gateway** | Infraestrutura | Roteamento para Siebel e MicroService | IBM (Existente) |
 | **Siebel** | Backend | Lógica de negócio core | Existente |
 | **ELK Stack** | Observabilidade | Logs centralizados, métricas, dashboards | Existente |
 
@@ -300,10 +301,10 @@ A integração segue o modelo definido no diagrama de referência (secção 3.2)
 |------------|--------|------|------------|
 | Frontend Web (SPA React) | Novo | Desenvolver | Container OpenShift |
 | BFF Web (.NET 8) | Novo | Desenvolver | Container OpenShift |
-| Microservices (.NET 8) | Novo | Desenvolver | Container OpenShift, Protocolo Omni |
+| MicroService (.NET 8) | Novo | Desenvolver | Pod único OpenShift, Protocolo Omni |
 | Redis Cluster | Novo | Desenvolver | Sessões e tokens |
 | F5 | Existente | Reutilizar | Entrada de tráfego web |
-| API Gateway (IBM) | Existente | Reutilizar | Apenas para Siebel |
+| API Gateway (IBM) | Existente | Reutilizar | Para Siebel e MicroService |
 | Siebel | Existente | Reutilizar | Backend principal, lógica core |
 | Serviços Azure | Existente | Reutilizar | Acesso direto pelo BFF |
 | ELK Stack | Existente | Reutilizar | Logs e métricas |
@@ -326,6 +327,7 @@ A integração segue o modelo definido no diagrama de referência (secção 3.2)
 - [x] [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Status: accepted
 - [x] [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - Status: accepted
 - [x] [DEC-008-stack-observabilidade-elk.md](../decisions/DEC-008-stack-observabilidade-elk.md) - Status: accepted
+- [x] [DEC-016-microservice-como-pod-unico.md](../decisions/DEC-016-microservice-como-pod-unico.md) - Status: accepted
 
 ## Itens Pendentes
 

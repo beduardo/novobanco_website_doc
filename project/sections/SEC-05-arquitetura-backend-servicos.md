@@ -14,6 +14,7 @@ depends-on-definitions:
 depends-on-decisions:
   - "DEC-007"
   - "DEC-010"
+  - "DEC-016"
 word-count: 1377
 ---
 
@@ -46,11 +47,11 @@ A decomposição de serviços segue a arquitectura de referência definida na se
 |-------|--------------|------------|
 | Frontend → BFF | Cookie de sessão | HttpOnly, Secure |
 | BFF → API Gateway (IBM) | ClientID + ClientSecret | Para serviços via Siebel |
-| BFF → MS | Direto | Delega Bearer Token caso MS se comunique com Siebel |
+| BFF → MicroService | Via API Gateway IBM | MicroService acedido via Gateway (Protocolo Omni) |
 | BFF → Serviços Azure | Direto | Serviços a identificar |
 | API Gateway → Siebel | Bearer Token | **Siebel valida o token** |
 
-> **Nota - Serviço de Autenticação:** Não está previsto um AuthService autónomo separado. A autenticação é gerida pelos Backend Services existentes (Siebel). O BFF apenas gere a sessão web (cookies, cache de tokens) e propaga credenciais/tokens para o Siebel, que realiza toda a validação.
+> **Nota - Autenticação:** A autenticação é orquestrada pelo MicroService, que interage com o Siebel (AUT_004, AUT_001). O BFF gere a sessão web (cookies, cache de tokens) e propaga o cookie de sessão; a lógica de autenticação reside no MicroService e a validação final no Siebel.
 
 ### 5.2 Arquitetura BFF
 
@@ -181,12 +182,16 @@ alt Servicos com acesso direto ao Siebel (sem MS)
     GW --> BFF : JSON
     deactivate GW
 
-else Servicos delegados a Microservice (com integracao Siebel)
-    BFF -> MS : REST\n(clientid + secret)
+else Servicos delegados ao MicroService (com integracao Siebel)
+    BFF -> GW : REST\n(clientid + secret)
+    activate GW
+    note right of GW: Routing para MicroService
+
+    GW -> MS : REST\n(Omni)
     activate MS
 
     MS -> GW : REST\n(clientid + secret)
-    activate GW
+    note right of GW: Routing para Siebel
 
     GW -> SIEBEL : REST\n(Bearer token)
     activate SIEBEL
@@ -195,18 +200,27 @@ else Servicos delegados a Microservice (com integracao Siebel)
     deactivate SIEBEL
 
     GW --> MS : JSON
-    deactivate GW
 
-    MS --> BFF : JSON
+    MS --> GW : JSON
     deactivate MS
 
-else Servicos delegados a Microservice (autonomo, sem Siebel)
-    BFF -> MS : REST
+    GW --> BFF : JSON
+    deactivate GW
+
+else Servicos delegados ao MicroService (autonomo, sem Siebel)
+    BFF -> GW : REST\n(clientid + secret)
+    activate GW
+    note right of GW: Routing para MicroService
+
+    GW -> MS : REST\n(Omni)
     activate MS
     note right of MS: Logica propria\nsem integracao Siebel
 
-    MS --> BFF : JSON
+    MS --> GW : JSON
     deactivate MS
+
+    GW --> BFF : JSON
+    deactivate GW
 
 end
 
@@ -221,13 +235,12 @@ deactivate BFF
 | Comunicacao | Protocolo | Autenticacao | Observação |
 |-------------|-----------|--------------|------------|
 | Frontend → BFF | REST/HTTPS | Cookie de sessao (HttpOnly, Secure) | - |
-| BFF → API Gateway (IBM) | REST | ClientID + ClientSecret | Acesso direto ao Siebel, sem MS |
-| BFF → MS | REST | Bearer Token delegado | MS pode ou não precisar do Siebel |
-| MS → API Gateway (IBM) | REST | ClientID + ClientSecret | Apenas quando MS necessita do Siebel |
+| BFF → API Gateway (IBM) | REST | ClientID + ClientSecret | Ponto de entrada para Siebel e MicroService |
+| API Gateway → MicroService | REST (Omni) | Roteado pelo GW | MicroService pode ou não precisar do Siebel |
+| MicroService → API Gateway (IBM) | REST | ClientID + ClientSecret | Apenas quando MicroService necessita do Siebel |
 | API Gateway → Siebel | REST | Bearer Token (propagado) | **Siebel valida o token** |
-| MS (autónomo) | - | - | MS com lógica própria, sem Siebel |
 
-> **Nota:** O BFF não tem API Gateway à frente. O API Gateway (IBM) é utilizado apenas para acesso aos Backend Services (Siebel e outros), quer pelo BFF diretamente, quer por um MS intermediário.
+> **Nota:** O BFF não tem API Gateway à frente. O API Gateway (IBM) é o ponto de entrada para Siebel **e** MicroService — o BFF roteia ambos via Gateway.
 > **Nota:** Não há dados críticos no BFF
 
 > **Nota Importante - Validação de Token:** O API Gateway (IBM) faz **apenas routing**, sem realizar autenticação. Toda a autenticação (validação de clientid+secret e validação do Bearer Token do utilizador) é realizada pelo **Siebel**. Serviços backend que não suportem Bearer Token diretamente são acedidos exclusivamente através do Siebel, que actua como camada de mediação.
@@ -267,7 +280,7 @@ O modelo de dominio segue as entidades ja existentes nos backend services da app
 | **Circuit Breaker** | A definir | Proposta: Polly |
 | **Bulkhead** | A avaliar | Depende da organização de serviços |
 
-> **Nota - Organização de Serviços:** A necessidade de Bulkhead depende de quantos serviços forem implementados. Opções a avaliar: um único "BEST" ou segregação por domínio (ex: serviço de negócio + serviços especializados para funcionalidades não cobertas pelo Siebel).
+> **Nota - Organização de Serviços:** A arquitectura define um único MicroService Pod (DEC-016). A necessidade de Bulkhead deve ser avaliada internamente ao MicroService, por domínio funcional (ex: separação de threads/pools para operações críticas vs operações de consulta).
 
 ### 5.8 Versionamento API
 
@@ -322,3 +335,4 @@ O modelo de dominio segue as entidades ja existentes nos backend services da app
 - [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - BFF Pattern
 - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack Backend
 - [DEC-011-diagrama-arquitetura-unico.md](../decisions/DEC-011-diagrama-arquitetura-unico.md) - Diagrama de referência único
+- [DEC-016-microservice-como-pod-unico.md](../decisions/DEC-016-microservice-como-pod-unico.md) - MicroService como Pod único (via Gateway)

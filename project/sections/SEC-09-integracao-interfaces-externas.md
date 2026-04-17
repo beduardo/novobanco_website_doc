@@ -6,7 +6,10 @@ created: "2026-01-04"
 updated: "2026-01-04"
 depends-on-definitions:
   - "DEF-19"
-depends-on-decisions: []
+depends-on-decisions:
+  - "DEC-016"
+  - "DEC-017"
+  - "DEC-019"
 word-count: 0
 ---
 
@@ -38,25 +41,26 @@ O HomeBanking Web segue uma arquitetura de integracao em camadas, onde o **BFF (
 | Frontend → F5 | Omni | Cookie de sessao | HttpOnly, Secure, SameSite=Strict |
 | F5 → BFF | Omni | Cookie de sessao (propagado) | - |
 | BFF → Redis | - | - | Lookup/Store de sessao e tokens |
-| BFF → Microservices | Omni | Token de sessao | Logica de negocio (directo) |
-| BFF → API Gateway (IBM) | BEST | ClientID + ClientSecret | **Apenas para Siebel** |
-| BFF → Servicos Azure | REST | Direto | Servicos a identificar |
+| BFF → API Gateway (IBM) | Omni / BEST | ClientID + ClientSecret | Siebel e MicroService (via GW) |
+| API Gateway → MicroService | Omni | Roteado pelo GW | Logica de negocio (canal web) |
 | API Gateway → Siebel | Siebel | Bearer Token | **Siebel valida o token** |
-| MS → Siebel | Siebel | - | Logica de negocio |
+| MicroService → API Gateway (IBM) | BEST | ClientID + ClientSecret | Quando MicroService necessita do Siebel |
+| BFF → Servicos Azure | REST | Direto | Servicos a identificar |
+| **App Mobile → API Gateway (IBM)** | Omni | Credenciais App | **Directo ao MicroService — sem BFF (DEC-019)** |
 
 #### Principios de Integracao
 
 | Principio | Descricao |
 |-----------|-----------|
-| **BFF como Gateway** | Todas as integracoes passam pelo BFF, nunca acesso direto do frontend |
+| **BFF como Gateway** | Todas as integracoes do canal web passam pelo BFF — excepção: App Mobile acede o MicroService directamente no fluxo QR Code (DEC-019) |
 | **Backend API (Facade)** | Ponto unico de acesso aos sistemas Core Banking |
 | **Reutilizacao** | Mesmas APIs utilizadas pela app mobile |
 | **Transformacao no BFF** | Adaptacao de dados para necessidades especificas do canal web |
 
 
-### 9.2 Microservices - Logica de Negocio
+### 9.2 MicroService - Logica de Negocio
 
-Os Microservices sao uma camada de logica de negocio acedida **directamente pelo BFF** via Protocolo Omni.
+O MicroService é um único Pod (.NET 8) de logica de negocio acedido pelo BFF **via API Gateway IBM**, usando Protocolo Omni. No fluxo de autenticação QR Code, a App Mobile acede o MicroService **directamente via API Gateway IBM**, sem passar pelo BFF (DEC-019).
 
 #### Caracteristicas
 
@@ -64,7 +68,7 @@ Os Microservices sao uma camada de logica de negocio acedida **directamente pelo
 |---------|-------|
 | **Protocolo** | Omni (padronizacao sobre REST) |
 | **Tecnologia** | .NET 8 |
-| **Deploy** | Containers OpenShift |
+| **Deploy** | Pod único em OpenShift |
 | **Status** | A desenvolver |
 
 #### Responsabilidades
@@ -75,7 +79,7 @@ Os Microservices sao uma camada de logica de negocio acedida **directamente pelo
 | Processamento | Operacoes que requerem processamento adicional |
 | Partilha | Servicos reutilizaveis entre canais (futuramente) |
 
-> **Pendencia:** Identificar quais MS serao desenvolvidos e suas responsabilidades especificas.
+> **Pendencia:** Identificar as responsabilidades especificas do MicroService.
 
 ### 9.3 Servicos Backoffice de gestão
 Existem servicos utilizados pela app mobile que nao passam pelo middleware BEST e sao acedidos diretamente.
@@ -84,7 +88,7 @@ Há também serviços que devolvem regras e dados que asseguram regras de negóc
 Há também serviços que controlam como e quando surgem os pedidos de avaliação da APP.
 Todos os serviços são anónimos, não registam qualquer informação de cliente.
 Tecnologicamente são serviços REST/JSON instalados no AZURE e protegidos por um token OAUTH, obtido de forma clássica junto de um oauth server mediante apresentação de client id e client secret sendo o seu scope de read apenas.
-Nota: Conforme arquitectura definida, o BFF acede directamente ao Siebel e aos Microservices. O API Gateway IBM e utilizado para routing dos pedidos ao Siebel.
+Nota: Conforme arquitectura definida, o BFF acede ao Siebel e ao MicroService via API Gateway IBM. O API Gateway IBM faz routing para ambos os destinos.
 
 #### Servicos Identificados
 
@@ -149,9 +153,9 @@ _O catalogo detalhado de integracoes sera documentado no assessment inicial do p
 
 #### IBM API Gateway
 
-O **IBM API Gateway** e utilizado como ponto central de gestao de APIs entre o BFF e os Backend Services (Siebel e outros).
+O **IBM API Gateway** é o ponto central de routing entre o BFF e os Backend Services — roteia para o **Siebel** e para o **MicroService**.
 
-> **Nota:** O BFF não tem API Gateway à frente. O API Gateway é utilizado apenas para as chamadas do BFF aos Backend Services.
+> **Nota:** O BFF não tem API Gateway à frente. O API Gateway é utilizado para as chamadas do BFF ao Siebel e ao MicroService (DEC-016).
 
 | Funcionalidade | Status |
 |----------------|--------|
@@ -182,6 +186,9 @@ O **IBM API Gateway** e utilizado como ponto central de gestao de APIs entre o B
 - [x] [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - Status: accepted
 - [x] [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Status: accepted
 - [x] [DEC-011-diagrama-arquitetura-unico.md](../decisions/DEC-011-diagrama-arquitetura-unico.md) - Status: accepted
+- [x] [DEC-016-microservice-como-pod-unico.md](../decisions/DEC-016-microservice-como-pod-unico.md) - Status: accepted
+- [x] [DEC-017-sem-websocket-no-canal-web.md](../decisions/DEC-017-sem-websocket-no-canal-web.md) - Status: accepted
+- [x] [DEC-019-app-mobile-acede-microservice-diretamente-na-autenticacao-qr-code.md](../decisions/DEC-019-app-mobile-acede-microservice-diretamente-na-autenticacao-qr-code.md) - Status: accepted
 
 ## Itens Pendentes
 

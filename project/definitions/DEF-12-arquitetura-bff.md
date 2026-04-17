@@ -4,7 +4,8 @@ title: "Arquitetura BFF"
 status: "completed"
 created: "2026-01-03"
 updated: "2026-01-03"
-related-decisions: []
+related-decisions:
+  - "DEC-016"
 affects-sections:
   - "SEC-05"
   - "SEC-07"
@@ -74,11 +75,11 @@ O BFF comunica directamente com múltiplos backends, cada um com o seu protocolo
 |---------|-----------|-----------|-------------|
 | **Siebel (autenticação PSD2)** | OAuth + SHA256 | Autenticação PSD2 | Não (directo) |
 | **Siebel (APIs bancárias)** | OAuth 1.1 HMAC | APIs bancárias principais | Não (directo) |
-| **Microservices** | Protocolo Omni | Lógica de Negócio | Não (directo) |
+| **MicroService** | Protocolo Omni | Lógica de Negócio | **Sim** (via API Gateway IBM) |
 | **Siebel (core)** | BEST | Lógica de negócio core | **Sim** (API Gateway IBM) |
 | **Serviços Azure** | REST | Serviços cloud | Não (directo) |
 
-> **Nota:** O API Gateway IBM é utilizado **apenas** para comunicação com o Siebel.
+> **Nota:** O API Gateway IBM é o ponto de entrada para o Siebel **e** para o MicroService.
 
 ### Siebel (Autenticação PSD2) como Dependência
 
@@ -112,14 +113,12 @@ assinatura = SHA256(consumer_key & GUID & timestamp & version & secret_key)
 x-nb-channel: best.spa
 ```
 
-### Separação de Responsabilidades: BFF vs Microservices
+### Separação de Responsabilidades: BFF vs MicroService
 
 | Componente | Responsabilidades |
 |------------|-------------------|
 | **BFF** | Lógica de UI/Apresentação, Agregação de dados, Transformação de formatos, Gestão de sessão web, Orquestração de chamadas |
-| **Microservices** | Lógica de Negócio, Regras de domínio, Operações que requerem processamento além do Siebel, Serviços partilháveis entre canais |
-
-> **Nota:** O BFF é inicialmente monolítico mas a arquitectura deve permitir evolução para microserviços.
+| **MicroService** | Lógica de Negócio, Regras de domínio, Operações que requerem processamento além do Siebel, Serviços partilháveis entre canais |
 
 ## Decisões
 
@@ -147,14 +146,15 @@ x-nb-channel: best.spa
 |--------|---------|-----------|
 | SPA | F5 | Protocolo Omni |
 | F5 | BFF | Protocolo Omni |
-| BFF | Microservices | Protocolo Omni |
+| BFF | API Gateway | Omni (routing para MicroService) |
+| API Gateway | MicroService | Protocolo Omni |
 | BFF | Siebel (autenticação PSD2) | OAuth + SHA256 |
 | BFF | Siebel (APIs bancárias) | OAuth 1.1 HMAC |
 | BFF | API Gateway | BEST |
 | API Gateway | Siebel | Siebel |
 
 **Protocolo Omni:**
-O Protocolo Omni é uma padronização sobre REST utilizada para comunicação entre o canal web (SPA) e o BFF, e entre BFF e Microservices. Esta abstração permite:
+O Protocolo Omni é uma padronização sobre REST utilizada para comunicação entre o canal web (SPA) e o BFF, e entre BFF e MicroService (via API Gateway IBM). Esta abstração permite:
 - Uniformização de contratos entre canais
 - Evolução controlada das interfaces
 - Separação clara entre protocolo de canal (Omni) e protocolo de backend (BEST)
@@ -238,8 +238,8 @@ O BFF implementa o padrão "Cache or API" para dados frequentemente acedidos:
 ## Restrições Conhecidas
 
 - Deploy em containers OpenShift
-- API Gateway IBM utilizado **apenas** para Siebel
-- Acesso directo ao Siebel e Microservices
+- API Gateway IBM é o ponto de entrada para Siebel e MicroService
+- MicroService e Siebel acedidos via API Gateway IBM
 - Isolamento de sistemas legados via BFF
 - Stack ELK para observabilidade
 - Redis Cluster para sessões distribuídas
