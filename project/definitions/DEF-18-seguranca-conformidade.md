@@ -37,7 +37,7 @@ Definir os requisitos de segurança e conformidade regulatória do HomeBanking W
    - Strict-Transport-Security (HSTS)? Sim. Avaliar o melhor valor para `max-age` no início do assessment.
 
 5. Há requisitos de Subresource Integrity (SRI)?
-    Sim. Traremos o máximo de bibliotecas para o servidor local para evitar mudanças de Hash inesperadas e utilizaremos `integrity` e `crossorigin`. Caso haja necessidade de utilização de bibliotecas CDN externas, necessário atenção com atualizações dos terceiros que possam quebrar o site.
+    Sim. Todas as bibliotecas são servidas localmente, sem dependência de recursos externos. Utilizaremos `integrity` e `crossorigin` nos recursos externos necessários.
 
 6. Como será tratada a proteção contra XSS?
     SSR / BFF

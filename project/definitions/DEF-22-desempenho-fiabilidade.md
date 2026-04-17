@@ -91,15 +91,12 @@ title Camadas de Cache
 
 actor User
 participant "Browser" as browser
-participant "CDN" as cdn
 participant "BFF" as bff
 database "Redis" as redis
 participant "Backend" as api
 
 User -> browser : Request
 browser -> browser : Local Storage\n(sessão, prefs)
-browser -> cdn : Static assets\n(js, css, images)
-cdn --> browser : Cache hit
 
 browser -> bff : API Request
 bff -> redis : Cache lookup
@@ -122,7 +119,6 @@ end
 |------------|------|-----|------------|
 | Browser | Local Storage | Sessão | Dados de sessão, preferências |
 | Browser | Service Worker | 1h | Assets estáticos (PWA) |
-| CDN | Edge Cache | 24h | JS, CSS, imagens, fontes |
 | BFF | Redis | Variável | Dados de API (ver tabela abaixo) |
 
 ### TTL por Tipo de Dado (Redis)
@@ -452,8 +448,8 @@ stop
 - **Alternativas consideradas:** Métricas customizadas apenas
 
 ### Estratégia de Cache
-- **Decisão:** Cache multi-camada (Browser + CDN + Redis)
-- **Justificação:** Maximizar performance em todos os níveis
+- **Decisão:** Cache multi-camada (Browser + Redis)
+- **Justificação:** Maximizar performance em todos os níveis; sem CDN na solução
 - **Alternativas consideradas:** Cache apenas no BFF
 
 ### Auto-scaling

@@ -93,15 +93,12 @@ title Camadas de Cache
 
 actor User
 participant "Browser" as browser
-participant "CDN" as cdn
 participant "BFF" as bff
 database "Redis" as redis
 participant "Backend" as api
 
 User -> browser : Request
 browser -> browser : Local Storage\n(sessão, prefs)
-browser -> cdn : Static assets\n(js, css, images)
-cdn --> browser : Cache hit
 
 browser -> bff : API Request
 bff -> redis : Cache lookup
@@ -124,7 +121,6 @@ end
 |-------|-------|-----|
 | **Browser** | Assets estáticos (JS, CSS, imagens) | Longo (com cache busting) |
 | **Browser** | Local Storage (sessão, prefs) | Sessão |
-| **CDN** | JS, CSS, imagens, fontes | 24 horas |
 | **BFF (Redis)** | Sessões, tokens, dados partilhados | Variável |
 
 #### TTL por Tipo de Dado (Redis)

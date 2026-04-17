@@ -54,7 +54,7 @@ Implementar os seguintes controlos de seguranca:
 
 ### Subresource Integrity (SRI)
 
-- **Estrategia:** Bibliotecas servidas localmente (evitar CDN externas)
+- **Estrategia:** Bibliotecas servidas localmente — **sem CDN na solução**
 - **Atributos:** `integrity` e `crossorigin` em todos os recursos externos
 - **Gestao de dependencias:** Atencao a atualizacoes que possam quebrar hash
 
@@ -83,13 +83,7 @@ Implementar os seguintes controlos de seguranca:
 - **Cons:** Seguranca significativamente reduzida
 - **Why not chosen:** Inaceitavel para aplicacao bancaria
 
-### Alternative 2: Bibliotecas via CDN com SRI
-- **Description:** Usar CDNs publicas com verificacao de integridade
-- **Pros:** Melhor cache, menor carga no servidor
-- **Cons:** Dependencia de terceiros, risco de alteracoes inesperadas
-- **Why not chosen:** Preferencia por controlo total dos recursos
-
-### Alternative 3: CSRF via header customizado (X-CSRF-Token apenas)
+### Alternative 2: CSRF via header customizado (X-CSRF-Token apenas)
 - **Description:** Apenas header customizado sem rotacao
 - **Pros:** Implementacao mais simples
 - **Cons:** Menor protecao, tokens estaticos
