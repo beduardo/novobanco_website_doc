@@ -77,8 +77,8 @@ Implementar **arquitetura de tokens em dois niveis**: tokens de sessao (Browser-
 | `user_context` | Dados do utilizador (nao sensiveis) | Resposta login |
 
 **Renovacao:**
-- O Access Token e rotacionado automaticamente pelo backend a cada resposta
-- O BFF actualiza o token em cache apos cada interaccao com o backend
+- O Access Token do Siebel nao expira e nao e rotacionado — e armazenado em cache e reutilizado durante toda a sessao
+- A cada chamada ao Siebel, o BFF gera dinamicamente um novo header Authorization OAuth (novo GUID, timestamp e assinatura)
 - Nao existe renovacao proativa nem Refresh Token (ver DEC-013)
 
 **Importante:** O `sasToken` retornado pelo Siebel **nao e utilizado** no canal web. Este token e especifico para a app mobile.

@@ -99,7 +99,7 @@ O fluxo completo envolve cinco actores principais: Utilizador, Browser (Frontend
 
 ### 4. Diagrama de Sequência
 
-![diagram-01](FLUXOS-AUTENTICACAO-ANALISE-TECNICA-rendered_images/diagram-01-1776363332.png)
+![diagram-01](FLUXOS-AUTENTICACAO-ANALISE-TECNICA-rendered_images/diagram-01-1776419536.png)
 
 ### 5. Endpoints Envolvidos
 
@@ -129,7 +129,7 @@ Browser                BFF (Redis)              Siebel
 ─────────────────      ─────────────────────    ──────────────
 token_sessao_spa  ───► session:{token}          apiToken
 (Cookie HttpOnly)      {apiToken, context}  ───► OAuth Bearer
-                       TTL: 30 min              (rotacionado)
+                       TTL: 30 min              (fixo por sessão)
 ```
 
 **Cookie de Sessão (`token_sessao_spa`):**
@@ -161,16 +161,17 @@ token_sessao_spa  ───► session:{token}          apiToken
 }
 ```
 
-**Rotação de Access Token (DEC-013):**
+**Access Token Siebel — Sem Rotação, Header OAuth Dinâmico (DEC-013):**
 
-O backend Siebel implementa rotação automática: cada resposta inclui um novo `apiToken`. O BFF não implementa renovação proactiva — em vez disso:
+O `apiToken` devolvido pelo Siebel **não expira e nunca é rotacionado** — é armazenado em Redis após o login e reutilizado durante toda a sessão. O que varia em cada chamada ao Siebel é o **header Authorization OAuth**, gerado dinamicamente pelo BFF:
 
-1. BFF recebe resposta do Siebel com novo `apiToken`
-2. BFF actualiza **imediatamente** o token em Redis antes de responder ao frontend
-3. O token em cache é sempre o mais recente
-4. TTL de 15 minutos é salvaguarda em caso de inatividade prolongada
+1. BFF recupera o `apiToken` de Redis (valor constante durante a sessão)
+2. BFF gera um novo `oauth_guid` único para o pedido
+3. BFF usa o `oauth_timestamp` actual (unix time no momento da chamada)
+4. BFF recalcula `oauth_signature` via HMAC-SHA256 sobre todos os campos
+5. O header resultante é único por pedido — o `apiToken` subjacente permanece constante
 
-> **Sem Refresh Token:** O canal web não utiliza Refresh Token (confirmado em DEC-002 e DEC-013).
+> **Sem Refresh Token, sem renovação:** Os TTLs (15 min / 30 min) aplicam-se exclusivamente à sessão web (camada BFF-Frontend) e não ao token do Siebel.
 
 ### 7. Segurança e Conformidade PSD2/SCA
 
@@ -212,7 +213,7 @@ O fluxo dispensa CAPTCHA porque:
 
 **DEC-002 — Gestão de Sessões e Tokens:** Define a arquitectura de dois níveis (session cookie no browser + access token no BFF cache), garantindo que tokens OAuth nunca são expostos ao browser.
 
-**DEC-013 — Rotação de Access Token:** Elimina a necessidade de lógica de renovação proactiva no BFF, aproveitando o comportamento nativo do Siebel (OAuth 1.1) que rotaciona o token a cada resposta.
+**DEC-013 — Access Token Siebel (Sem Rotação):** O `apiToken` é armazenado em Redis após login e reutilizado durante toda a sessão. O BFF não implementa renovação nem rotação do token Siebel. A cada chamada, o BFF gera dinamicamente um novo header Authorization OAuth com `oauth_guid`, `oauth_timestamp` e `oauth_signature` (HMAC-SHA256) frescos.
 
 ### 9. Vantagens e Trade-offs
 
@@ -319,7 +320,7 @@ O Fluxo 2 divide-se em **3 fases**:
 
 ### 4. Diagrama de Sequência
 
-![diagram-02](FLUXOS-AUTENTICACAO-ANALISE-TECNICA-rendered_images/diagram-02-1776363332.png)
+![diagram-02](FLUXOS-AUTENTICACAO-ANALISE-TECNICA-rendered_images/diagram-02-1776419536.png)
 
 ### 5. Endpoints Envolvidos
 
@@ -336,7 +337,7 @@ O mecanismo de gestão de sessão é **idêntico ao Fluxo 1** após a criação 
 
 - **Cookie `token_sessao_spa`:** HttpOnly, Secure, SameSite=Strict, Max-Age=1800
 - **Redis:** `session:{token_sessao_spa}` com apiToken, device_id, user_context, TTL 30min
-- **Rotação de Access Token (DEC-013):** Aplicável da mesma forma — token actualizado a cada resposta do Siebel
+- **Access Token Siebel (DEC-013):** O `apiToken` é fixo durante a sessão. A cada chamada ao Siebel o BFF gera header OAuth dinâmico (novo `oauth_guid`, `oauth_timestamp` e assinatura HMAC-SHA256)
 
 **Estrutura Redis para sessões pendentes (exclusiva do Fluxo 2):**
 
@@ -376,7 +377,7 @@ Ambos os fluxos QR (1 e 2) satisfazem PSD2 SCA. O Fluxo 2 oferece segurança com
 
 **DEC-002:** A gestão de sessão após criação do cookie é idêntica ao Fluxo 1 — mesmos timeouts (10min inatividade, 30min absoluto), mesma estrutura Redis, mesmo cookie.
 
-**DEC-013:** Rotação de token aplicável da mesma forma após estabelecimento de sessão.
+**DEC-013:** O `apiToken` é armazenado em Redis e reutilizado durante toda a sessão. A cada chamada ao Siebel, o BFF gera header OAuth dinâmico (GUID, timestamp e assinatura HMAC-SHA256 frescos).
 
 ### 9. Vantagens e Trade-offs
 
@@ -468,7 +469,7 @@ O **Fluxo 3: Username/Password + OTP SMS** é um método de autenticação de fa
 
 ### 4. Diagrama de Sequência
 
-![diagram-03](FLUXOS-AUTENTICACAO-ANALISE-TECNICA-rendered_images/diagram-03-1776363332.png)
+![diagram-03](FLUXOS-AUTENTICACAO-ANALISE-TECNICA-rendered_images/diagram-03-1776419536.png)
 
 ### 5. Endpoints e Operações Siebel
 
@@ -513,7 +514,7 @@ Idêntico ao Fluxo 1 após criação do cookie:
 
 - **Cookie `token_sessao_spa`:** HttpOnly, Secure, SameSite=Strict, Max-Age=1800
 - **Redis:** `session:{token_sessao_spa}` com `{apiToken, user_id, mustChangePassword, firstLogin, channel: "best.spa", auth_method: "username_password_otp"}`, TTL 30min
-- **Rotação de Access Token (DEC-013):** Aplicável da mesma forma
+- **Access Token Siebel (DEC-013):** O `apiToken` é fixo durante a sessão. A cada chamada ao Siebel o BFF gera header OAuth dinâmico (novo `oauth_guid`, `oauth_timestamp` e assinatura HMAC-SHA256)
 
 ### 8. Segurança e Conformidade PSD2/SCA
 
@@ -631,7 +632,7 @@ O Fluxo 4 é **mais seguro que SMS** (sem vulnerabilidade a SIM swap), mas reque
 
 ### 4. Diagrama de Sequência
 
-![diagram-04](FLUXOS-AUTENTICACAO-ANALISE-TECNICA-rendered_images/diagram-04-1776363332.png)
+![diagram-04](FLUXOS-AUTENTICACAO-ANALISE-TECNICA-rendered_images/diagram-04-1776419536.png)
 
 ### 5. Endpoints e Operações
 
@@ -663,7 +664,7 @@ Após aprovação, idêntico aos outros fluxos:
 
 - **Cookie `token_sessao_spa`:** HttpOnly, Secure, SameSite=Strict, Max-Age=1800
 - **Redis:** `session:{token_sessao_spa}` com `{apiToken, userId, loginMethod: "push_app"}`, TTL 30min
-- **Rotação de Access Token (DEC-013):** Siebel rotaciona token a cada resposta; BFF actualiza Redis imediatamente
+- **Access Token Siebel (DEC-013):** O `apiToken` é fixo durante a sessão. A cada chamada ao Siebel o BFF gera header OAuth dinâmico (novo `oauth_guid`, `oauth_timestamp` e assinatura HMAC-SHA256)
 
 **Ciclo de vida da sessão:**
 
@@ -718,7 +719,7 @@ Tanto o Fluxo 4 como os Fluxos 1 e 2 utilizam a app mobile. A diferença fundame
 
 **DEC-002:** Timeouts e gestão de sessão idênticos a todos os outros fluxos.
 
-**DEC-013:** Rotação de token aplicável após estabelecimento de sessão.
+**DEC-013:** O `apiToken` é armazenado em Redis e reutilizado durante toda a sessão. A cada chamada ao Siebel, o BFF gera header OAuth dinâmico (GUID, timestamp e assinatura HMAC-SHA256 frescos).
 
 ### 9. Vantagens e Trade-offs
 
@@ -776,5 +777,5 @@ Tanto o Fluxo 4 como os Fluxos 1 e 2 utilizam a app mobile. A diferença fundame
 - [DEF-17 — Autenticação & Autorização (Definições)](../definitions/DEF-17-autenticacao-autorizacao.md)
 - [DEC-001 — Estratégia de Autenticação Web](../decisions/DEC-001-estrategia-autenticacao-web.md)
 - [DEC-002 — Gestão de Sessões e Tokens](../decisions/DEC-002-gestao-sessoes-tokens.md)
-- [DEC-013 — Rotação de Access Token por Resposta do Backend](../decisions/DEC-013-rotacao-de-access-token-por-resposta-do-backend.md)
+- [DEC-013 — Access Token Siebel: Sem Rotação, Header OAuth Dinâmico](../decisions/DEC-013-rotacao-de-access-token-por-resposta-do-backend.md)
 - PSD2 RTS on Strong Customer Authentication

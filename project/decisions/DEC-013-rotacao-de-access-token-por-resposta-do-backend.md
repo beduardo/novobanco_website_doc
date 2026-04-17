@@ -1,8 +1,9 @@
 ---
 id: "DEC-013"
-title: "Rotacao de Access Token por Resposta do Backend"
+title: "Access Token Siebel - Sem Rotacao, Header OAuth Dinamico"
 status: "accepted"
 created: 2026-04-10
+updated: 2026-04-17
 context: "DEF-13"
 affects-definitions:
   - "DEF-13"
@@ -10,7 +11,7 @@ affects-sections:
   - "SEC-07"
 ---
 
-# DEC-013: Rotacao de Access Token por Resposta do Backend
+# DEC-013: Access Token Siebel - Sem Rotacao, Header OAuth Dinamico
 
 > **Related definitions:** [DEF-13-autenticacao-oauth.md](../definitions/DEF-13-autenticacao-oauth.md)
 > **Related sections:** [SEC-07 - Autenticacao & Autorizacao](../sections/SEC-07-autenticacao-autorizacao.md)
@@ -18,33 +19,39 @@ affects-sections:
 
 ## Context
 
-O backend (Siebel) implementa um mecanismo de rotacao de Access Token: cada resposta a um pedido autenticado devolve um novo Access Token, que substitui o anterior. Este comportamento e inerente ao protocolo OAuth 1.1 utilizado pelo Siebel.
+O `access_token` devolvido pelo Siebel apos autenticacao **nao expira e nunca e rotacionado**. O BFF armazena-o em cache (Redis) e reutiliza-o durante toda a duracao da sessao web.
 
-Esta caracteristica elimina a necessidade de logica de renovacao proativa de tokens no BFF, uma vez que o token e automaticamente actualizado a cada interaccao com o backend.
+O que varia em cada chamada ao Siebel e o **conteudo do header Authorization OAuth**, que inclui campos gerados dinamicamente:
+
+- `oauth_timestamp` — unix time no momento da chamada
+- `oauth_guid` — GUID unico gerado a cada pedido
+- `oauth_signature` — calculada com HMAC-SHA256 sobre todos os campos (incluindo timestamp e GUID), pelo que o seu valor muda em cada interaccao
+
+O `access_token` em si e um dos inputs da assinatura, mas o seu valor permanece constante.
+
+Os TTLs documentados (15 min para Access Token em cache, 30 min para sessao) referem-se exclusivamente a camada **Frontend-BFF** e gerem o ciclo de vida da sessao web — nao ao token do Siebel.
 
 ## Decision
 
-O BFF **nao implementa logica de renovacao proativa de Access Token**. Em vez disso:
+O BFF **nao implementa qualquer logica de renovacao ou rotacao do Access Token do Siebel**. Em vez disso:
 
-- Cada resposta do backend inclui um novo Access Token rotacionado
-- O BFF actualiza o Access Token em cache (Redis) apos cada resposta do backend
-- O Access Token armazenado em cache e sempre o mais recente recebido
-- Nao existe temporizador de renovacao nem mecanismo de refresh separado
+- O `access_token` e armazenado em cache (Redis) apos o login e reutilizado sem alteracao
+- A cada chamada ao Siebel, o BFF gera um novo header Authorization com GUID e timestamp frescos e recalcula a assinatura OAuth
+- Nao existe mecanismo de refresh, renovacao proativa, nem expiracao do token Siebel
+- A sessao web (e a sua expiracao) e gerida exclusivamente pela camada BFF-Frontend via cookie `token_sessao_spa`
 
 ## Consequences
 
 ### Positive
-- Simplicidade: sem logica de renovacao no BFF
-- Token sempre actualizado apos cada uso — menor janela de ataque
-- Eliminacao de race conditions de renovacao concorrente
-- Sem necessidade de Refresh Token (confirmado tambem em DEC-002)
+- Simplicidade: sem logica de renovacao nem gestao de expiracao do token Siebel no BFF
+- Sem necessidade de Refresh Token
+- Sem race conditions de renovacao concorrente
 
 ### Negative
-- O BFF deve sempre persistir o novo token recebido antes de responder ao Frontend
-- Se uma resposta do backend nao incluir o novo token (erro, timeout), o BFF deve tratar este caso sem invalidar a sessao
-- Requer atencao na implementacao para garantir atomicidade: receber resposta → guardar novo token → responder ao Frontend
+- O header Authorization deve ser calculado dinamicamente a cada chamada (nao pode ser cacheado)
 
 ## Notes
 
-- Esta decisao amenda a seccao "Renovacao" de DEC-002, que mencionava renovacao proativa pelo BFF
-- O TTL do Access Token em cache (15 min) permanece valido como salvaguarda, mas na pratica o token e substituido a cada pedido
+- Esta decisao corrige uma interpretacao anterior que assumia rotacao do access_token a cada resposta do backend — essa interpretacao estava incorrecta
+- Os TTLs (15 min / 30 min) sao salvaguardas para a sessao web (BFF-Frontend) e nao tem relacao com o token do Siebel
+- O `sasToken` retornado pelo Siebel nao e utilizado no canal web (especifico para app mobile)

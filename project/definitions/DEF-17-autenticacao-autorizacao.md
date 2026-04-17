@@ -72,15 +72,15 @@ Definir a estratégia de autenticação e autorização do HomeBanking Web. Nota
 14. Qual o tempo de vida do access token?
     15 minutos
 
-15. Qual o tempo de vida do refresh token?
-    7 dias
+15. O sistema utiliza Refresh Token?
+    **Não.** O Refresh Token não é utilizado. A renovação do Access Token é feita por rotação automática em cada resposta do backend (ver DEC-013).
 
 16. Onde serão armazenados os tokens?
-    Backend tokens (Access/Refresh): BFF cache
+    Backend tokens (Access Token): BFF cache
     Session tokens: Cookie HttpOnly Secure
 
 17. Como será tratada a renovação de tokens?
-    Refresh silencioso conforme atividade do utilizador
+    Rotação de Access Token por resposta do backend (DEC-013). Não existe renovação proactiva nem Refresh Token.
 
 ### Autorização
 18. Qual o modelo de autorização (RBAC, ABAC)?
@@ -137,9 +137,9 @@ Definir a estratégia de autenticação e autorização do HomeBanking Web. Nota
 - **Alternativas consideradas:** Sessões sincronizadas (descartado)
 
 ### Tokens
-- **Decisão:** Access token 15 min, Refresh token 7 dias, armazenados no BFF
-- **Justificação:** Segurança com renovação silenciosa conforme atividade
-- **Alternativas consideradas:** Tokens mais longos (descartado por segurança)
+- **Decisão:** Access token 15 min, sem Refresh Token; tokens armazenados no BFF; renovação por rotação automática em cada resposta do backend (DEC-013)
+- **Justificação:** Segurança com rotação contínua; Refresh Token dispensado pois a sessão é gerida pelo BFF com timeout próprio
+- **Alternativas consideradas:** Tokens mais longos (descartado por segurança); Refresh Token (descartado — ver DEC-002)
 
 ### Autorização
 - **Decisão:** ABAC híbrido com RBAC (roles como atributo)

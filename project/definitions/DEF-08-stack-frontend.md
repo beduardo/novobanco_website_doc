@@ -61,7 +61,6 @@ Definir a stack tecnológica do frontend do HomeBanking Web, considerando os req
 
 12. Será implementado SSR (Server Side Rendering) ou SSG?
     Híbrido: SSG para páginas estáticas, SSR para dados dinâmicos, ISR onde aplicável.
-    BFF disponível para SSR protegendo client_secret no fluxo de login.
 
 13. Será utilizado CDN para assets estáticos?
     **Não.** Assets estáticos servidos directamente pelo container (Nginx), sem CDN. Cache de longa duração via cache-busting no browser.
@@ -120,8 +119,8 @@ Definir a stack tecnológica do frontend do HomeBanking Web, considerando os req
   - SSG: Páginas estáticas onde possível
   - SSR: Páginas com dados dinâmicos
   - ISR: Revalidação incremental onde aplicável
-- **Justificação:** Performance otimizada, SEO, proteção de client_secret no fluxo de login
-- **Alternativas consideradas:** CSR puro (descartado por SEO e segurança)
+- **Justificação:** Performance otimizada, SEO
+- **Alternativas consideradas:** CSR puro (descartado por SEO e performance)
 
 ### Bundle Size
 - **Decisão:** _A definir_ - Necessita consulta ao cliente

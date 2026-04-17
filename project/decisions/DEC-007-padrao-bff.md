@@ -44,7 +44,7 @@ Adotar o padrao **Backend for Frontend (BFF)** como camada de integracao entre o
 - Camada dedicada para o canal web
 - Responsavel por agregacao e transformacao de dados
 - Gestao de sessao e tokens
-- Comunicacao exclusiva com API Gateway
+- Comunicacao com backends via REST; alguns backends acessados directamente, Siebel core via API Gateway IBM (ver DEF-12)
 
 **Responsabilidades:**
 
@@ -59,7 +59,8 @@ Adotar o padrao **Backend for Frontend (BFF)** como camada de integracao entre o
 
 **Acoplamento com Legados:**
 - Frontend **nunca** comunica diretamente com servicos legados
-- Todo o acesso e via BFF, que abstrai complexidades
+- Todo o acesso do frontend e via BFF, que abstrai complexidades
+- O BFF comunica directamente com a maioria dos backends; o API Gateway IBM e utilizado apenas para o Siebel core (ver DEF-12)
 
 ## Alternatives Considered
 

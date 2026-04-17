@@ -215,7 +215,7 @@ FE --> USER : Acesso concedido
 |--------|---------------|------------|
 | **Canal** | HTTPS (TLS 1.2+) | Obrigatório |
 | **PIN/Password** | Transmitido em payload JSON | Protegido por TLS |
-| **Cifra adicional** | **A avaliar** | Avaliar necessidade de cifrar PIN antes de TLS |
+| **Cifra adicional** | **A definir em momento de projeto** | Necessidade de cifrar PIN client-side antes de TLS será decidida durante a execução do projecto |
 | **Método HTTP** | POST | Nunca em query string |
 
 ##### Dados Retornados no Login
@@ -244,7 +244,7 @@ FE --> USER : Acesso concedido
 | Item                          | Descrição                                                                      | Prioridade |
 | ----------------------------- | ------------------------------------------------------------------------------ | ---------- |
 | **Revisão de dados no login** | Identificar todos os dados retornados no login e avaliar risco em ambiente web | **Alta**   |
-| **Cifra de PIN**              | Avaliar se PIN deve ser cifrado client-side antes de transmissão (além de TLS) | Alta       |
+| **Cifra de PIN**              | Será definida em momento de projecto — necessidade de cifrar PIN client-side antes de transmissão (além de TLS) | Pendente (momento de projecto) |
 | **Credenciais do banco**      | Avaliar risco de exposição de credenciais de acesso a sistemas backend         | Alta       |
 
 ### 7.3 MFA/SCA (Strong Customer Authentication)
@@ -316,8 +316,8 @@ package "Browser" {
 package "BFF Cache" {
     [Access Token] as AT
     note bottom of AT
-        TTL: 15 min (salvaguarda)
-        Rotacionado a cada resposta
+        TTL: 15 min (salvaguarda sessão)
+        Token estático — não expira no Siebel
     end note
 }
 
@@ -327,7 +327,7 @@ package "Backend Services" {
 
 [Browser] --> [BFF] : Session Cookie
 [BFF] --> AT : Lookup / Update
-[BFF] --> OAUTH : Bearer Token\n<= novo token em cada resposta
+[BFF] --> OAUTH : OAuth Header dinâmico\n(mesmo access_token, novo GUID+timestamp+signature)
 
 @enduml
 ```
@@ -337,7 +337,7 @@ package "Backend Services" {
 | **Session Cookie** | Browser (cookie) | 30 min | Browser -> BFF |
 | **Access Token** | BFF Cache | 15 min | BFF -> Backend |
 
-**Rotação de Token:** O backend devolve um novo Access Token em cada resposta. O BFF actualiza o token em cache imediatamente após cada interacção com o backend. Não existe Refresh Token nem renovação proactiva — ver DEC-013.
+**Access Token Siebel:** O `access_token` nunca expira nem é rotacionado — é armazenado em cache no BFF e reutilizado durante toda a sessão. A cada chamada ao Siebel, o BFF gera dinamicamente um novo header Authorization OAuth com `oauth_guid`, `oauth_timestamp` e `oauth_signature` frescos. Os TTLs (15 min / 30 min) aplicam-se exclusivamente à sessão web (camada Frontend-BFF) — ver DEC-013.
 
 ### 7.6 Autorização
 
@@ -420,7 +420,7 @@ package "Backend Services" {
 | ~~Sessão web/mobile~~ | ~~DEF-07~~ | ~~Produto~~ | **Decidido: Independentes** |
 | ~~Políticas de password~~ | ~~DEF-07~~ | ~~Segurança~~ | **Decidido: Gerido pela API** |
 | **Revisão dados retornados no login** | SEC-07 / SEC-08 | Segurança + Arquitetura | **Pendente - Alta prioridade** |
-| **Cifra de PIN (além de TLS)** | SEC-07 / SEC-08 | Segurança | **Pendente - Alta prioridade** |
+| **Cifra de PIN (além de TLS)** | SEC-07 / SEC-08 | Segurança | **A definir em momento de projecto** |
 | **Credenciais do banco em ambiente web** | SEC-07 / SEC-08 | Segurança | **Pendente - Alta prioridade** |
 | Sessão exclusiva (aprovação cliente) | DEF-17-autenticacao-autorizacao | Produto | Pendente |
 | Limite de sessões ativas | DEF-17-autenticacao-autorizacao | Segurança | Pendente |

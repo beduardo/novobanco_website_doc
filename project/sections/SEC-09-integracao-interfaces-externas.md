@@ -77,11 +77,14 @@ Os Microservices sao uma camada de logica de negocio acedida **directamente pelo
 
 > **Pendencia:** Identificar quais MS serao desenvolvidos e suas responsabilidades especificas.
 
-### 9.3 Servicos Fora do Middleware BEST
-
-Existem servicos utilizados pela app mobile que nao passam pelo middleware BEST e sao acedidos diretamente. Estes servicos precisam ser identificados e avaliados para o canal web.
-
-> **Nota:** Conforme arquitectura definida, o BFF acede directamente ao Siebel e aos Microservices. O API Gateway IBM e utilizado para routing dos pedidos ao Siebel.
+### 9.3 Servicos Backoffice de gestão
+Existem servicos utilizados pela app mobile que nao passam pelo middleware BEST e sao acedidos diretamente.
+Os serviços em causa devolvem conteúdos que vão alimentar placeolders de Noticias, Artigos, Overlays, imagens associadas e entidades para pagamentos, reminders, links de informação externa, temas de investimento, operações públicas de venda e lista de produtos ativos.
+Há também serviços que devolvem regras e dados que asseguram regras de negócio, taxas de simulação de rendimentos para produtos de reforma, contas margem e depósitos a prazo, permissões de acesso e visualização de áreas baseado no perfil ou tipo de conta
+Há também serviços que controlam como e quando surgem os pedidos de avaliação da APP.
+Todos os serviços são anónimos, não registam qualquer informação de cliente.
+Tecnologicamente são serviços REST/JSON instalados no AZURE e protegidos por um token OAUTH, obtido de forma clássica junto de um oauth server mediante apresentação de client id e client secret sendo o seu scope de read apenas.
+Nota: Conforme arquitectura definida, o BFF acede directamente ao Siebel e aos Microservices. O API Gateway IBM e utilizado para routing dos pedidos ao Siebel.
 
 #### Servicos Identificados
 

@@ -62,7 +62,7 @@ Adotar a seguinte stack tecnologica para o frontend:
 - **SSR:** Paginas com dados dinamicos (dashboard, saldos)
 - **ISR:** Conteudo semi-estatico (noticias, indices)
 
-**Justificacao da estrategia de rendering:** Protecao de `client_secret` no fluxo de login, performance otimizada, SEO quando aplicavel.
+**Justificacao da estrategia de rendering:** Performance otimizada, SEO quando aplicavel.
 
 **Code Splitting:**
 - Por rotas usando React.Lazy
