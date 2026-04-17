@@ -10,6 +10,7 @@ depends-on-decisions:
   - "DEC-016"
   - "DEC-017"
   - "DEC-019"
+  - "DEC-020"
 word-count: 0
 ---
 
@@ -45,7 +46,7 @@ O HomeBanking Web segue uma arquitetura de integracao em camadas, onde o **BFF (
 | API Gateway → MicroService | Omni | Roteado pelo GW | Logica de negocio (canal web) |
 | API Gateway → Siebel | Siebel | Bearer Token | **Siebel valida o token** |
 | MicroService → API Gateway (IBM) | BEST | ClientID + ClientSecret | Quando MicroService necessita do Siebel |
-| BFF → Servicos Azure | REST | Direto | Servicos a identificar |
+| BFF → Backoffice de Configuração | REST/OAuth2 | OAuth2 client credentials (read-only) | Conteudos anonimos e regras de negocio (DEC-020) |
 | **App Mobile → API Gateway (IBM)** | Omni | Credenciais App | **Directo ao MicroService — sem BFF (DEC-019)** |
 
 #### Principios de Integracao
@@ -53,6 +54,7 @@ O HomeBanking Web segue uma arquitetura de integracao em camadas, onde o **BFF (
 | Principio | Descricao |
 |-----------|-----------|
 | **BFF como Gateway** | Todas as integracoes do canal web passam pelo BFF — excepção: App Mobile acede o MicroService directamente no fluxo QR Code (DEC-019) |
+| **Backoffice de Configuração como integração directa** | O BFF acede os servicos Backoffice de Configuracao directamente (sem IBM API Gateway), via REST/OAuth2 client credentials, pois sao servicos anonimos sem contexto de sessao (DEC-020) |
 | **Backend API (Facade)** | Ponto unico de acesso aos sistemas Core Banking |
 | **Reutilizacao** | Mesmas APIs utilizadas pela app mobile |
 | **Transformacao no BFF** | Adaptacao de dados para necessidades especificas do canal web |
@@ -81,26 +83,52 @@ O MicroService é um único Pod (.NET 8) de logica de negocio acedido pelo BFF *
 
 > **Pendencia:** Identificar as responsabilidades especificas do MicroService.
 
-### 9.3 Servicos Backoffice de gestão
-Existem servicos utilizados pela app mobile que nao passam pelo middleware BEST e sao acedidos diretamente.
-Os serviços em causa devolvem conteúdos que vão alimentar placeolders de Noticias, Artigos, Overlays, imagens associadas e entidades para pagamentos, reminders, links de informação externa, temas de investimento, operações públicas de venda e lista de produtos ativos.
-Há também serviços que devolvem regras e dados que asseguram regras de negócio, taxas de simulação de rendimentos para produtos de reforma, contas margem e depósitos a prazo, permissões de acesso e visualização de áreas baseado no perfil ou tipo de conta
-Há também serviços que controlam como e quando surgem os pedidos de avaliação da APP.
-Todos os serviços são anónimos, não registam qualquer informação de cliente.
-Tecnologicamente são serviços REST/JSON instalados no AZURE e protegidos por um token OAUTH, obtido de forma clássica junto de um oauth server mediante apresentação de client id e client secret sendo o seu scope de read apenas.
-Nota: Conforme arquitectura definida, o BFF acede ao Siebel e ao MicroService via API Gateway IBM. O API Gateway IBM faz routing para ambos os destinos.
+### 9.3 Backoffice de Configuração
 
-#### Servicos Identificados
+O **Backoffice de Configuração** constitui um ponto de integração externo distinto na arquitectura.
+Os seus serviços são acedidos directamente pelo BFF — sem passar pelo IBM API Gateway ou middleware
+BEST (DEC-020). São serviços anónimos: não registam qualquer informação de cliente.
 
-| Servico | Tipo | Funcao | Acesso |
+#### Categorias de Serviços
+
+**Conteúdos Dinâmicos**
+Devolvem conteúdos para alimentar áreas dinâmicas da interface:
+- Notícias, Artigos, Overlays, imagens associadas e publicidades
+- Entidades para pagamentos, reminders e links de informação externa
+- Temas de investimento, operações públicas de venda e lista de produtos activos
+
+**Regras de Negócio e Dados de Suporte**
+Devolvem regras e dados necessários à lógica de negócio no cliente:
+- Taxas de simulação de rendimentos (produtos de reforma, contas margem e depósitos a prazo)
+- Permissões de acesso e visualização de áreas, baseadas no perfil ou tipo de conta
+
+**Controlos de UX**
+Controlam como e quando surgem os pedidos de avaliação da app.
+
+#### Características Técnicas
+
+| Aspecto | Detalhe |
+|---------|---------|
+| **Tecnologia** | REST/JSON |
+| **Infraestrutura** | Azure |
+| **Autenticação** | OAuth2 client credentials (client_id + client_secret) |
+| **Scope** | Read-only |
+| **Anonimato** | Não registam informação de cliente |
+| **Acesso** | Directo pelo BFF — sem IBM API Gateway (DEC-020) |
+
+#### Serviços Identificados
+
+| Serviço | Tipo | Função | Acesso |
 |---------|------|--------|--------|
-| Servicos Azure | Cloud | _A identificar_ | Directo pelo BFF |
+| Conteudos (Noticias, Artigos, Overlays, Publicidades) | Backoffice de Configuracao | Conteudos dinamicos para a UI | Directo pelo BFF (OAuth2 client cred.) |
+| Regras de negocio (taxas simulacao, permissoes, temas investimento) | Backoffice de Configuracao | Configuracao e regras de negocio | Directo pelo BFF (OAuth2 client cred.) |
+| Controlos UX (pedidos de avaliacao da APP) | Backoffice de Configuracao | Logica de apresentacao | Directo pelo BFF (OAuth2 client cred.) |
 
-#### Questoes a Resolver
+#### Questões a Resolver
 
-| Questao | Responsavel | Status |
+| Questão | Responsável | Status |
 |---------|-------------|--------|
-| Lista completa de servicos Azure acedidos diretamente | Cliente | Pendente |
+| Lista completa de endpoints Backoffice de Configuracao | Cliente | Pendente |
 
 
 ### 9.4 Tratamento de Erros
@@ -189,12 +217,12 @@ O **IBM API Gateway** é o ponto central de routing entre o BFF e os Backend Ser
 - [x] [DEC-016-microservice-como-pod-unico.md](../decisions/DEC-016-microservice-como-pod-unico.md) - Status: accepted
 - [x] [DEC-017-sem-websocket-no-canal-web.md](../decisions/DEC-017-sem-websocket-no-canal-web.md) - Status: accepted
 - [x] [DEC-019-app-mobile-acede-microservice-diretamente-na-autenticacao-qr-code.md](../decisions/DEC-019-app-mobile-acede-microservice-diretamente-na-autenticacao-qr-code.md) - Status: accepted
+- [x] [DEC-020-backoffice-de-configuracao-acedido-directamente-pelo-bff-via-rest-oauth2.md](../decisions/DEC-020-backoffice-de-configuracao-acedido-directamente-pelo-bff-via-rest-oauth2.md) - Status: accepted
 
 ## Itens Pendentes
 
 | Item | Responsavel | Prioridade |
 |------|-------------|------------|
-| **Servicos fora do middleware BEST** | Cliente | **Alta** |
 | Tecnologia de Message Broker | Arquitetura | Alta |
 | SLAs de integracao com Backend API | Arquitetura + Cliente | Alta |
 | Providers de notificacao (SMS, Push, Email) | Assessment | Media |

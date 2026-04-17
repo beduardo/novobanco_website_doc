@@ -15,6 +15,7 @@ depends-on-decisions:
   - "DEC-007"
   - "DEC-010"
   - "DEC-016"
+  - "DEC-022"
 word-count: 1377
 ---
 
@@ -264,7 +265,6 @@ O modelo de dominio segue as entidades ja existentes nos backend services da app
 | **Responsabilidade** | API Gateway IBM (para chamadas aos Backend Services) |
 | **No BFF** | Não implementado (BFF não tem APIGW à frente) |
 | **Limites** | _A definir_ |
-| **Resubmissões** | _A definir_ - Estratégia para pedidos duplicados |
 | **Comunicacao** | Mensagem de erro informando necessidade de aguardar |
 
 > **Nota:** O BFF não tem API Gateway à frente, pelo que o rate limiting é aplicado apenas nas chamadas do BFF para os Backend Services através do API Gateway IBM.
@@ -273,7 +273,7 @@ O modelo de dominio segue as entidades ja existentes nos backend services da app
 
 | Padrao | Status | Observacao |
 |--------|--------|------------|
-| **Retry** | Implementado | Exponential backoff (configuravel) |
+| **Retry** | Não implementado | Erros transientes propagados ao utilizador (DEC-022) |
 | **Timeout** | Implementado | Configuravel por endpoint |
 | **Fallback** | Parcial | Apenas autenticacao |
 | **Health Checks** | Implementado | Liveness + Readiness probes |
@@ -336,3 +336,4 @@ O modelo de dominio segue as entidades ja existentes nos backend services da app
 - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack Backend
 - [DEC-011-diagrama-arquitetura-unico.md](../decisions/DEC-011-diagrama-arquitetura-unico.md) - Diagrama de referência único
 - [DEC-016-microservice-como-pod-unico.md](../decisions/DEC-016-microservice-como-pod-unico.md) - MicroService como Pod único (via Gateway)
+- [DEC-022-sem-estrategia-de-resubmissoes.md](../decisions/DEC-022-sem-estrategia-de-resubmissoes.md) - Sem estratégia de resubmissões

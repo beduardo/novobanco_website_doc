@@ -82,7 +82,6 @@ Component "Siebel" as Siebel
 |------|---------------|-----|
 | Session ID | Cache | 30 min (max absoluto) |
 | Access Token | Cache | 15 min |
-| Refresh Token | Cache | 7 dias |
 | Dados SSR/SSG | Cache | _A definir_ |
 
 
@@ -131,38 +130,19 @@ rectangle "Armazenamento por Camada" {
 
 ### 6.5 Retenção de Dados
 
-| Tipo | Política | Status |
-|------|----------|--------|
-| Logs de acesso web | _A definir_ | Pendente |
-| Dados de sessão | _A definir_ | Pendente |
-| Requisitos de auditoria | _A definir_ | Pendente |
+A política de retenção de dados seguirá as políticas internas a ser indicadas pelo Banco Best / NovoBanco.
 
 ### 6.6 Backup & Restore
 
-| Aspeto | Status |
-|---------|--------|
-| Componentes que requerem backup | _A definir_ |
-| Frequência de backup | _A definir_ |
-| RTO/RPO para restauro | _A definir_ |
-
-**Nota:** A maioria dos dados reside nos backend services existentes, que já possuem políticas de backup definidas.
+Os procedimentos de backup e restore seguirão as políticas internas a ser indicadas pelo Banco Best / NovoBanco.
 
 ### 6.7 RGPD - Data Subject Rights
 
-| Requisito | Status |
-|-----------|--------|
-| Subject Access Requests (SAR) | _A definir_ |
-| Direito ao esquecimento | _A definir_ |
-| Dados web nas exportações | _A definir_ |
-
-**Nota:** Processos RGPD existentes da app mobile devem ser estendidos ao canal web.
+O tratamento de direitos dos titulares de dados (SAR, direito ao esquecimento, exportações) seguirá as políticas internas a ser indicadas pelo Banco Best / NovoBanco.
 
 ### 6.8 Classificação de Dados
 
-| Aspeto | Status |
-|---------|--------|
-| Esquema de classificação | _A definir_ |
-| Dados sensíveis/PII | _A definir_ |
+O esquema de classificação de dados e o tratamento de dados sensíveis/PII seguirão as políticas internas a ser indicadas pelo Banco Best / NovoBanco.
 
 ### 6.9 Estratégia de Cache
 
@@ -203,9 +183,9 @@ rectangle "Estratégia de Cache" {
 - [x] Diagrama de fluxo de dados
 - [x] Modelo de dados documentado (alto nível)
 - [ ] Política de encriptação - Parcial
-- [ ] Política de retenção - Pendente
-- [ ] Procedimentos RGPD - Pendente
-- [ ] Classificação de dados - Pendente
+- [x] Política de retenção - Segue políticas internas Banco Best / NovoBanco
+- [x] Procedimentos RGPD - Segue políticas internas Banco Best / NovoBanco
+- [x] Classificação de dados - Segue políticas internas Banco Best / NovoBanco
 - [ ] Estratégia de cache detalhada - Pendente
 
 ## Definições Utilizadas
@@ -220,11 +200,5 @@ rectangle "Estratégia de Cache" {
 
 | Item | Documento | Responsável |
 |------|-----------|-------------|
-| Política de retenção logs | DEF-16-arquitetura-dados | Operações |
-| Política de retenção sessão | DEF-16-arquitetura-dados | Arquitetura |
-| Requisitos de auditoria | DEF-16-arquitetura-dados | Compliance |
-| Procedimentos RGPD | DEF-16-arquitetura-dados | DPO |
-| Classificação de dados | DEF-16-arquitetura-dados | Segurança |
 | TTL e invalidação cache | DEF-16-arquitetura-dados | Arquitetura |
-| Componentes para backup | DEF-16-arquitetura-dados | Operações |
 | Versão TLS | DEF-16-arquitetura-dados | Segurança |

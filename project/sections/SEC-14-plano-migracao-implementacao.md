@@ -32,22 +32,9 @@ Definir o plano de migracao e implementacao do HomeBanking Web, incluindo roadma
 | **3: Go-Live** |  Cutover, lancamento controlado |
 | **5: Hypercare** |  Suporte intensivo, monitorizacao, ajustes |
 
-### 14.2 MVP - Funcionalidades Core
-
-| Funcionalidade | Prioridade | Complexidade |
-|----------------|------------|--------------|
-| Login QR Code (principal) | P1 | Alta |
-| Login tradicional (fallback) | P1 | Media |
-| Dashboard / Home | P1 | Media |
-| Consulta de contas | P1 | Baixa |
-| Consulta de saldos | P1 | Baixa |
-| Transferencias nacionais | P1 | Alta |
-| Pagamentos de servicos | P1 | Alta |
-| Logout | P1 | Baixa |
-
 ### 14.3 Estrategia de Cutover
-(A Definir)
-**Abordagem:** Lancamento Gradual (Phased Rollout) com Feature Flags
+
+A estrategia de cutover segue os padroes e processos definidos pelo Banco Best, incluindo a abordagem de lancamento gradual (Phased Rollout) com Feature Flags. Os detalhes operacionais, janelas de manutencao e procedimentos especificos sao coordenados com as equipas do Banco Best.
 
 ### 14.4 Coexistencia com App Mobile
 
@@ -99,160 +86,23 @@ end note
 
 ### 14.5 Migracao de Dados
 
-> **Conclusao:** O canal web e **stateless** e nao requer migracao de dados. Todos os dados de negocio estao no backend existente que ja serve a App Mobile.
-
-| Tipo de Dado | Migracao Necessaria? | Notas |
-|--------------|---------------------|-------|
-| Dados de utilizadores | Nao | Backend existente |
-| Contas e saldos | Nao | Backend existente |
-| Historico de transacoes | Nao | Backend existente |
-| Preferencias de utilizador | Nao | Geridas no backend |
-| Configuracoes do sistema | Nao | Novas configs para Web |
+O canal web e **stateless** e nao requer migracao de dados propria — todos os dados de negocio residem no backend existente que ja serve a App Mobile. Quaisquer procedimentos de migracao de configuracoes ou dados de suporte seguem os padroes e politicas definidos pelo Banco Best.
 
 ### 14.6 Criterios Go/No-Go
 
-#### Checklist Pre-Go-Live
-
-| Categoria | Criterio | Bloqueante |
-|-----------|----------|------------|
-| **Funcional** | 100% dos testes E2E criticos passam | Sim |
-| **Funcional** | UAT aprovado pelo PO | Sim |
-| **Performance** | Load test 400 users OK | Sim |
-| **Performance** | SLOs validados (99.9%, < 3s) | Sim |
-| **Seguranca** | Pentest concluido | Sim |
-| **Seguranca** | 0 vulnerabilidades criticas/altas | Sim |
-| **Seguranca** | SAST/DAST sem findings criticos | Sim |
-| **Operacional** | Runbooks documentados | Sim |
-| **Operacional** | Alertas configurados | Sim |
-| **Operacional** | Dashboards operacionais prontos | Sim |
-| **Operacional** | Equipa de suporte treinada | Sim |
-| **Legal** | Aprovacao compliance | Sim |
-
-#### Comite de Aprovacao
-
-| Papel | Responsabilidade |
-|-------|------------------|
-| Tech Lead | Validacao tecnica |
-| PO / Product Manager | Validacao funcional |
-| Security Officer | Validacao de seguranca |
-| Operations Lead | Validacao operacional |
-| Sponsor | Aprovacao final |
+Os criterios de go/no-go, checklist pre-go-live e o comite de aprovacao seguem os padroes de governance definidos pelo Banco Best. A equipa de desenvolvimento garante que os artefactos tecnicos (testes E2E, pentest, SLOs, runbooks) estao prontos e validados antes de submeter ao processo de aprovacao do cliente.
 
 ### 14.7 Procedimentos de Rollback
 
-```plantuml
-@startuml
-skinparam backgroundColor white
-
-title Procedimento de Rollback
-
-start
-:Incidente detectado;
-:Avaliar severidade;
-
-if (Severidade P1?) then (sim)
-    :Decisao de rollback (Tech Lead);
-    :Comunicar stakeholders;
-
-    if (Feature flag disponivel?) then (sim)
-        :Desativar feature flag;
-        note right: Rollback instantaneo
-    else (nao)
-        :kubectl rollout undo;
-        note right: Rollback de deployment
-    endif
-
-    :Validar servico restaurado;
-    :Abrir post-mortem;
-else (nao)
-    :Investigar root cause;
-    :Planear hotfix;
-    :Agendar deploy corretivo;
-endif
-
-stop
-
-@enduml
-```
-
-#### Tipos de Rollback
-
-| Tipo | Tempo | Quando Usar |
-|------|-------|-------------|
-| Feature Flag | Instantaneo | Problema em feature especifica |
-| Deployment | 2-5 min | Problema geral na versao |
-| Full Rollback | 15-30 min | Problema sistemico |
+Os procedimentos de rollback seguem os padroes operacionais do Banco Best. Do lado da aplicacao, a equipa disponibiliza suporte tecnico atraves de feature flags (rollback instantaneo por feature) e de `kubectl rollout undo` (rollback de deployment), conforme os mecanismos de deploy da plataforma OpenShift do cliente (DEC-014).
 
 ### 14.8 Beta Testing
 
-| Fase | Duracao | Participantes | Objetivo |
-|------|---------|---------------|----------|
-| Alpha | 1 semana | Equipa interna (50) | Smoke testing |
-| Beta fechado | 2 semanas | Colaboradores selecionados (500) | Funcional completo |
-| Beta aberto | 1 semana | Early adopters (2000) | Stress real |
-
-#### Criterios de Selecao Beta
-
-| Criterio | Justificacao |
-|----------|--------------|
-| Utilizadores ativos da App | Familiarizados com fluxos |
-| Diferentes perfis | Standard, Premium, Empresas |
-| Diferentes regioes | Testar latencia |
-| Tech-savvy | Feedback qualitativo |
-
-#### Feedback Collection
-
-| Canal | Tipo de Feedback |
-|-------|------------------|
-| In-app widget | Bugs e sugestoes |
-| Formulario dedicado | Feedback estruturado |
-| Analytics | Comportamento (heatmaps, funnels) |
-| Entrevistas | Qualitativo (amostra) |
+A estrategia de beta testing, incluindo fases, criterios de selecao de participantes e canais de recolha de feedback, e definida e coordenada pelo Banco Best. A equipa de desenvolvimento participa fornecendo suporte tecnico, correcao de bugs e analise de metricas durante o periodo de testes.
 
 ### 14.9 Hypercare Period
 
-| Aspecto | Especificacao |
-|---------|---------------|
-| **Duracao** | 4 semanas apos go-live |
-| **Cobertura** | 24/7 na primeira semana, 8-20h restantes |
-| **Equipa** | Dev + Ops + Suporte dedicados |
-
-#### Actividades por Semana
-
-| Semana | Foco |
-|--------|------|
-| 1 | Monitorizacao intensiva, resolucao imediata de bugs |
-| 2 | Estabilizacao, ajustes de performance |
-| 3 | Optimizacao, resolucao de feedback |
-| 4 | Transicao para operacao normal |
-
-#### Criterios de Saida do Hypercare
-
-| Criterio | Threshold |
-|----------|-----------|
-| Bugs P1/P2 abertos | 0 |
-| SLOs cumpridos | 3 dias consecutivos |
-| Taxa de erro | < 0.1% |
-| Feedback negativo | < 5% |
-
-### 14.10 Comunicacao e Formacao
-
-#### Plano de Comunicacao
-
-| Audiencia | Canal | Mensagem | Timing |
-|-----------|-------|----------|--------|
-| Utilizadores | Email + App | Lancamento do novo canal | 2 semanas antes |
-| Utilizadores | Landing page | Features e beneficios | Go-live |
-| Suporte | Training | Novos fluxos e FAQs | 1 semana antes |
-| Internos | Intranet | Anuncio de lancamento | Go-live |
-
-#### Formacao
-
-| Grupo | Conteudo | Formato |
-|-------|----------|---------|
-| Equipa de Suporte | Fluxos, troubleshooting, FAQs | Workshop presencial |
-| Gestores de Conta | Demo, beneficios | Video + Demo |
-| Equipa Tecnica | Arquitetura, runbooks | Documentacao + Sessao |
+O periodo de hypercare apos go-live e gerido de acordo com os padroes do Banco Best. A equipa de desenvolvimento assegura disponibilidade tecnica para resolucao de incidentes, ajustes de performance e suporte a operacoes durante o periodo acordado com o cliente.
 
 ## Decisoes Referenciadas
 

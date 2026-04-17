@@ -188,6 +188,9 @@ REACT --> PLAYWRIGHT
 
 #### 4.6.1 Stack Tecnológica
 
+> **Nota (DEC-021):** A stack apresentada é **meramente indicativa**. Será validada e
+> confirmada no arranque do projeto em sessão técnica com a equipa do Novo Banco.
+
 | Camada | Tecnologia | Versão |
 |--------|------------|--------|
 | **Framework** | React | 18+ (mais atual) |

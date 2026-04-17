@@ -4,7 +4,8 @@ title: "Integração e Interfaces Externas"
 status: "in-progress"
 created: "2026-01-04"
 updated: "2026-01-04"
-related-decisions: []
+related-decisions:
+  - "DEC-020"
 affects-sections:
   - "SEC-09"
 ---
@@ -23,6 +24,7 @@ Definir as integrações do HomeBanking Web com sistemas internos e externos. O 
 |---------|------|--------------|-------------|--------|
 | **Siebel** | Backend Principal (Autenticação PSD2 + APIs Bancárias) | BEST | Alta | Existente |
 | **MicroService** | Lógica de Negócio (Pod único) | BEST | Alta | A desenvolver |
+| **Backoffice de Configuração** | Conteúdos dinâmicos e regras de negócio anónimas (Azure REST/OAuth2) | BEST | Média | Existente |
 | Core Banking APIs | Integração | BEST | Alta | Existente |
 | App Mobile Nativa | Referência | BEST | Média | Existente |
 | Azure Infrastructure | Plataforma | BEST | Alta | Existente |
@@ -333,6 +335,7 @@ Definir as integrações do HomeBanking Web com sistemas internos e externos. O 
 
 - [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - BFF como ponto único de integração
 - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack tecnológica backend
+- [DEC-020-backoffice-de-configuracao-acedido-directamente-pelo-bff-via-rest-oauth2.md](../decisions/DEC-020-backoffice-de-configuracao-acedido-directamente-pelo-bff-via-rest-oauth2.md) - Backoffice de Configuração como ponto de integração distinto
 
 ## Referências
 

@@ -93,7 +93,7 @@ package "Camada BFF" as CAMADA_BFF #LightBlue {
     end note
 }
 
-package "Cache Distribuído" as CACHE_DISTRIBUIDO #LightBlue {
+package "Cache Distribuído" as CACHE_DISTRIBUIDO #LightGreen {
     database "Redis Cluster" as REDIS
     note bottom of REDIS
       Sessões de utilizador
@@ -102,12 +102,13 @@ package "Cache Distribuído" as CACHE_DISTRIBUIDO #LightBlue {
     end note
 }
 
-package "Serviços Azure" as SERVICOS_AZURE #LightYellow {
-    [Serviços Azure\n(a detalhar)] as AZURE
+package "Backoffice de Configuração" as SERVICOS_AZURE #LightGreen {
+    [Backoffice de Configuração\n(Azure REST/OAuth2)] as AZURE
     note bottom of AZURE
-      Serviços acedidos
-      diretamente pelo BFF
-      **PENDENTE: Identificar**
+      Conteúdos dinâmicos e regras
+      de negócio anónimas
+      Acedido directamente pelo BFF
+      OAuth2 client credentials (read-only)
     end note
 }
 
@@ -152,7 +153,7 @@ INFRAESTRUTURA --> CAMADA_BFF : Protocolo Omni
 CAMADA_BFF --> CACHE_DISTRIBUIDO : Lookup/Store\nTokens e Sessão
 CAMADA_BFF --> GATEWAY : clientid + secret\n(Siebel + MicroService)
 GATEWAY --> MICROSERVICES : Protocolo Omni\n(Lógica de Negócio)
-CAMADA_BFF --> SERVICOS_AZURE : Direto
+CAMADA_BFF --> SERVICOS_AZURE : REST/OAuth2\n(client credentials)
 GATEWAY --> BACKEND_SERVICES : Bearer Token
 MICROSERVICES --> BACKEND_SERVICES : Protocolo Siebel
 
@@ -168,9 +169,8 @@ MICROSERVICES ..> OBSERVABILIDADE : Logs/Métricas
 
 | Cor | Significado |
 |-----|-------------|
-| Azul | Componentes novos (a desenvolver): SPA, BFF, MS, Redis |
-| Verde | Componentes existentes (reutilizar): F5, API Gateway, Siebel |
-| Amarelo | Componentes a detalhar (pendente): Serviços Azure |
+| Azul | Componentes novos (a desenvolver): SPA, BFF, MicroService |
+| Verde | Componentes existentes (reutilizar): F5, API Gateway, Siebel, Redis, Backoffice de Configuração |
 | Cinza | Infraestrutura transversal |
 
 #### Protocolos de Comunicação
@@ -201,7 +201,6 @@ MICROSERVICES ..> OBSERVABILIDADE : Logs/Métricas
 
 | Item | Descrição | Responsável |
 |------|-----------|-------------|
-| Serviços Azure | Identificar quais serviços Azure são acedidos diretamente pelo BFF | Banco Best |
 | Responsabilidades do MicroService | Identificar as responsabilidades específicas do MicroService | Banco Best/NextReality |
 
 ### 3.3 Componentes Principais
@@ -211,10 +210,11 @@ MICROSERVICES ..> OBSERVABILIDADE : Logs/Métricas
 | **HomeBanking Web** | Frontend SPA | Interface do utilizador, experiência web responsiva | React |
 | **F5** | Infraestrutura | Entrada de tráfego web | Existente |
 | **BFF Web** | Backend | Lógica de UI, agregação, transformação, orquestração | .NET 8 |
-| **Redis Cluster** | Cache | Sessões distribuídas, tokens | Existente |
+| **Redis Cluster** | Cache | Sessões distribuídas, tokens | Redis (Existente) |
 | **MicroService** | Backend | Lógica de Negócio, regras de domínio (Pod único) | .NET 8 |
 | **API Gateway** | Infraestrutura | Roteamento para Siebel e MicroService | IBM (Existente) |
 | **Siebel** | Backend | Lógica de negócio core | Existente |
+| **Backoffice de Configuração** | Backend | Conteúdos dinâmicos e regras de negócio anónimas | Azure REST/OAuth2 (Existente) |
 | **ELK Stack** | Observabilidade | Logs centralizados, métricas, dashboards | Existente |
 
 ### 3.4 Casos de Uso Principais
@@ -302,11 +302,11 @@ A integração segue o modelo definido no diagrama de referência (secção 3.2)
 | Frontend Web (SPA React) | Novo | Desenvolver | Container OpenShift |
 | BFF Web (.NET 8) | Novo | Desenvolver | Container OpenShift |
 | MicroService (.NET 8) | Novo | Desenvolver | Pod único OpenShift, Protocolo Omni |
-| Redis Cluster | Novo | Desenvolver | Sessões e tokens |
+| Redis Cluster | Existente | Reutilizar | Sessões e tokens |
 | F5 | Existente | Reutilizar | Entrada de tráfego web |
 | API Gateway (IBM) | Existente | Reutilizar | Para Siebel e MicroService |
 | Siebel | Existente | Reutilizar | Backend principal, lógica core |
-| Serviços Azure | Existente | Reutilizar | Acesso direto pelo BFF |
+| Backoffice de Configuração | Existente | Reutilizar | Acesso directo pelo BFF (REST/OAuth2 client credentials) |
 | ELK Stack | Existente | Reutilizar | Logs e métricas |
 
 ## Entregáveis

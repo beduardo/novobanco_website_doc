@@ -4,7 +4,8 @@ title: "Best Autenticação OAuth"
 status: "completed"
 created: "2025-12-22"
 updated: "2025-12-22"
-related-decisions: []
+related-decisions:
+  - "DEC-023"
 affects-sections:
   - "SEC-05"
 ---
@@ -95,7 +96,7 @@ end note
 == Fase 2: Scan e Autorização na App ==
 User -> App : Scan QR Code
 App -> App : Extrai pending_session_id\ndo QR Code
-App -> App : Solicita biometria/PIN
+App -> App : Solicita biometria
 User -> App : Confirma biometria
 App -> API : POST /auth/authorize-session\n{pending_session_id, device_id, biometric_token}
 API -> API : Valida dispositivo autorizado
@@ -148,7 +149,7 @@ end note
 
 == Fase 2: Scan e Autenticação na App ==
 User -> App : Scan QR Code
-App -> App : Abre e solicita\nbiometria/PIN
+App -> App : Abre e solicita\nbiometria
 User -> App : Confirma biometria
 App -> API : POST /auth/web-session\n{device_id, biometric_token}
 API -> API : Valida dispositivo autorizado
@@ -434,7 +435,7 @@ stop
 
 | Fator | Tipo | Exemplos |
 |-------|------|----------|
-| Conhecimento | Algo que sabe | Password, PIN |
+| Conhecimento | Algo que sabe | Password |
 | Posse | Algo que tem | Telemóvel, App autorizada |
 | Inerência | Algo que é | Biometria (fingerprint, face) |
 

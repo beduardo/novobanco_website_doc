@@ -1,11 +1,11 @@
 ---
-id: "DEC-009"
-title: "Stack Tecnologica Frontend"
-status: "accepted"
-created: "2026-01-04"
 affects-definitions: []
 affects-sections:
-  - "SEC-04"
+    - SEC-04
+created: "2026-01-04"
+id: DEC-009
+status: proposed
+title: Stack Tecnologica Frontend
 ---
 
 # ADR-009: Stack Tecnologica Frontend
@@ -15,7 +15,10 @@ affects-sections:
 
 ## Status
 
-Accepted
+Proposed
+
+> **Nota:** Esta stack é indicativa. Será validada no arranque do projeto com a equipa técnica
+> do Novo Banco. Ver [DEC-021](DEC-021-stack-tecnologica-frontend-indicativa-validacao-no-arranque.md).
 
 ## Context
 
@@ -114,6 +117,7 @@ Adotar a seguinte stack tecnologica para o frontend:
 - Curva de aprendizagem para desenvolvedores nao familiarizados
 - SSR/SSG hibrido adiciona complexidade
 - Multiplas bibliotecas a manter atualizadas
+- **Stack sujeita a validacao no arranque** -- escolhas especificas podem ser revistas (ver DEC-021)
 
 ## Notes
 

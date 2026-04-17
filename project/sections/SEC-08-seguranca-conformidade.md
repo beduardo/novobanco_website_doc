@@ -171,7 +171,7 @@ rectangle "Ferramentas" #Yellow {
 | **Man-in-the-Browser** | Alto | Não armazenar tokens sensíveis em JS, usar HttpOnly cookies |
 | **Session Hijacking** | Alto | Cookies Secure/HttpOnly/SameSite, renovação de sessão |
 | **Extensões maliciosas** | Médio | Não expor dados sensíveis no DOM, CSP restritivo |
-| **Keyloggers em browser** | Médio | Considerar teclado virtual para PIN (a avaliar) |
+| **Keyloggers em browser** | Médio | Considerar teclado virtual para entrada de credenciais (a avaliar) |
 | **Inspeção de tráfego** | Médio | TLS 1.2+, HSTS, considerar certificate pinning (limitado em web) |
 
 ##### Dados Sensíveis - Tratamento Web
@@ -188,8 +188,6 @@ rectangle "Ferramentas" #Yellow {
 | Item | Descrição | Responsável | Prioridade |
 |------|-----------|-------------|------------|
 | **Credenciais no login** | Revisar quais dados são retornados no login e avaliar risco de exposição em ambiente web | Segurança + Arquitetura | **Alta** |
-| **PIN em claro** | Avaliar se PIN/password devem ser cifrados antes de transmissão (além de TLS) | Segurança | Alta |
-| **Teclado virtual** | Avaliar necessidade de teclado virtual para entrada de PIN | Segurança + UX | Média |
 | **Certificate pinning** | Avaliar viabilidade de certificate pinning em ambiente web | Arquitetura | Média |
 
 > **Ação Requerida:** Antes do go-live, realizar revisão de segurança específica para o canal web, considerando que os controlos disponíveis são diferentes do ambiente mobile nativo.

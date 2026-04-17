@@ -67,7 +67,7 @@ Adotar a seguinte stack tecnologica para o BFF:
 - Cache de dados publicos/semi-estaticos para SSG/ISR
 
 **Resiliencia:**
-- Retry: Exponential backoff (3 retries) para erros transientes
+- Retry: Não implementado (ver DEC-022)
 - Timeout: 60s padrao para todas as chamadas
 - Circuit Breaker: A definir no assessment (Polly sugerido)
 

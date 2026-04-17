@@ -100,4 +100,4 @@ Adotar o padrao **Backend for Frontend (BFF)** como camada de integracao entre o
 
 - Stack BFF: C# .NET 8 (conforme DEF-12-arquitetura-bff)
 - Comunicacao BFF -> Backend: REST
-- Decisoes de resiliencia (retry, timeout) aplicadas no BFF
+- Decisoes de resiliencia (timeout, circuit breaker) aplicadas no BFF; sem retry automatico (ver DEC-022)

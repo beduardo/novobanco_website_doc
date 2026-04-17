@@ -65,7 +65,7 @@ Definir as diretrizes de experiência do utilizador para o HomeBanking Web, gara
     **N/A.** Sem requisitos de offline.
 
 13. Qual o comportamento esperado em conectividade intermitente?
-    Necessita aprofundamento. Apresentar opções ao cliente (retry automático, mensagem de erro, etc.)
+    Mensagem de erro ao utilizador (sem retry automático no BFF — ver DEC-022)
 
 ### Segurança UX
 

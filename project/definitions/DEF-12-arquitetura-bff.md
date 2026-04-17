@@ -77,7 +77,7 @@ O BFF comunica directamente com múltiplos backends, cada um com o seu protocolo
 | **Siebel (APIs bancárias)** | OAuth 1.1 HMAC | APIs bancárias principais | Não (directo) |
 | **MicroService** | Protocolo Omni | Lógica de Negócio | **Sim** (via API Gateway IBM) |
 | **Siebel (core)** | BEST | Lógica de negócio core | **Sim** (API Gateway IBM) |
-| **Serviços Azure** | REST | Serviços cloud | Não (directo) |
+| **Backoffice de Configuração** | REST/OAuth2 | Conteúdos dinâmicos e regras de negócio anónimas (Azure) | Não (directo) |
 
 > **Nota:** O API Gateway IBM é o ponto de entrada para o Siebel **e** para o MicroService.
 
@@ -248,6 +248,7 @@ O BFF implementa o padrão "Cache or API" para dados frequentemente acedidos:
 
 - [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - Padrão BFF
 - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack tecnológica backend
+- [DEC-020-backoffice-de-configuracao-acedido-directamente-pelo-bff-via-rest-oauth2.md](../decisions/DEC-020-backoffice-de-configuracao-acedido-directamente-pelo-bff-via-rest-oauth2.md) - Backoffice de Configuração como backend directo do BFF
 
 ## Referências
 

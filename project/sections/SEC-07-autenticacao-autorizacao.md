@@ -233,8 +233,7 @@ FE --> USER : Acesso concedido
 | Aspeto | Especificação | Observação |
 |--------|---------------|------------|
 | **Canal** | HTTPS (TLS 1.2+) | Obrigatório |
-| **PIN/Password** | Transmitido em payload JSON | Protegido por TLS |
-| **Cifra adicional** | **A definir em momento de projeto** | Necessidade de cifrar PIN client-side antes de TLS será decidida durante a execução do projecto |
+| **Password** | Transmitida em payload JSON | Protegida por TLS |
 | **Método HTTP** | POST | Nunca em query string |
 
 ##### Dados Retornados no Login
@@ -263,7 +262,6 @@ FE --> USER : Acesso concedido
 | Item                          | Descrição                                                                      | Prioridade |
 | ----------------------------- | ------------------------------------------------------------------------------ | ---------- |
 | **Revisão de dados no login** | Identificar todos os dados retornados no login e avaliar risco em ambiente web | **Alta**   |
-| **Cifra de PIN**              | Será definida em momento de projecto — necessidade de cifrar PIN client-side antes de transmissão (além de TLS) | Pendente (momento de projecto) |
 | **Credenciais do banco**      | Avaliar risco de exposição de credenciais de acesso a sistemas backend         | Alta       |
 
 ### 7.3 MFA/SCA (Strong Customer Authentication)
@@ -329,24 +327,34 @@ package "Browser" {
     note bottom of SC
         HttpOnly, Secure
         SameSite=Strict
+        Chave de lookup Redis
     end note
 }
 
-package "BFF Cache" {
-    [Access Token] as AT
-    note bottom of AT
-        TTL: 15 min (salvaguarda sessão)
-        Token estático — não expira no Siebel
+package "BFF" {
+    [Redis Cache] as CACHE
+    note bottom of CACHE
+        Chave: session:{token_sessao_spa}
+        Valor: { apiToken, user_context, flags }
+        TTL: 30 min (timeout absoluto)
     end note
 }
 
 package "Backend Services" {
-    [OAuth Server] as OAUTH
+    [API Gateway (IBM)] as APIGW
+    [MicroService / Siebel] as SIEBEL
+    APIGW --> SIEBEL
 }
 
-[Browser] --> [BFF] : Session Cookie
-[BFF] --> AT : Lookup / Update
-[BFF] --> OAUTH : OAuth Header dinâmico\n(mesmo access_token, novo GUID+timestamp+signature)
+[Browser] --> [BFF] : Cookie: token_sessao_spa
+[BFF] --> CACHE : Lookup apiToken por sessão
+[BFF] --> APIGW : Authorization OAuth\n(apiToken + novo GUID + timestamp + SHA256)\nGerado dinamicamente no BFF a cada pedido
+
+note bottom of BFF
+  Não existe OAuth Server externo.
+  O BFF assina cada pedido localmente
+  com o apiToken armazenado em cache.
+end note
 
 @enduml
 ```
@@ -442,7 +450,6 @@ package "Backend Services" {
 | ~~Sessão web/mobile~~ | ~~DEF-07~~ | ~~Produto~~ | **Decidido: Independentes** |
 | ~~Políticas de password~~ | ~~DEF-07~~ | ~~Segurança~~ | **Decidido: Gerido pela API** |
 | **Revisão dados retornados no login** | SEC-07 / SEC-08 | Segurança + Arquitetura | **Pendente - Alta prioridade** |
-| **Cifra de PIN (além de TLS)** | SEC-07 / SEC-08 | Segurança | **A definir em momento de projecto** |
 | **Credenciais do banco em ambiente web** | SEC-07 / SEC-08 | Segurança | **Pendente - Alta prioridade** |
 | Sessão exclusiva (aprovação cliente) | DEF-17-autenticacao-autorizacao | Produto | Pendente |
 | Limite de sessões ativas | DEF-17-autenticacao-autorizacao | Segurança | Pendente |

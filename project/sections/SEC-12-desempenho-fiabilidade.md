@@ -265,7 +265,7 @@ note right: Task.WhenAll() em .NET
 | Padrão | Implementação |
 |--------|---------------|
 | **Circuit Breaker** | Polly (.NET) |
-| **Retry** | Exponential backoff (3 tentativas) |
+| **Retry** | Não implementado (DEC-022) |
 | **Timeout** | Configurável por endpoint |
 | **Bulkhead** | Limite de conexões |
 | **Health Checks** | Liveness + Readiness probes |

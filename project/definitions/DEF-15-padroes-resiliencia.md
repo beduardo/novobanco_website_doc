@@ -4,7 +4,8 @@ title: "Padrões de Resiliência"
 status: "completed"
 created: "2026-01-03"
 updated: "2026-01-03"
-related-decisions: []
+related-decisions:
+  - "DEC-022"
 affects-sections:
   - "SEC-05"
 ---
@@ -34,13 +35,13 @@ Definir os padrões de resiliência e tolerância a falhas para o HomeBanking We
 
 ### Retry (Consolidado)
 4. Qual será a política de retry?
-    Exponential backoff
+    Não implementado (DEC-022)
 
 5. Quantas tentativas antes de falhar?
-    3 tentativas
+    N/A — sem retry
 
 6. Quais erros são elegíveis para retry?
-    Timeout, Rate limit (429), erros transientes (5xx)
+    N/A — sem retry
 
 ### Timeout
 7. Quais serão os timeouts padrão para chamadas?
@@ -67,8 +68,8 @@ Definir os padrões de resiliência e tolerância a falhas para o HomeBanking We
 - **Justificação:** Integração nativa com .NET, suporte a políticas compostas
 
 ### Retry Policy
-- **Decisão:** Exponential backoff, 3 tentativas, erros transientes
-- **Justificação:** Recuperação automática de falhas transitórias
+- **Decisão:** Não implementado (DEC-022)
+- **Justificação:** O BFF não realiza retry automático; erros transientes são propagados ao utilizador com mensagem de erro adequada
 
 ### Timeout Strategy
 - **Decisão:** Timeout padrão de 60 segundos

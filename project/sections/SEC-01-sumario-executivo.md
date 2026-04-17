@@ -58,8 +58,10 @@ O HomeBanking Web incluirá **35 funcionalidades** da aplicação mobile, organi
 | **Património** | Património, Carteiras, Saldos e Movimentos |
 | **Operações** | Ordens Pendentes, Histórico de Operações, Confirmação de Operações |
 | **Documentos** | Comprovativos e Extratos |
-| **Investimentos** | Warrants, Ações, ETF, Fundos, Obrigações, Índices, Temas Investimento, Depósito a Prazo, Leilões, Ofertas Públicas, Unit Linked, Robot Advisor, BTP |
+| **Investimentos** | Warrants, Ações, ETF, Fundos, Obrigações, Índices, Temas Investimento, Poupança, Depósito a Prazo, Leilões, Ofertas Públicas, Unit Linked, Robot Advisor, BTP |
 | **Operações Diárias** | Transferências, Pagamentos, Carregamentos |
+| **Cartões** | Gestão de Cartão de Crédito e Débito |
+| **Pesquisa** | Produtos e Funcionalidade |
 | **Outros** | Outros Bancos, Eventos Corporativos, Seguros de Proteção, Área do Viajante, Bea, Wishlist, Notícias Externas |
 
 #### 1.3.2 Out-of-Scope
