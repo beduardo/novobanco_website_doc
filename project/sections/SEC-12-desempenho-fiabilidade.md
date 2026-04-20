@@ -3,10 +3,11 @@ id: "SEC-12"
 title: "Desempenho e Fiabilidade"
 status: "completed"
 created: "2026-01-08"
-updated: "2026-01-08"
+updated: "2026-04-18"
 depends-on-definitions:
   - "DEF-22"
-depends-on-decisions: []
+depends-on-decisions:
+  - "DEC-025"
 word-count: 0
 ---
 
@@ -191,74 +192,13 @@ end
 | Threshold | > 1KB |
 | Content-Types | application/json, text/html |
 
-#### Async/Non-blocking
-
-```plantuml
-@startuml
-skinparam backgroundColor white
-
-title Pattern: Async Processing
-
-participant "BFF" as bff
-participant "Backend API" as api1
-participant "Backend API 2" as api2
-participant "Backend API 3" as api3
-
-bff -> api1 : Request 1 (async)
-bff -> api2 : Request 2 (async)
-bff -> api3 : Request 3 (async)
-
-api1 --> bff : Response 1
-api2 --> bff : Response 2
-api3 --> bff : Response 3
-
-bff -> bff : Aggregate results
-note right: Task.WhenAll() em .NET
-
-@enduml
-```
-
 ### 12.7 Auto-Scaling
 
-| Aspeto | Abordagem |
-|---------|-----------|
-| **Mecanismo** | Horizontal Pod Autoscaler (HPA) |
-| **Métricas** | CPU, Memory |
-| **CPU Target** | 70% |
-| **Memory Target** | 80% |
-
-#### Configuração por Componente
-
-| Componente | Min Replicas | Max Replicas | CPU Target | Memory Target |
-|------------|--------------|--------------|------------|---------------|
-| Frontend | 2 | 6 | 70% | 80% |
-| BFF | 2 | 10 | 70% | 80% |
-
-#### Scale-up vs Scale-down
-
-| Evento | Tempo | Ação |
-|--------|-------|------|
-| Scale-up | 60s estabilização | Duplicar réplicas |
-| Scale-down | 300s estabilização | Reduzir 50% |
-
-> **Nota:** Scale-down mais conservador para evitar oscilações.
+> **Nota (DEC-025):** Os parâmetros de auto-scaling (HPA) — min/max réplicas, targets de CPU e memória, janelas de estabilização de scale-up e scale-down — são definidos e validados pela equipa de infraestrutura do Novo Banco. A equipa de desenvolvimento expõe os health check endpoints necessários para que o HPA funcione corretamente.
 
 ### 12.8 Capacity Planning
 
-#### Resource Requests/Limits
-
-| Componente | CPU Request | CPU Limit | Memory Request | Memory Limit |
-|------------|-------------|-----------|----------------|--------------|
-| Frontend | 100m | 500m | 128Mi | 256Mi |
-| BFF | 250m | 1000m | 256Mi | 512Mi |
-
-#### Estimativa de Recursos (400 users)
-
-| Componente | Pods | CPU Total | Memory Total |
-|------------|------|-----------|--------------|
-| Frontend | 2 | 1 vCPU | 512Mi |
-| BFF | 4 | 4 vCPU | 2Gi |
-| **Total** | 6 | **5 vCPU** | **2.5Gi** |
+> **Nota (DEC-025):** Os resource requests e limits por container (CPU e memória) são definidos e validados pela equipa de infraestrutura do Novo Banco, em função das quotas e políticas de namespace existentes na plataforma OpenShift.
 
 ### 12.9 Resiliência
 
@@ -272,40 +212,15 @@ note right: Task.WhenAll() em .NET
 
 #### Pod Disruption Budget
 
-| Aspeto | Configuração |
-|---------|--------------|
-| minAvailable | 50% |
-| Propósito | Garantir disponibilidade durante manutenção |
+> **Nota (DEC-025):** A política de Pod Disruption Budget (PDB) é definida e configurada pela equipa de infraestrutura do Novo Banco.
 
 ### 12.10 Load Testing
 
-#### Ferramenta
-
-| Ferramenta | Uso | Justificação |
-|------------|-----|--------------|
-| **k6** | Load testing principal | Scripting em JS, integração CI/CD |
-
-#### Cenários de Teste
-
-| Cenário | Users | Duração | Objetivo |
-|---------|-------|---------|----------|
-| Smoke | 10 | 5 min | Validar ambiente |
-| Load | 400 | 30 min | Validar capacidade nominal |
-| Stress | 600 | 15 min | Identificar limites |
-| Soak | 200 | 4 horas | Identificar memory leaks |
-
-#### Critérios de Aceitação
-
-| Métrica | Critério | Fail |
-|---------|----------|------|
-| Response Time P95 | < 3s | > 5s |
-| Error Rate | < 0.1% | > 1% |
-| Throughput | >= 10 TPS | < 8 TPS |
-| CPU (peak) | < 80% | > 90% |
-| Memory (peak) | < 80% | > 90% |
+> **Nota (DEC-025):** A estratégia de load testing — ferramentas aprovadas, cenários obrigatórios e critérios de aceitação — é definida pela equipa de infraestrutura e QA do Novo Banco. A equipa de desenvolvimento adapta os testes ao pipeline e plataforma existentes.
 
 ## Decisões Referenciadas
 
+- [DEC-025-parametros-operacionais-de-plataforma-definidos-pelo-banco.md](../decisions/DEC-025-parametros-operacionais-de-plataforma-definidos-pelo-banco.md) - Auto-scaling, capacity planning, PDB e load testing seguem padrões do banco
 - [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Containers e auto-scaling
 - [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - BFF (cache, resiliência)
 - [DEC-009-stack-tecnologica-frontend.md](../decisions/DEC-009-stack-tecnologica-frontend.md) - Stack frontend

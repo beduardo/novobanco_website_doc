@@ -48,7 +48,7 @@ Apresentar os princípios de arquitetura, diagrama conceptual e casos de uso pri
 ### 3.2 Diagrama Conceptual
 
 > **Nota:** Este é o diagrama de referência principal da arquitetura. Todas as outras secções devem referenciar este diagrama em vez de duplicá-lo (ver [DEC-011](../decisions/DEC-011-diagrama-arquitetura-unico.md)).
-A representação do canal mobile é meramente ilustrativa para efeitos de clareza em como se ligam os canais na arquitetura proposta.
+A representação do canal mobile é meramente ilustrativa para efeitos de clareza de como se ligam os canais na arquitetura proposta.
 
 ```plantuml
 @startuml

@@ -4,7 +4,9 @@ title: "Objetivos do Documento"
 status: "completed"
 created: "2026-01-01"
 updated: "2026-01-01"
-related-decisions: []
+related-decisions:
+  - "DEC-015"
+  - "DEC-024"
 affects-sections:
   - "SEC-01"
 ---
@@ -35,9 +37,9 @@ Este documento de arquitetura servirá como referência técnica para o desenvol
     Sim.
 
 6. Quais funcionalidades da app mobile estão in-scope para o HomeBanking web?
-   Registo, Login, Recuperação de Acessos, Home, Área Pessoal, Património, Ordens Pendentes, Histórico de Operações, Outros Bancos, Dashboard, Carteiras, Saldos e Movimentos, Confirmação de Operações, Comprovativos e Extratos, Eventos Corporativos, Seguros de proteção, Área do Viajante, Bea, Warrants, Ações, ETF, Fundos, Obrigações, Carregamentos, MBWay (Somente componentes não SDK), Transferências, Pagamentos, Wishlist, Índices, Notícias externas, Temas investimento, Depósito a prazo, Leilões, Ofertas públicas, Unit linked, Robot Advisor, BTP
+   Registo, Login, Recuperação de Acessos, Home, Área Pessoal, Património, Ordens Pendentes, Histórico de Operações, Outros Bancos, Dashboard, Carteiras, Saldos e Movimentos, Confirmação de Operações, Comprovativos e Extratos, Eventos Corporativos, Seguros de proteção, Área do Viajante, Bea, Warrants, Ações, ETF, Fundos, Obrigações, Carregamentos, Transferências, Pagamentos, Wishlist, Índices, Notícias externas, Temas investimento, Poupança, Depósito a prazo, Leilões, Ofertas públicas, Unit linked, Robot Advisor, BTP, Gestão de Cartão de Crédito e Débito, Pesquisa de Produtos e Funcionalidade
 7. Quais funcionalidades estão explicitamente out-of-scope?
-    MBWay
+    MBWay (todas as funcionalidades)
 
 8. Existe um roadmap de fases de implementação?
     Não. Este deve ser um dos entregáveis do documento.
@@ -55,21 +57,23 @@ Este documento de arquitetura servirá como referência técnica para o desenvol
 - **Alternativas consideradas:** Incluir auditores e reguladores (podem consultar, mas não são público primário)
 
 ### Escopo Funcional (In-Scope)
-- **Decisão:** 35 funcionalidades principais da app mobile serão replicadas no HomeBanking Web:
+- **Decisão:** Funcionalidades da app mobile a replicar no HomeBanking Web:
   - **Autenticação:** Registo, Login, Recuperação de Acessos
   - **Áreas Principais:** Home, Área Pessoal, Dashboard
   - **Património:** Património, Carteiras, Saldos e Movimentos
   - **Operações:** Ordens Pendentes, Histórico de Operações, Confirmação de Operações
   - **Documentos:** Comprovativos e Extratos
-  - **Investimentos:** Warrants, Ações, ETF, Fundos, Obrigações, Índices, Temas Investimento, Depósito a Prazo, Leilões, Ofertas Públicas, Unit Linked, Robot Advisor, BTP
-  - **Pagamentos:** Transferências, Pagamentos, Carregamentos, MBWay (apenas componentes não-SDK)
+  - **Investimentos:** Warrants, Ações, ETF, Fundos, Obrigações, Índices, Temas Investimento, Poupança, Depósito a Prazo, Leilões, Ofertas Públicas, Unit Linked, Robot Advisor, BTP
+  - **Operações Diárias:** Transferências, Pagamentos, Carregamentos
+  - **Cartões:** Gestão de Cartão de Crédito e Débito
+  - **Pesquisa:** Pesquisa de Produtos e Funcionalidade
   - **Outros:** Outros Bancos, Eventos Corporativos, Seguros de Proteção, Área do Viajante, Bea, Wishlist, Notícias Externas
 - **Justificação:** Paridade funcional com app mobile para oferecer experiência consistente aos clientes
 - **Alternativas consideradas:** MVP reduzido (descartado - todas as funcionalidades fazem parte do MVP)
 
 ### Exclusões de Escopo (Out-of-Scope)
-- **Decisão:** MBWay SDK (componentes nativos do SDK)
-- **Justificação:** SDK MBWay é específico para aplicações mobile nativas e não compatível com ambiente web
+- **Decisão:** MBWay (todas as funcionalidades)
+- **Justificação:** Opção do cliente — MBWay está integralmente fora do âmbito do HomeBanking Web
 - **Alternativas consideradas:** N/A
 
 ### Nível de Detalhe Técnico
@@ -79,7 +83,7 @@ Este documento de arquitetura servirá como referência técnica para o desenvol
 
 ## Restrições Conhecidas
 
-- Reutilização da infraestrutura e serviços da app mobile nativa existente
+- Reutilização da infraestrutura operacional existente do Novo Banco (DEC-015)
 - Conformidade com regulamentações bancárias portuguesas
 
 ## Referências

@@ -1,6 +1,6 @@
 ---
 id: "SEC-11"
-title: "Observabilidade e Operacoes"
+title: "Observabilidade e Operações"
 status: "completed"
 created: "2026-01-08"
 updated: "2026-01-08"
@@ -40,58 +40,16 @@ A stack de observabilidade é baseada no **ELK Stack** (Elasticsearch, Logstash,
 
 > **Decisão (DEC-008 / DEC-015):** O ELK Stack é propriedade e responsabilidade da equipa de infraestrutura do Novo Banco. A equipa de desenvolvimento **não instala nem gere** esta infraestrutura — limita-se a instrumentar a aplicação para emitir logs estruturados e expor métricas no formato esperado pela plataforma.
 
-> **Pendência:** Obter estrutura de logs existente do Novo Banco para alinhar o formato de emissão.
-
-```plantuml
-@startuml
-skinparam componentStyle rectangle
-skinparam backgroundColor white
-
-title Stack de Observabilidade
-
-package "Aplicação" {
-  [Frontend SPA] as FE
-  [BFF .NET 8] as BFF
-}
-
-package "Coleta" {
-  [Filebeat] as FB
-  [APM Agent] as APM
-}
-
-package "ELK Stack" {
-  [Logstash] as LS
-  [Elasticsearch] as ES
-  [Kibana] as KB
-}
-
-[ElastAlert] as ALERT
-
-FE --> FB : Logs
-BFF --> FB : Logs (Serilog)
-BFF --> APM : Traces/Metrics
-FB --> LS
-APM --> ES
-LS --> ES
-ES --> KB
-ES --> ALERT
-
-@enduml
-```
+A responsabilidade da equipa resume-se a dois pontos de instrumentação:
 
 | Componente | Função | Tecnologia |
 |------------|--------|------------|
-| **Logging** | Logs estruturados JSON | Serilog (.NET), Filebeat |
-| **Tracing** | Distributed tracing | Elastic APM |
-| **Ingestão** | Coleta e transformação | Logstash |
-| **Armazenamento** | Indexação e busca | Elasticsearch |
-| **Visualização** | Dashboards | Kibana |
-| **Alerting** | Notificações | ElastAlert |
+| **Logging BFF** | Emissão de logs estruturados JSON | Serilog (.NET) |
+| **Instrumentação APM** | Traces e métricas de aplicação | Elastic APM Agent |
 
-> **Nota - Logging do Frontend:** O logging a partir do frontend apresenta desafios de segurança (exposição de dados sensíveis, manipulação de logs) e custos face ao benefício. A implementação de logs do frontend deve ser discutida e validada com o cliente antes de avançar, considerando:
-> - Riscos de segurança específicos do ambiente browser
-> - Custo de armazenamento e processamento
-> - Valor diagnóstico vs alternativas (APM RUM)
+> **Pendência:** Obter estrutura de logs existente do Novo Banco para alinhar o formato de emissão.
+
+> **Nota - Logging do Frontend:** O logging a partir do frontend apresenta desafios de segurança (exposição de dados sensíveis, manipulação de logs) e custos face ao benefício. A implementação deve ser discutida e validada com o cliente, considerando riscos de segurança do ambiente browser, custo de armazenamento e alternativas como APM RUM.
 
 ### 11.3 Golden Signals
 
@@ -217,14 +175,6 @@ Todos os logs serão estruturados em formato JSON com campos padronizados:
 ### 11.8 Dashboards
 
 > **Nota (DEC-015):** Os dashboards operacionais são geridos pela equipa de infraestrutura do Novo Banco no Kibana existente. A equipa de desenvolvimento fornece os requisitos de métricas e logs necessários para suportar estes dashboards.
-
-| Dashboard | Audiência | Conteúdo |
-|-----------|-----------|----------|
-| **Health Overview** | NOC / On-call | Status geral, alertas ativos, SLO status |
-| **Performance** | Engenharia | Latência, throughput, errors por endpoint |
-| **Business** | Produto | Logins, transações, conversion rates |
-| **Security** | SecOps | Auth failures, suspicious activity |
-| **Infrastructure** | DevOps | CPU, memory, pods, network |
 
 ### 11.9 Métricas de Negócio
 

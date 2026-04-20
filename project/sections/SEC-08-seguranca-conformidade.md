@@ -1,6 +1,6 @@
 ---
 id: "SEC-08"
-title: "Seguranca e Conformidade"
+title: "Segurança e Conformidade"
 status: "in-progress"
 created: "2026-01-03"
 updated: "2026-01-03"
@@ -30,7 +30,7 @@ Definir os requisitos de segurança e conformidade regulatória do HomeBanking W
 
 ### 8.1 Visão Geral de Segurança
 
-> **Decisão (DEC-015):** A camada de infraestrutura de segurança (WAF, TLS, Rate Limiting, firewalls, network policies, SIEM) é **propriedade e responsabilidade do Novo Banco**. A equipa de desenvolvimento é responsável pelas camadas de aplicação (Frontend e BFF).
+> **Decisão (DEC-015):** A camada de infraestrutura de segurança (WAF, TLS, Rate Limiting, firewalls, network policies, SIEM) é **propriedade e responsabilidade do Novo Banco**. A equipa de desenvolvimento é responsável pelas camadas de aplicação (Frontend, BFF e MicroService).
 
 ```plantuml
 @startuml

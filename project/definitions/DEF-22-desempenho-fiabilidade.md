@@ -4,7 +4,8 @@ title: "Desempenho e Fiabilidade"
 status: "completed"
 created: "2026-01-08"
 updated: "2026-01-08"
-related-decisions: []
+related-decisions:
+  - "DEC-025"
 affects-sections:
   - "SEC-12"
 ---
@@ -240,87 +241,15 @@ note right: Task.WhenAll() em .NET
 
 ### Horizontal Pod Autoscaler (HPA)
 
-```yaml
-# Configuração HPA
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: bff-web-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: bff-web
-  minReplicas: 2
-  maxReplicas: 10
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 80
-  behavior:
-    scaleUp:
-      stabilizationWindowSeconds: 60
-      policies:
-      - type: Percent
-        value: 100
-        periodSeconds: 60
-    scaleDown:
-      stabilizationWindowSeconds: 300
-      policies:
-      - type: Percent
-        value: 50
-        periodSeconds: 120
-```
+A solução utiliza HPA baseado em métricas de CPU e memória para os componentes Frontend e BFF, com comportamento diferenciado de scale-up e scale-down para evitar oscilações.
 
-### Configuração por Componente
-
-| Componente | Min Replicas | Max Replicas | CPU Target | Memory Target |
-|------------|--------------|--------------|------------|---------------|
-| Frontend | 2 | 6 | 70% | 80% |
-| BFF | 2 | 10 | 70% | 80% |
-
-### Scale-up vs Scale-down
-
-| Evento | Tempo | Ação |
-|--------|-------|------|
-| Scale-up | 60s estabilização | Duplicar réplicas |
-| Scale-down | 300s estabilização | Reduzir 50% |
-
-> **Nota:** Scale-down mais conservador para evitar oscilações.
+> **Nota (DEC-025):** Os parâmetros concretos de HPA — min/max réplicas, targets de CPU e memória, e janelas de estabilização — serão fornecidos pela equipa de infraestrutura do Novo Banco.
 
 ---
 
 ## Capacity Planning
 
-### Resource Requests/Limits
-
-| Componente | CPU Request | CPU Limit | Memory Request | Memory Limit |
-|------------|-------------|-----------|----------------|--------------|
-| Frontend | 100m | 500m | 128Mi | 256Mi |
-| BFF | 250m | 1000m | 256Mi | 512Mi |
-
-### Estimativa de Recursos (400 users)
-
-```
-Frontend:
-- 2 pods x 500m CPU = 1 vCPU
-- 2 pods x 256Mi = 512Mi
-
-BFF:
-- 4 pods x 1000m CPU = 4 vCPU
-- 4 pods x 512Mi = 2Gi
-
-Total estimado: 5 vCPU, 2.5Gi RAM
-```
+> **Nota (DEC-025):** Resource requests e limits por container/pod serão fornecidos pela equipa de infraestrutura do Novo Banco.
 
 ---
 
@@ -328,17 +257,9 @@ Total estimado: 5 vCPU, 2.5Gi RAM
 
 ### Pod Disruption Budget
 
-```yaml
-apiVersion: policy/v1
-kind: PodDisruptionBudget
-metadata:
-  name: bff-web-pdb
-spec:
-  minAvailable: 50%
-  selector:
-    matchLabels:
-      app: bff-web
-```
+A solução configura PDB por componente para garantir disponibilidade durante manutenções.
+
+> **Nota (DEC-025):** A política de `minAvailable` por deployment será fornecida pela equipa de infraestrutura do Novo Banco.
 
 ### Padrões de Resiliência
 
@@ -419,13 +340,9 @@ stop
 | CPU (peak) | < 80% | > 90% |
 | Memory (peak) | < 80% | > 90% |
 
-### Ferramenta Recomendada
+### Ferramenta de Load Testing
 
-| Ferramenta | Uso | Justificação |
-|------------|-----|--------------|
-| **k6** | Load testing | Scripting em JS, integração CI/CD |
-| Artillery | Alternativa | Simples, YAML-based |
-| JMeter | Legado | Mais complexo, UI-based |
+> **Nota (DEC-025):** A ferramenta de load testing aprovada, os cenários obrigatórios e os critérios de aceitação serão fornecidos pela equipa de infraestrutura do Novo Banco.
 
 ---
 
@@ -434,8 +351,8 @@ stop
 | ID | Questão | Responsável | Prioridade |
 |----|---------|-------------|------------|
 | Q-12-001 | Picos de utilização específicos (datas) | Produto | Média |
-| Q-12-002 | Limites de recursos definitivos | DevOps | Alta |
-| Q-12-003 | Ferramenta de load testing aprovada | QA | Média |
+| Q-12-002 | Limites de recursos definitivos | Infraestrutura do banco (DEC-025) | Alta |
+| Q-12-003 | Ferramenta de load testing aprovada | Infraestrutura do banco (DEC-025) | Média |
 | Q-12-004 | Budget de bundle size | Frontend Lead | Média |
 
 ---
@@ -453,14 +370,10 @@ stop
 - **Alternativas consideradas:** Cache apenas no BFF
 
 ### Auto-scaling
-- **Decisão:** HPA com CPU 70% e Memory 80%, min 2 réplicas
-- **Justificação:** Balanço entre responsividade e custo
-- **Alternativas consideradas:** Scaling manual, KEDA
+- **Decisão:** HPA baseado em métricas de CPU e memória. Parâmetros concretos fornecidos pelo banco (DEC-025).
 
 ### Testes de Carga
-- **Decisão:** k6 para load testing, executar antes de cada release major
-- **Justificação:** Integração CI/CD, scripting flexível
-- **Alternativas consideradas:** JMeter, Artillery
+- **Decisão:** Executar testes de carga antes de cada release major. Ferramenta e critérios de aceitação fornecidos pelo banco (DEC-025).
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 id: "SEC-02"
-title: "Contexto de Negocio e Requisitos"
+title: "Contexto de Negócio e Requisitos"
 status: "in-progress"
 created: "2026-01-01"
 updated: "2026-01-01"
@@ -8,7 +8,8 @@ depends-on-definitions:
   - "DEF-02"
   - "DEF-03"
   - "DEF-04"
-depends-on-decisions: []
+depends-on-decisions:
+  - "DEC-024"
 word-count: 0
 ---
 
@@ -26,17 +27,17 @@ word-count: 0
 
 ## Propósito
 
-Descrever o contexto da solução HomeBanking Web, suas partes interessadas, requisitos funcionais e não funcionais, restrições e dependências.
+Descrever o contexto da solução HomeBanking Web, as suas partes interessadas, requisitos funcionais e não funcionais, restrições e dependências.
 
 ## Conteúdo
 
 ### 2.1 Contexto de Negócio
 
-O projeto HomeBanking Web visa disponibilizar aos clientes do Best uma plataforma web com funcionalidades equivalentes à aplicação mobile nativa existente. A solução reutilizará a infraestrutura e serviços já criados para a app mobile.
+O projeto HomeBanking Web visa disponibilizar aos clientes do Best uma plataforma web com funcionalidades equivalentes à aplicação mobile nativa existente. A solução reutilizará a infraestrutura e os serviços já criados para a app mobile.
 
 **Drivers de Negócio:**
-- Oferecer canal alternativo ao mobile para clientes que preferem acesso via browser
-- Paridade funcional entre canais para experiência consistente
+- Oferecer um canal alternativo ao mobile para clientes que preferem acesso via browser
+- Paridade funcional entre canais para uma experiência consistente
 - Reutilização de investimentos já realizados na infraestrutura mobile
 
 ### 2.2 Partes Interessadas (Stakeholders)
@@ -69,8 +70,10 @@ O projeto HomeBanking Web visa disponibilizar aos clientes do Best uma plataform
 | **Património** | Património, Carteiras, Saldos e Movimentos | 3 |
 | **Operações** | Ordens Pendentes, Histórico de Operações, Confirmação de Operações | 3 |
 | **Documentos** | Comprovativos e Extratos | 2 |
-| **Investimentos** | Warrants, Ações, ETF, Fundos, Obrigações, Índices, Temas Investimento, Depósito a Prazo, Leilões, Ofertas Públicas, Unit Linked, Robot Advisor, BTP | 13 |
-| **Pagamentos** | Transferências, Pagamentos, Carregamentos, MBWay (não-SDK) | 4 |
+| **Investimentos** | Warrants, Ações, ETF, Fundos, Obrigações, Índices, Temas Investimento, Poupança, Depósito a Prazo, Leilões, Ofertas Públicas, Unit Linked, Robot Advisor, BTP | 14 |
+| **Operações Diárias** | Transferências, Pagamentos, Carregamentos | 3 |
+| **Cartões** | Gestão de Cartão de Crédito e Débito | 2 |
+| **Pesquisa** | Pesquisa de Produtos e Funcionalidade | 1 |
 | **Outros** | Outros Bancos, Eventos Corporativos, Seguros de Proteção, Área do Viajante, Bea, Wishlist, Notícias Externas | 7 |
 | **TOTAL** | | **35** |
 
@@ -150,15 +153,13 @@ Os valores apresentados são recomendações com base em best practices de merca
 
 ### 2.6 Estratégia de Lançamento
 
-A estratégia de transição do canal atual para o novo HomeBanking Web necessita de definição.
+A estratégia de transição adotada é **Big Bang** (DEC-024): o HomeBanking Web será ativado simultaneamente para todos os utilizadores no momento do go-live. Esta abordagem resulta de exigência explícita do cliente, e torna o critério de go/no-go crítico e não negociável.
 
-| Aspeto | Status | Observação |
-|--------|--------|------------|
-| **Estratégia de Cutover** | _A definir_ | Big bang vs incremental |
-| **Coexistência de Canais** | _A definir_ | Período de transição? |
-| **Impacto Infraestrutura** | _A definir_ | Dependente da estratégia |
-
-> **Pendência:** Definir estratégia de switch com o cliente, pois pode influenciar o desenho e a infraestrutura.
+| Aspeto | Decisão |
+|--------|---------|
+| **Estratégia de Cutover** | Big Bang — ativação simultânea para todos os utilizadores (DEC-024) |
+| **Coexistência de Canais** | Web e Mobile coexistem permanentemente; sem período de transição com rollout faseado |
+| **Rollback** | Via feature flag `enable_web_banking` ou deployment rollback, aplicado a todos os utilizadores em simultâneo |
 
 ## Entregáveis
 
@@ -178,7 +179,7 @@ A estratégia de transição do canal atual para o novo HomeBanking Web necessit
 
 ## Decisões Referenciadas
 
-_Nenhuma decisão arquitetural nesta secção. Esta secção documenta contexto de negócio, requisitos funcionais e não funcionais, que são inputs para decisões arquiteturais nas secções seguintes._
+- [DEC-024-estrategia-cutover-big-bang.md](../decisions/DEC-024-estrategia-cutover-big-bang.md) - Estratégia de cutover Big Bang
 
 ## Itens Pendentes
 
@@ -191,5 +192,4 @@ Os seguintes itens requerem informação adicional:
 | Certificações de Segurança | DEF-04-requisitos-nao-funcionais | Área de Segurança |
 | Requisitos de Encriptação | DEF-04-requisitos-nao-funcionais | Área de Segurança |
 | Política de Retenção de Logs | DEF-04-requisitos-nao-funcionais | Compliance |
-| **Estratégia de Lançamento/Cutover** | SEC-02 | Produto/Arquitetura |
 | **Calibração de métricas de performance** | SEC-02, SEC-12 | Cliente/Infraestrutura |

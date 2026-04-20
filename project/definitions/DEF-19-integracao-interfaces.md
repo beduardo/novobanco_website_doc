@@ -6,6 +6,7 @@ created: "2026-01-04"
 updated: "2026-01-04"
 related-decisions:
   - "DEC-020"
+  - "DEC-026"
 affects-sections:
   - "SEC-09"
 ---
@@ -275,16 +276,38 @@ Definir as integrações do HomeBanking Web com sistemas internos e externos. O 
 | API Simulação | Simulação de transferência | Pré-cálculo de custos |
 | API Transferência | Execução de transferência | Operação efectiva |
 
-### APIs de Backoffice (CMS)
+### APIs de Backoffice de Configuração (DEC-026)
 
-| API | Descrição | Dados Retornados |
-|-----|-----------|------------------|
-| Notícias | Conteúdo noticioso | Lista de notícias |
-| Novidades | Novidades do banco | Lista de novidades |
-| Alertas | Alertas ao utilizador | Lista de alertas |
-| Publicidades | Cards promocionais | Estrutura de publicidade |
+**Conteúdos Dinâmicos**
 
-> **Nota:** Este catálogo foi extraído dos diagramas de sequência. Solicitar documentação detalhada (contratos OpenAPI/Swagger) à equipa de backend.
+| Endpoint | Dados Retornados |
+|----------|-----------------|
+| `advertising` | Cards promocionais / publicidades |
+| `article` | Artigos de conteúdo |
+| `overlay` | Overlays informativos |
+| `externallink` | Links de informação externa |
+| `opvs` | Operações públicas de venda |
+| `investmentThemes` | Temas de investimento |
+
+**Regras de Negócio e Dados de Suporte**
+
+| Endpoint | Dados Retornados |
+|----------|-----------------|
+| `accountRestriction` | Permissões de acesso/visualização por perfil ou tipo de conta |
+| `deposits` | Taxas de simulação de depósitos a prazo |
+| `availableoptions` | Lista de produtos activos / opções disponíveis |
+| `retirement` | Dados de produtos de reforma |
+| `retirementSimulator` | Taxas de simulação de rendimentos (reforma) |
+| `marginAccounts` | Taxas de simulação para contas margem |
+| `servicePaymentEntity` | Entidades para pagamentos de serviços |
+
+**Controlos de UX**
+
+| Endpoint | Dados Retornados |
+|----------|-----------------|
+| `EvaluationFeedbackByArea` | Configuração de pedidos de avaliação da app por área |
+
+> **Nota:** Todos os endpoints são acedidos directamente pelo BFF via REST/OAuth2 client credentials (read-only), sem IBM API Gateway (DEC-020, DEC-026). Solicitar contratos OpenAPI/Swagger à equipa de backend.
 
 ### Autenticação por Backend
 
@@ -336,6 +359,7 @@ Definir as integrações do HomeBanking Web com sistemas internos e externos. O 
 - [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - BFF como ponto único de integração
 - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack tecnológica backend
 - [DEC-020-backoffice-de-configuracao-acedido-directamente-pelo-bff-via-rest-oauth2.md](../decisions/DEC-020-backoffice-de-configuracao-acedido-directamente-pelo-bff-via-rest-oauth2.md) - Backoffice de Configuração como ponto de integração distinto
+- [DEC-026-endpoints-do-backoffice-de-configura-o-identificados.md](../decisions/DEC-026-endpoints-do-backoffice-de-configura-o-identificados.md) - Lista de endpoints identificados
 
 ## Referências
 

@@ -4,7 +4,8 @@ title: "Plano de Migracao e Implementacao"
 status: "completed"
 created: "2026-01-08"
 updated: "2026-01-08"
-related-decisions: []
+related-decisions:
+  - "DEC-024"
 affects-sections:
   - "SEC-14"
 ---
@@ -75,48 +76,43 @@ golive -> hypercare
 
 ## Estrategia de Cutover
 
-### Abordagem: Lancamento Gradual (Phased Rollout)
+> **Decisao formalizada em [DEC-024](../decisions/DEC-024-estrategia-cutover-big-bang.md)**
+
+### Abordagem: Big Bang
+
+Por exigencia do cliente, simplicidade operacional e limitacoes tecnicas, a estrategia de cutover e **Big Bang**: o HomeBanking Web sera activado simultaneamente para todos os utilizadores no momento do go-live.
 
 ```plantuml
 @startuml
 skinparam backgroundColor white
 
-title Estrategia de Lancamento Gradual
+title Estrategia de Cutover Big Bang
 
-|Semana 1|
 start
-:Beta privado;
-note right: 100 utilizadores internos
+:Beta / UAT completo;
+note right: Validacao completa antes do go-live
 
-|Semana 2|
-:Beta controlado;
-note right: 500 utilizadores selecionados
+:Checklist Go/No-Go aprovado;
+note right: Criterio critico - sem rollout parcial
 
-|Semana 3|
-:Lancamento parcial;
-note right: 20% dos utilizadores
+:Go-Live (Big Bang);
+note right: Activacao simultanea para todos os utilizadores
 
-|Semana 4|
-:Lancamento geral;
-note right: 100% dos utilizadores
+:Hypercare 4 semanas;
+note right: Monitorizacao intensiva
 
 stop
 
 @enduml
 ```
 
-### Criterios de Progressao
+### Feature Flags para Rollback de Emergencia
 
-| Etapa | Condicao para Avancar |
-|-------|----------------------|
-| Beta -> Lancamento Parcial | 0 bugs criticos, taxa de erro < 1% |
-| Parcial -> Geral | SLOs cumpridos, feedback positivo, 0 P1 abertos |
-
-### Feature Flags para Rollout
+As feature flags sao mantidas exclusivamente para rollback de emergencia (nao para rollout faseado).
 
 | Flag | Descricao | Default |
 |------|-----------|---------|
-| `enable_web_banking` | Habilita acesso ao canal web | false |
+| `enable_web_banking` | Habilita/desabilita acesso ao canal web | false (activar no go-live) |
 | `enable_qr_login` | Habilita login via QR Code | true |
 | `enable_transfers` | Habilita transferencias | true |
 | `maintenance_mode` | Modo manutencao (bloqueia acessos) | false |
@@ -378,9 +374,9 @@ kubectl rollout status deployment/bff-web -n homebanking-prod
 ## Decisoes
 
 ### Cutover Strategy
-- **Decisao:** Lancamento gradual (phased rollout) com feature flags
-- **Justificacao:** Menor risco, permite correcoes antes de exposicao total
-- **Alternativas consideradas:** Big bang (risco alto), Parallel run (complexidade)
+- **Decisao:** Big Bang — activacao simultanea para todos os utilizadores no go-live (ver [DEC-024](../decisions/DEC-024-estrategia-cutover-big-bang.md))
+- **Justificacao:** Exigencia do cliente, simplicidade operacional e limitacoes tecnicas
+- **Alternativas consideradas:** Phased rollout (descartado), Parallel run (complexidade)
 
 ### Rollback Strategy
 - **Decisao:** Feature flags para rollback instantaneo + deployment rollback como backup

@@ -1,6 +1,6 @@
 ---
 id: "SEC-04"
-title: "Experiencia do Utilizador e Arquitetura Frontend"
+title: "Experiência do Utilizador e Arquitetura Frontend"
 status: "in-progress"
 created: "2026-01-03"
 updated: "2026-01-03"
@@ -121,7 +121,7 @@ As jornadas serão baseadas nos 35 requisitos funcionais definidos, com foco em:
 
 **Implementação:**
 - Biblioteca: **i18next** com react-i18next
-- Namespaces para lazy loading de traduções (interno à aplicação React, ficheiros JSON bundled)
+- Namespaces para lazy loading de traduções (internos à aplicação React, ficheiros JSON bundled)
 - Deteção automática de idioma do browser
 - Persistência de preferência do utilizador
 

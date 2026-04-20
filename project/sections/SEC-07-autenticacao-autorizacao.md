@@ -151,7 +151,7 @@ USER -> APP : Confirma biometria
 APP -> APIGW : POST /auth/qr-code/authorize\nx-nb-channel: best.app\n{sessionId, appAccessToken, appRefreshToken}
 note right of APIGW
   App Mobile acede MicroService
-  directamente via API Gateway
+  diretamente via API Gateway
   Sem BFF (DEC-019)
 end note
 APIGW -> AUTH : POST /auth/qr-code/authorize
@@ -168,9 +168,9 @@ APIGW --> APP : {success: true}
 |----------|--------|--------|---------|-----------|
 | `/auth/qr-code/generate` | POST | Browser → BFF | BFF → GW → MicroService | Gera novo QR Code e sessão pendente |
 | `/auth/qr-code/status/{sessionId}` | GET | Browser → BFF | BFF → GW → MicroService | Consulta estado (polling ou botão manual) |
-| `/auth/qr-code/authorize` | POST | App Mobile → GW | GW → MicroService | App autoriza sessão directamente (DEC-019) |
+| `/auth/qr-code/authorize` | POST | App Mobile → GW | GW → MicroService | App autoriza sessão diretamente (DEC-019) |
 
-> **Nota - Arquitectura Completa:** Os diagramas de autenticação acima estão simplificados para focar no fluxo de autenticação do utilizador. Para a arquitectura completa incluindo API Gateway (IBM) e validação de token pelo Siebel, consultar [SEC-03 3.2 - Diagrama Conceptual](SEC-03-visao-geral-solucao.md#32-diagrama-conceptual) e [SEC-05 5.4 - Comunicação entre Serviços](SEC-05-arquitetura-backend-servicos.md#54-comunicacao-entre-servicos).
+> **Nota - Arquitetura Completa:** Os diagramas de autenticação acima estão simplificados para focar no fluxo de autenticação do utilizador. Para a arquitectura completa incluindo API Gateway (IBM) e validação de token pelo Siebel, consultar [SEC-03 3.2 - Diagrama Conceptual](SEC-03-visao-geral-solucao.md#32-diagrama-conceptual) e [SEC-05 5.4 - Comunicação entre Serviços](SEC-05-arquitetura-backend-servicos.md#54-comunicacao-entre-servicos).
 
 #### 7.2.2 Fluxo Fallback - Username/Password + 2FA
 
@@ -407,14 +407,6 @@ end note
 | CAPTCHA | _A definir_ |
 | Rate limiting login | _A definir_ |
 | Deteção de bots | _A definir_ |
-
-### 7.9 Revogação
-
-| Aspeto | Status |
-|---------|--------|
-| Revogação por comprometimento | _A definir_ |
-| Logout de todos os dispositivos | _A definir_ |
-| Revogação ao mudar password | _A definir_ |
 
 ## Entregáveis
 

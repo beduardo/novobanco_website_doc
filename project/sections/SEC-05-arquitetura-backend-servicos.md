@@ -1,6 +1,6 @@
 ---
 id: "SEC-05"
-title: "Arquitetura Backend e Servicos"
+title: "Arquitetura Backend e Serviços"
 status: "in-progress"
 created: "2026-01-03"
 updated: "2026-01-03"
@@ -19,21 +19,21 @@ depends-on-decisions:
 word-count: 1377
 ---
 
-# 5. Arquitetura Backend & Servicos
+# 5. Arquitetura Backend & Serviços
 
-## Proposito
+## Propósito
 
-Definir a decomposicao de servicos, arquitetura de API, comunicacao, modelo de dominio, rate limiting, resiliencia, versionamento e especificacao de APIs para o HomeBanking Web.
+Definir a decomposição de serviços, arquitetura de API, comunicação, modelo de domínio, rate limiting, resiliência, versionamento e especificação de APIs para o HomeBanking Web.
 
-## Conteudo
+## Conteúdo
 
-### 5.1 Decomposicao de Servicos
+### 5.1 Decomposição de Serviços
 
 > **Diagrama de Arquitetura:** Ver [Secção 3.2 - Diagrama Conceptual](SEC-03-visao-geral-solucao.md#32-diagrama-conceptual) para a visão geral da arquitetura.
 
-A decomposição de serviços segue a arquitectura de referência definida na secção 3.2:
+A decomposição de serviços segue a arquitetura de referência definida na secção 3.2:
 
-| Componente | Tipo | Acao | Tecnologia |
+| Componente | Tipo | Ação | Tecnologia |
 |------------|------|------|------------|
 | Frontend Web | Novo | Desenvolver | React + TypeScript |
 | BFF Web | Novo | Desenvolver | C# .NET 8 |
@@ -56,7 +56,7 @@ A decomposição de serviços segue a arquitectura de referência definida na se
 
 ### 5.2 Arquitetura BFF
 
-#### 5.2.1 Visao Geral
+#### 5.2.1 Visão Geral
 
 ```plantuml
 @startuml
@@ -75,7 +75,7 @@ package "BFF Web (.NET 8)" {
 }
 
 [Frontend] --> CTRL : REST/HTTPS
-CTRL --> AUTH : Validacao
+CTRL --> AUTH : Validação
 AUTH --> CACHE : Session Token
 CTRL --> SVC : Business Logic
 SVC --> HTTP : Backend Calls
@@ -85,7 +85,7 @@ SVC --> LOG : ELK
 @enduml
 ```
 
-#### 5.2.2 Stack Tecnologica
+#### 5.2.2 Stack Tecnológica
 
 | Componente | Tecnologia |
 |------------|------------|
@@ -96,31 +96,31 @@ SVC --> LOG : ELK
 
 #### 5.2.3 Responsabilidades
 
-| Responsabilidade | Implementado | Observacao |
+| Responsabilidade | Implementado | Observação |
 |------------------|--------------|------------|
-| Agregacao de chamadas | Sim | Combinar multiplas chamadas backend |
-| Transformacao de dados | Sim | Adaptar formato para frontend |
-| Cache | Sim | Sessao e tokens |
-| Autenticacao/Autorizacao | Sim | OAuth 1.1, validacao de sessao |
-| Rate Limiting | Nao | Responsabilidade do Gateway |
+| Agregação de chamadas | Sim | Combinar múltiplas chamadas backend |
+| Transformação de dados | Sim | Adaptar formato para frontend |
+| Cache | Sim | Sessão e tokens |
+| Autenticação/Autorização | Sim | OAuth 1.1, validação de sessão |
+| Rate Limiting | Não | Responsabilidade do Gateway |
 
 ### 5.3 Arquitetura API
 
 #### 5.3.1 Estilo e Formato
 
-| Aspecto | Decisao |
+| Aspecto | Decisão |
 |---------|---------|
 | **Estilo** | REST |
 | **Formato** | JSON |
-| **Compressao** | gzip |
-| **Especificacao** | OpenAPI 3.1 |
+| **Compressão** | gzip |
+| **Especificação** | OpenAPI 3.1 |
 
 #### 5.3.2 Versionamento
 
-| Aspecto | Decisao | Exemplo |
+| Aspecto | Decisão | Exemplo |
 |---------|---------|---------|
-| **Estrategia** | URL path | `/web/ocb/bst/` |
-| **Deprecacao** | _A definir_ | - |
+| **Estratégia** | URL path | `/web/ocb/bst/` |
+| **Deprecação** | _A definir_ | - |
 
 #### 5.3.3 Estrutura de Endpoints
 
@@ -147,7 +147,7 @@ SVC --> LOG : ELK
     └── receipts
 ```
 
-### 5.4 Comunicacao entre Servicos
+### 5.4 Comunicação entre Serviços
 
 ```plantuml
 @startuml
@@ -160,15 +160,15 @@ participant "MS" as MS
 participant "API Gateway\n(IBM)" as GW
 participant "Siebel" as SIEBEL
 
-FE -> F5 : REST/HTTPS\n(Cookie sessao)
+FE -> F5 : REST/HTTPS\n(Cookie sessão)
 activate F5
 
-F5 -> BFF : REST/HTTPS\n(Cookie sessao)
+F5 -> BFF : REST/HTTPS\n(Cookie sessão)
 activate BFF
 
-BFF -> BFF : Validar sessao\n(Cache lookup)
+BFF -> BFF : Validar sessão\n(Cache lookup)
 
-alt Servicos com acesso direto ao Siebel (sem MS)
+alt Serviços com acesso direto ao Siebel (sem MS)
     BFF -> GW : REST\n(clientid + secret)
     activate GW
     note right of GW: Routing apenas\n(sem autenticação)
@@ -183,7 +183,7 @@ alt Servicos com acesso direto ao Siebel (sem MS)
     GW --> BFF : JSON
     deactivate GW
 
-else Servicos delegados ao MicroService (com integracao Siebel)
+else Serviços delegados ao MicroService (com integração Siebel)
     BFF -> GW : REST\n(clientid + secret)
     activate GW
     note right of GW: Routing para MicroService
@@ -208,14 +208,14 @@ else Servicos delegados ao MicroService (com integracao Siebel)
     GW --> BFF : JSON
     deactivate GW
 
-else Servicos delegados ao MicroService (autonomo, sem Siebel)
+else Serviços delegados ao MicroService (autónomo, sem Siebel)
     BFF -> GW : REST\n(clientid + secret)
     activate GW
     note right of GW: Routing para MicroService
 
     GW -> MS : REST\n(Omni)
     activate MS
-    note right of MS: Logica propria\nsem integracao Siebel
+    note right of MS: Lógica própria\nsem integração Siebel
 
     MS --> GW : JSON
     deactivate MS
@@ -233,9 +233,9 @@ deactivate BFF
 ```
 
 
-| Comunicacao | Protocolo | Autenticacao | Observação |
+| Comunicação | Protocolo | Autenticação | Observação |
 |-------------|-----------|--------------|------------|
-| Frontend → BFF | REST/HTTPS | Cookie de sessao (HttpOnly, Secure) | - |
+| Frontend → BFF | REST/HTTPS | Cookie de sessão (HttpOnly, Secure) | - |
 | BFF → API Gateway (IBM) | REST | ClientID + ClientSecret | Ponto de entrada para Siebel e MicroService |
 | API Gateway → MicroService | REST (Omni) | Roteado pelo GW | MicroService pode ou não precisar do Siebel |
 | MicroService → API Gateway (IBM) | REST | ClientID + ClientSecret | Apenas quando MicroService necessita do Siebel |
@@ -246,13 +246,13 @@ deactivate BFF
 
 > **Nota Importante - Validação de Token:** O API Gateway (IBM) faz **apenas routing**, sem realizar autenticação. Toda a autenticação (validação de clientid+secret e validação do Bearer Token do utilizador) é realizada pelo **Siebel**. Serviços backend que não suportem Bearer Token diretamente são acedidos exclusivamente através do Siebel, que actua como camada de mediação.
 
-### 5.5 Modelo de Dominio
+### 5.5 Modelo de Domínio
 
-O modelo de dominio segue as entidades ja existentes nos backend services da app mobile:
+O modelo de domínio segue as entidades já existentes nos backend services da app mobile:
 
-| Dominio | Entidades Principais |
+| Domínio | Entidades Principais |
 |---------|---------------------|
-| **Autenticacao** | User, Session, Credentials |
+| **Autenticação** | User, Session, Credentials |
 | **Contas** | Account, Balance, Movement |
 | **Pagamentos** | Transfer, Payment, Beneficiary |
 | **Investimentos** | Portfolio, Order, Product, Position |
@@ -260,77 +260,77 @@ O modelo de dominio segue as entidades ja existentes nos backend services da app
 
 ### 5.6 Rate Limiting
 
-| Aspecto | Decisao |
+| Aspecto | Decisão |
 |---------|---------|
 | **Responsabilidade** | API Gateway IBM (para chamadas aos Backend Services) |
 | **No BFF** | Não implementado (BFF não tem APIGW à frente) |
 | **Limites** | _A definir_ |
-| **Comunicacao** | Mensagem de erro informando necessidade de aguardar |
+| **Comunicação** | Mensagem de erro informando necessidade de aguardar |
 
 > **Nota:** O BFF não tem API Gateway à frente, pelo que o rate limiting é aplicado apenas nas chamadas do BFF para os Backend Services através do API Gateway IBM.
 
-### 5.7 Resiliencia
+### 5.7 Resiliência
 
-| Padrao | Status | Observacao |
+| Padrão | Status | Observação |
 |--------|--------|------------|
 | **Retry** | Não implementado | Erros transientes propagados ao utilizador (DEC-022) |
-| **Timeout** | Implementado | Configuravel por endpoint |
-| **Fallback** | Parcial | Apenas autenticacao |
+| **Timeout** | Implementado | Configurável por endpoint |
+| **Fallback** | Parcial | Apenas autenticação |
 | **Health Checks** | Implementado | Liveness + Readiness probes |
 | **Circuit Breaker** | A definir | Proposta: Polly |
 | **Bulkhead** | A avaliar | Depende da organização de serviços |
 
-> **Nota - Organização de Serviços:** A arquitectura define um único MicroService Pod (DEC-016). A necessidade de Bulkhead deve ser avaliada internamente ao MicroService, por domínio funcional (ex: separação de threads/pools para operações críticas vs operações de consulta).
+> **Nota - Organização de Serviços:** A arquitetura define um único MicroService Pod (DEC-016). A necessidade de Bulkhead deve ser avaliada internamente ao MicroService, por domínio funcional (ex: separação de threads/pools para operações críticas vs operações de consulta).
 
 ### 5.8 Versionamento API
 
-| Aspecto | Decisao |
+| Aspecto | Decisão |
 |---------|---------|
-| **Estrategia** | URL path versioning |
+| **Estratégia** | URL path versioning |
 | **Formato** | `/api/v{major}/resource` (rever em tempo de projeto) |
-| **Politica Deprecacao** | _A definir_ |
+| **Política Deprecação** | _A definir_ |
 
-### 5.9 Especificacao API
+### 5.9 Especificação API
 
-| Aspecto | Decisao |
+| Aspecto | Decisão |
 |---------|---------|
 | **Formato** | OpenAPI 3.1 |
-| **Geracao** | Automatizada via Pipeline |
-| **Publicacao** | Swagger UI / ReDoc |
+| **Geração** | Automatizada via Pipeline |
+| **Publicação** | Swagger UI / ReDoc |
 
-**Nota:** Especificacoes OpenAPI completas serao documentadas separadamente.
+**Nota:** Especificações OpenAPI completas serão documentadas separadamente.
 
-### 5.10 Dependencias Criticas
+### 5.10 Dependências Críticas
 
-| Dependencia | Tipo | Impacto se Indisponivel |
+| Dependência | Tipo | Impacto se Indisponível |
 |-------------|------|------------------------|
-| **API Gateway** | Externa | Servico inoperante |
-| **Backend Services** | Externa | Servico inoperante |
-| **Cache Store** | Externa | Sessoes invalidas |
-| **ELK Stack** | Externa | Degradacao graceful (sem logs) |
+| **API Gateway** | Externa | Serviço inoperante |
+| **Backend Services** | Externa | Serviço inoperante |
+| **Cache Store** | Externa | Sessões inválidas |
+| **ELK Stack** | Externa | Degradação graceful (sem logs) |
 
 > **Pendência:** Validar com negócio se degradação graceful sem logs é aceitável ou se é necessário fallback alternativo.
 
-### 5.11 Autenticacao e Sessao
+### 5.11 Autenticação e Sessão
 
-#### Gestao de Sessao
+#### Gestão de Sessão
 
-| Aspecto | Decisao |
+| Aspecto | Decisão |
 |---------|---------|
-| **Identificador** | Cookie de sessao (HttpOnly, Secure) |
-| **Token Storage** | Cache distribuido (chave = Session ID) |
-| **Validacao** | App ou OTP (SCA) |
-| **Propagacao** | Bearer token para backend services |
+| **Identificador** | Cookie de sessão (HttpOnly, Secure) |
+| **Token Storage** | Cache distribuído (chave = Session ID) |
+| **Validação** | App ou OTP (SCA) |
+| **Propagação** | Bearer token para backend services |
 
 ## Itens Pendentes
 
-| Item | Responsavel | Prioridade |
+| Item | Responsável | Prioridade |
 |------|-------------|------------|
-| Circuit Breaker (biblioteca) | Arquitetura | Media |
-| Comunicacao assincrona (se necessario) | Arquitetura | Media |
-| Politica deprecacao API | Arquitetura | Baixa |
+| Circuit Breaker (biblioteca) | Arquitetura | Média |
+| Comunicação assíncrona (se necessário) | Arquitetura | Média |
+| Política deprecação API | Arquitetura | Baixa |
 
-## Decisoes Referenciadas
+## Decisões Referenciadas
 
 - [DEC-007-padrao-bff.md](../decisions/DEC-007-padrao-bff.md) - BFF Pattern
 - [DEC-010-stack-tecnologica-backend.md](../decisions/DEC-010-stack-tecnologica-backend.md) - Stack Backend

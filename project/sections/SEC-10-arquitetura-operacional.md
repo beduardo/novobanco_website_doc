@@ -90,10 +90,8 @@ MS --> ELK : logs
 | **Plataforma** | OpenShift |
 | **Load Balancer** | F5 BIG-IP |
 | **Ingress** | OpenShift Routes |
-| **Container Registry** | A validar com equipa de infra |
-| **Secrets** | A validar com equipa de infra |
 
-> **Nota:** Os detalhes específicos de infraestrutura (registry, secrets, networking) serão validados com a equipa de infraestrutura do Novo Banco, uma vez que reutilizam componentes existentes.
+> **Nota:** Os detalhes específicos de infraestrutura (container registry, secrets, networking) seguem os padrões existentes do Novo Banco e serão validados com a equipa de infraestrutura.
 
 ### 10.2 Ambientes
 
@@ -105,16 +103,7 @@ A aplicação utiliza três ambientes, segregados por **namespaces** no cluster 
 | **qa**   | Testes integrados e UAT      | `homebanking-qa`     | Automática (após dev OK) |
 | **prod** | Produção                     | `homebanking-prod`   | Manual (aprovação)       |
 
-> **Nota:** A nomenclatura dos namespaces segue o padrão do ecossistema do Novo Banco. A configuração dos namespaces e network policies é da responsabilidade da equipa de infraestrutura (DEC-015). A existência de F5 em cada ambiente será validada com essa equipa.
-
-#### Segregação de Ambientes
-
-| Tipo | Mecanismo |
-|------|-----------|
-| Lógica | Namespaces Kubernetes separados |
-| Rede | Network Policies por namespace |
-| Secrets | Key Vault com políticas por ambiente |
-| RBAC | Service accounts distintos por ambiente |
+> **Nota:** A nomenclatura dos namespaces, network policies e segregação de ambientes seguem os padrões do ecossistema do Novo Banco (DEC-015). A configuração é da responsabilidade da equipa de infraestrutura.
 
 ### 10.3 CI/CD Pipeline
 
@@ -131,28 +120,16 @@ O projeto reutiliza a infraestrutura de CI/CD existente no Novo Banco:
 | **Quality Gates** | Conforme políticas existentes |
 | **Deploy** | Integrado com OpenShift |
 
-#### Quality Gates (Proposta de Cumprimento)
-
-| Gate | Requisito |
-|------|-----------|
-| Unit Tests | 100% pass |
-| Code Coverage | >= 80% |
-| SAST | 0 Critical, 0 High |
-| Lint | 0 errors |
-
-> **Pendência:** Agendar sessão com equipa de infraestrutura para validar integração com pipeline existente.
-
 ### 10.4 Estratégia de Deploy
+
+> **Nota (DEC-015):** A estratégia de deploy é definida pelo Novo Banco. Os parâmetros específicos (réplicas, surge, thresholds) seguem os padrões da plataforma e serão validados com a equipa de infraestrutura.
 
 | Aspeto | Especificação |
 |---------|---------------|
-| **Estratégia** | Rolling Update |
+| **Estratégia** | Rolling Update (padrão do banco) |
 | **Zero downtime** | Sim |
-| **maxSurge** | 25% |
-| **maxUnavailable** | 0 |
-| **Réplicas mínimas** | 2 |
-| **Health checks** | Readiness + Liveness probes |
-| **Rollback** | Automático via Kubernetes |
+| **Health checks** | Readiness + Liveness probes (responsabilidade da equipa) |
+| **Rollback** | Automático via OpenShift |
 
 #### Aprovações por Ambiente
 
@@ -164,22 +141,11 @@ O projeto reutiliza a infraestrutura de CI/CD existente no Novo Banco:
 
 ### 10.5 Secrets Management
 
-> **Nota (DEC-015):** A gestão de secrets reutiliza a infraestrutura existente no Novo Banco. Os detalhes serão validados com a equipa de infraestrutura.
-
-| Aspeto | Especificação |
-|---------|---------------|
-| **Ferramenta** | A validar com equipa de infra |
-| **Secrets geridos** | Connection strings, API keys, certificados |
-| **Rotação** | Conforme políticas existentes |
+> **Nota (DEC-015):** A gestão de secrets reutiliza a infraestrutura existente no Novo Banco. A ferramenta, mecanismo de injeção nos pods e políticas de rotação seguem os padrões da plataforma, a validar com a equipa de infraestrutura.
 
 ### 10.6 Container Registry
 
-> **Nota (DEC-015):** O container registry reutiliza a infraestrutura existente no Novo Banco.
-
-| Aspeto | Configuração |
-|---------|--------------|
-| **Registry** | A validar com equipa de infra |
-| **Scanning** | Conforme políticas existentes |
+> **Nota (DEC-015):** O container registry reutiliza a infraestrutura existente no Novo Banco. A ferramenta e políticas de scanning seguem os padrões da plataforma.
 
 #### Tagging Strategy
 
@@ -192,29 +158,13 @@ O projeto reutiliza a infraestrutura de CI/CD existente no Novo Banco:
 ### 10.7 Disaster Recovery
 
 > **Nota (DEC-015):** A estratégia de DR é definida e operada pela equipa de infraestrutura do Novo Banco. A equipa de desenvolvimento não define nem opera infraestrutura de DR própria.
-
-| Aspeto | Configuração |
-|---------|--------------|
-| **Tipo** | Cluster réplica (standby passivo) |
-| **RTO** | 30 minutos |
-| **RPO** | 5 minutos |
-| **Failover** | Manual (decisão de negócio) |
-
-> **Nota:** Canal web é stateless. Dados estão no backend existente com DR próprio. DR do canal web foca na disponibilidade da aplicação.
+> Canal web é stateless. Dados estão no backend existente com DR próprio. DR do canal web foca na disponibilidade da aplicação.
 
 ### 10.8 Backup
 
 > **Nota (DEC-015):** As políticas de backup são definidas e operadas pelo Novo Banco.
 
-O canal web **não requer backup dedicado**:
-
-| Componente | Backup | Frequência | Retenção |
-|------------|--------|------------|----------|
-| **Código fonte** | Git | Cada commit | Infinito |
-| **Container images** | ACR | Cada build | 90 dias |
-| **Secrets** | Azure Key Vault (managed) | Automático | 90 dias |
-| **Dados de negócio** | Backend existente | N/A | N/A |
-| **Sessões** | Redis (transitório) | N/A | N/A |
+O canal web **não requer backup dedicado**: a aplicação é stateless, o código reside em Git, e os dados de negócio pertencem ao backend existente com DR próprio.
 
 ### 10.9 Runbooks
 

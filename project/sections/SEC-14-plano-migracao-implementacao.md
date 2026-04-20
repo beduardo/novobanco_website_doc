@@ -8,35 +8,38 @@ depends-on-definitions:
   - "DEF-24"
 depends-on-decisions:
   - "DEC-014"
+  - "DEC-024"
 word-count: 0
 ---
 
-# 14. Plano de Migracao & Implementacao
+# 14. Plano de Migração & Implementação
 
 ## Definições e Decisões
 
 > **Definicao:** [DEF-24-plano-migracao-implementacao.md](../definitions/DEF-24-plano-migracao-implementacao.md)
 
-## Proposito
+## Propósito
 
-Definir o plano de migracao e implementacao do HomeBanking Web, incluindo roadmap, estrategia de cutover, coexistencia com app mobile, criterios go/no-go, procedimentos de rollback, beta testing e periodo de hypercare.
+Definir o plano de migração e implementação do HomeBanking Web, incluindo roadmap, estratégia de cutover, coexistência com app mobile, critérios go/no-go, procedimentos de rollback, beta testing e período de hypercare.
 
-## Conteudo
+## Conteúdo
 
-### 14.1 Roadmap de Implementacao
+### 14.1 Roadmap de Implementação
 | Fase | Entregas |
 |------|---------|
 | **0: Setup** |  Infraestrutura, onboarding na pipeline CI/CD existente do cliente (DEC-014), ambientes, design system base |
 | **1: Features** |  Restantes 35 funcionalidades (paridade mobile) |
-| **2: Beta/UAT** |  Testes UAT, correcoes, pentest |
-| **3: Go-Live** |  Cutover, lancamento controlado |
-| **5: Hypercare** |  Suporte intensivo, monitorizacao, ajustes |
+| **2: Beta/UAT** |  Testes UAT, correções, pentest |
+| **3: Go-Live** |  Cutover, lançamento controlado |
+| **5: Hypercare** |  Suporte intensivo, monitorização, ajustes |
 
-### 14.3 Estrategia de Cutover
+### 14.3 Estratégia de Cutover
 
-A estrategia de cutover segue os padroes e processos definidos pelo Banco Best, incluindo a abordagem de lancamento gradual (Phased Rollout) com Feature Flags. Os detalhes operacionais, janelas de manutencao e procedimentos especificos sao coordenados com as equipas do Banco Best.
+A estratégia de cutover adotada é **Big Bang** (DEC-024): o HomeBanking Web será ativado simultaneamente para todos os utilizadores no momento do go-live. Esta abordagem resulta de exigência do cliente, simplicidade operacional e limitações técnicas que inviabilizam um rollout faseado.
 
-### 14.4 Coexistencia com App Mobile
+Os detalhes operacionais, janelas de manutenção e procedimentos específicos são coordenados com as equipas do Banco Best. A aprovação do go/no-go é, neste modelo, crítica e não negociável — não existe possibilidade de regressão gradual por segmento de utilizadores após a ativação.
+
+### 14.4 Coexistência com App Mobile
 
 ```plantuml
 @startuml
@@ -76,40 +79,41 @@ end note
 @enduml
 ```
 
-| Aspecto | Comportamento |
+| Aspeto | Comportamento |
 |---------|---------------|
-| Sessoes simultaneas | Permitidas (Web + Mobile) |
+| Sessões simultâneas | Permitidas (Web + Mobile) |
 | Logout | Independente por canal |
 | Tokens | Separados (App vs Web BFF) |
 
 **Nota:** Ainda estamos a aprofundar a forma como a APP Mobile executar funcionalidades 100% WEB em contexto nativo.
 
-### 14.5 Migracao de Dados
+### 14.5 Migração de Dados
 
-O canal web e **stateless** e nao requer migracao de dados propria — todos os dados de negocio residem no backend existente que ja serve a App Mobile. Quaisquer procedimentos de migracao de configuracoes ou dados de suporte seguem os padroes e politicas definidos pelo Banco Best.
+O canal web é **stateless** e não requer migração de dados própria — todos os dados de negócio residem no backend existente que já serve a App Mobile. Quaisquer procedimentos de migração de configurações ou dados de suporte seguem os padrões e políticas definidos pelo Banco Best.
 
-### 14.6 Criterios Go/No-Go
+### 14.6 Critérios Go/No-Go
 
-Os criterios de go/no-go, checklist pre-go-live e o comite de aprovacao seguem os padroes de governance definidos pelo Banco Best. A equipa de desenvolvimento garante que os artefactos tecnicos (testes E2E, pentest, SLOs, runbooks) estao prontos e validados antes de submeter ao processo de aprovacao do cliente.
+Os critérios de go/no-go, checklist pré-go-live e o comité de aprovação seguem os padrões de governance definidos pelo Banco Best. A equipa de desenvolvimento garante que os artefactos técnicos (testes E2E, pentest, SLOs, runbooks) estão prontos e validados antes de submeter ao processo de aprovação do cliente.
 
 ### 14.7 Procedimentos de Rollback
 
-Os procedimentos de rollback seguem os padroes operacionais do Banco Best. Do lado da aplicacao, a equipa disponibiliza suporte tecnico atraves de feature flags (rollback instantaneo por feature) e de `kubectl rollout undo` (rollback de deployment), conforme os mecanismos de deploy da plataforma OpenShift do cliente (DEC-014).
+Os procedimentos de rollback seguem os padrões operacionais do Banco Best. Do lado da aplicação, a equipa disponibiliza suporte técnico através de feature flags (rollback instantâneo por feature) e de `kubectl rollout undo` (rollback de deployment), conforme os mecanismos de deploy da plataforma OpenShift do cliente (DEC-014).
 
 ### 14.8 Beta Testing
 
-A estrategia de beta testing, incluindo fases, criterios de selecao de participantes e canais de recolha de feedback, e definida e coordenada pelo Banco Best. A equipa de desenvolvimento participa fornecendo suporte tecnico, correcao de bugs e analise de metricas durante o periodo de testes.
+A estratégia de beta testing, incluindo fases, critérios de seleção de participantes e canais de recolha de feedback, é definida e coordenada pelo Banco Best. A equipa de desenvolvimento participa fornecendo suporte técnico, correção de bugs e análise de métricas durante o período de testes.
 
 ### 14.9 Hypercare Period
 
-O periodo de hypercare apos go-live e gerido de acordo com os padroes do Banco Best. A equipa de desenvolvimento assegura disponibilidade tecnica para resolucao de incidentes, ajustes de performance e suporte a operacoes durante o periodo acordado com o cliente.
+O período de hypercare após go-live é gerido de acordo com os padrões do Banco Best. A equipa de desenvolvimento assegura disponibilidade técnica para resolução de incidentes, ajustes de performance e suporte a operações durante o período acordado com o cliente.
 
-## Decisoes Referenciadas
+## Decisões Referenciadas
 
 - [DEC-006-estrategia-containers-openshift.md](../decisions/DEC-006-estrategia-containers-openshift.md) - Deploy strategy
 - [DEC-014-adocao-de-cicd-e-deployment-existentes-do-cliente.md](../decisions/DEC-014-adocao-de-cicd-e-deployment-existentes-do-cliente.md) - Onboarding na pipeline é coordenado com o cliente
+- [DEC-024-estrategia-cutover-big-bang.md](../decisions/DEC-024-estrategia-cutover-big-bang.md) - Estratégia de cutover Big Bang
 
-## Definicoes Utilizadas
+## Definições Utilizadas
 
 - [DEF-24-plano-migracao-implementacao.md](../definitions/DEF-24-plano-migracao-implementacao.md) - Detalhes completos
 - [DEF-04-requisitos-nao-funcionais.md](../definitions/DEF-04-requisitos-nao-funcionais.md) - SLAs
