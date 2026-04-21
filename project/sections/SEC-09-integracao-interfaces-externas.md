@@ -26,8 +26,7 @@ word-count: 0
 
 ## Propósito
 
-Definir a arquitetura de integração do HomeBanking Web com sistemas externos, incluindo Core Banking, serviços de terceiros (KYC/AML, Notificações, Cartões), Open Banking PSD2, e mecanismos de comunicação assíncrona. Esta secção estabelece os padrões, SLAs e catálogo de integrações necessários para o funcionamento do canal web.
-
+Definir a arquitetura de integração do HomeBanking Web com outros sistemas incluindo Core Banking e Backoffice de configuração. Esta secção estabelece os padrões, SLAs e catálogo de integrações necessários para o funcionamento do canal web.
 ## Conteúdo
 
 ### 9.1 Visão Geral de Integrações

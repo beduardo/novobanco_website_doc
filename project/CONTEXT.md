@@ -37,6 +37,7 @@ High Level Definition Architecture Document para o projeto HomeBanking Web do Be
 | SEC-13 | Estrategia de Testes | Quality assurance, test automation, test strategy | completed |
 | SEC-14 | Plano de Migracao e Implementacao | Rollout strategy, migration plan, implementation phases | completed |
 | SEC-15 | Governacao e Roadmap | Technical governance, roadmap, technical debt | completed |
+| SEC-16 | App Mobile — Funcionalidades e Autenticação | Funcionalidades 100% web na App (WebView), autenticação QR Code — papel da App Mobile | in-progress |
 
 ## Pending Changes
 - Verificar seção 9.3 que deve se tratar do CMS

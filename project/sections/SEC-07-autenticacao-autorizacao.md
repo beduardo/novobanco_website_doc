@@ -14,6 +14,7 @@ depends-on-decisions:
   - "DEC-017"
   - "DEC-018"
   - "DEC-019"
+  - "DEC-027"
 word-count: 0
 ---
 
@@ -224,7 +225,78 @@ FE --> USER : Acesso concedido
 | AUT_001 | ReenviaOTP | Solicita envio de OTP |
 | DEV_005.2 | RegistarDispositivoSecure | Valida OTP e regista dispositivo |
 
-#### 7.2.3 Segurança na Transmissão de Credenciais
+#### 7.2.3 Fluxo de Handoff App Mobile → WebView (Pre-Session)
+
+Este fluxo é utilizado quando a App Mobile nativa navega para uma página autenticada do HomeBanking Web dentro de uma WebView (DEC-027). Não envolve interação do utilizador para autenticação — a sessão web é criada automaticamente a partir da sessão já existente na App.
+
+```plantuml
+@startuml
+skinparam backgroundColor #FEFEFE
+
+actor "Utilizador" as USER
+participant "App Mobile" as APP
+participant "API Gateway\n(IBM)" as APIGW
+participant "MicroService" as AUTH
+participant Redis
+participant "WebView" as WV
+participant "BFF" as BFF
+
+== Fase 1: Criação da Pre-Session (App Mobile → MicroService) ==
+
+USER -> APP : Navega para funcionalidade\nautenticada (100% Web)
+APP -> APIGW : POST /auth/webview-session\n{appAccessToken}\n[x-nb-channel: best.app]
+note right of APIGW
+  App Mobile acede MicroService
+  diretamente via API Gateway.
+  Sem BFF. (DEC-019, DEC-027)
+end note
+APIGW -> AUTH : POST /auth/webview-session
+AUTH -> AUTH : Valida appAccessToken\n(dispositivo autorizado)
+AUTH -> Redis : SET handoff:{guid}\n{user_context, TTL: 60s, one-time-use}
+AUTH --> APIGW : {sessionHandoffId: "<guid>", expiresIn: 60}
+APIGW --> APP : {sessionHandoffId: "<guid>", expiresIn: 60}
+
+== Fase 2: Abertura da WebView com Header de Handoff ==
+
+APP -> WV : Abre WebView com URL destino\n+ Header: x-nb-session-handoff: <guid>
+WV -> BFF : GET <url>\nHeader: x-nb-session-handoff: <guid>\nx-nb-channel: best.spa
+
+== Fase 3: Troca do Handoff por Sessão Web (BFF) ==
+
+BFF -> AUTH : GET /auth/webview-session/{guid}
+AUTH -> Redis : Lookup handoff:{guid}
+Redis --> AUTH : {user_context} (marca como usado — one-time)
+AUTH --> BFF : {user_context, valid: true}
+BFF -> BFF : Gera token_sessao_spa (GUID)
+BFF -> Redis : SET session:{token_sessao_spa}\n{user_context, TTL: 1800s}
+BFF --> WV : Set-Cookie: token_sessao_spa\n(HttpOnly, Secure, SameSite=Strict)
+
+== Fase 4: Operação Normal ==
+
+WV --> USER : Renderiza página autenticada
+WV -> BFF : Pedidos subsequentes\n(cookie normal, sem header handoff)
+
+@enduml
+```
+
+**Endpoints do Fluxo de Handoff:**
+
+| Endpoint | Método | Origem | Destino | Descrição |
+|----------|--------|--------|---------|-----------|
+| `/auth/webview-session` | POST | App Mobile → GW | GW → MicroService | Cria pre-session; devolve `sessionHandoffId` (GUID) |
+| `/auth/webview-session/{guid}` | GET | BFF → GW | GW → MicroService | Troca o handoff por sessão web real (one-time-use) |
+
+**Header de Handoff:**
+
+| Atributo | Valor |
+|----------|-------|
+| **Nome** | `x-nb-session-handoff` |
+| **TTL** | 60 segundos |
+| **Uso** | One-time — inválido após primeira troca pelo BFF |
+
+> Para o fluxo completo incluindo o cenário de páginas públicas (sem sessão), ver [SEC-16 16.2 — Funcionalidades 100% Web na App Mobile](SEC-16-app-mobile-funcionalidades-e-autenticacao.md#162-funcionalidades-100-web-na-app-mobile-webview).
+
+#### 7.2.4 Segurança na Transmissão de Credenciais
 
 > **Nota Importante:** O ambiente web requer atenção especial na transmissão e gestão de credenciais. Ver [Secção 8.3.6](SEC-08-seguranca-conformidade.md#836-considerações-de-segurança-web-vs-mobile) para diferenças de segurança web vs mobile.
 

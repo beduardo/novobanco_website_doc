@@ -197,12 +197,6 @@ MICROSERVICES ..> OBSERVABILIDADE : Logs/Métricas
 
 > **Cenário Secundário - Web na App:** Embora não seja o fluxo primário, está prevista a possibilidade de haver funcionalidade web a correr dentro da app mobile nativa (WebView). Este cenário requer integração específica para navegação e biometria. Os detalhes serão definidos em fase posterior.
 
-#### Pendências de Detalhe
-
-| Item | Descrição | Responsável |
-|------|-----------|-------------|
-| Responsabilidades do MicroService | Identificar as responsabilidades específicas do MicroService | Banco Best/NextReality |
-
 ### 3.3 Componentes Principais
 
 | Componente | Tipo | Responsabilidade | Tecnologia |

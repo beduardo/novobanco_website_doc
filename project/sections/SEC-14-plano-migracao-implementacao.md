@@ -85,7 +85,7 @@ end note
 | Logout | Independente por canal |
 | Tokens | Separados (App vs Web BFF) |
 
-**Nota:** Ainda estamos a aprofundar a forma como a APP Mobile executar funcionalidades 100% WEB em contexto nativo.
+**Nota:** A abordagem para execução de funcionalidades 100% Web em contexto nativo da App Mobile (WebView) está a ser detalhada em [SEC-16 — App Mobile: Funcionalidades e Autenticação](SEC-16-app-mobile-funcionalidades-e-autenticacao.md).
 
 ### 14.5 Migração de Dados
 

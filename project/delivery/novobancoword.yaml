@@ -94,6 +94,12 @@ spec:
             destination: ./rendered/SEC-15-governacao-roadmap-rendered.md
             filter: ./render-filters/SEC-15-governacao-roadmap.yaml
             source: ../sections/SEC-15-governacao-roadmap.md
+        - name: section-16-render
+          command: document.render
+          params:
+            destination: ./rendered/SEC-16-app-mobile-funcionalidades-e-autenticacao.md
+            filter: ./render-filters/SEC-16-app-mobile-funcionalidades-e-autenticacao.yaml
+            source: ../sections/SEC-16-app-mobile-funcionalidades-e-autenticacao.md
         - name: document-join
           command: document.join
           params:
